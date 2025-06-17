@@ -121,9 +121,6 @@ Secondary Certificate: The X.509 certificate that is referenced by the Primary C
 # Certificate Discovery Access Method Certificates
 
 This document specifies the new certDiscovery access method for X.509 Subject Information Access (SIA) extension defined in {{!RFC5280}}.
-The certDiscovery access method has 3 components. The uniformResourceIdentifier which is an IA5String that has the URL reference to the Secondary Certificate. The signatureAlgorithm which indicates the signature algorithm used in the Secondary Certificate. Finally, the publicKeyAlgorithm which indicates the public key algorithm used in the Secondary Certificate.
-
-When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether or not to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.
 
 The syntax of subject information access extension syntax is repeated here for convenience:
 
@@ -136,26 +133,73 @@ The syntax of subject information access extension syntax is repeated here for c
            accessLocation        GeneralName  }
 ~~~
 
-The syntax of the related certificate descriptor is as follows:
+This document defines a new access method `ia-ad-certDiscovery` which defines an `accessMethod` identifier along with the `accessLocation` which is a GeneralName `OTHER NAME` type defined as `id-on-relatedCertificateDescriptor` which defines the `RelatedCertificateDescriptor`.
+
+`RelatedCertificateDescriptor` is defined as follows:
 
 ~~~
-   id-ad  OBJECT IDENTIFIER  ::= {
-     iso(1) identified-organization(3) dod(6) internet(1)
-     security(5) mechanisms(5) pkix(7) ad(48) }
-    id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
+ RelatedCertificateDescriptor ::= SEQUENCE {
+      certref CertReference,
+      purpose DiscoveryPurposeId,
+      signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
+      publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL }
+~~~
 
-   id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD2 }
+`RelatedCertificateDescriptor` is composed of 4 components which are defined below.
 
-   on-RelatedCertificateDescriptor OTHER-NAME ::= {
-        RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
-    }
+## CertReference
 
-   RelatedCertificateDescriptor ::= SEQUENCE {
-	   uniformResourceIdentifier IA5String,
-	   signatureAlgorithm 	[0] IMPLICIT AlgorithmIdentifier OPTIONAL,
-	   publicKeyAlgorithm 	[1] IMPLICIT AlgorithmIdentifier OPTIONAL
+`CertReference` is defined by the following:
+
+~~~
+ CertReference ::= CHOICE {
+      direct Certificate,
+      indirect SEQUENCE {
+         uniformResourceIdentifier IA5String,
+         certHash [0] IMPLICIT CertHash OPTIONAL
+      }
    }
 ~~~
+
+Which is a CHOICE defining either a `direct` reference to a Certificate (meaning the full encoded Certificate from [RFC 5280] is included), or and `indirect` reference which means the certificate is reference by an IA5String that has the URL reference to the secondary certificate. The `indirect` reference also includes an optional `certHash` value which when include is a cryptographic Hash of the DER Encoded referenced certificate.
+
+~~~~
+   CertHash ::= SEQUENCE {
+      value OCTET STRING,
+      -- TODO Add IssuerAndSerialNumber?
+      hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}
+   }
+~~~~
+
+`certHash` is defined as a SEQUENCE containg the OCTET STRING `value` of the DER Encoded reference certificate as well as the `hashAlgorithm`  which contains the AlgorithmIdentifier for the chosen Hash value.  The default Hash algorithm is SHA-256.
+
+## Purpose
+
+The `purpose` describes the purpose of the discovery method.  Currently the following purpose id's are defined:
+
+~~~
+ -- Purpose OJBECT IDENTIFIER
+   id-rcd-agility OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 1}
+   id-rcd-redundency OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 2}
+   id-rcd-dual OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 3}
+
+   DiscoveryPurposeId ::= OBJECT IDENTIFIER
+~~~
+
+### Agility
+This purpose indicates the referenced certificate's purpose is to provide algorithm agility.
+
+### Redundency
+This purpose indicates the referenced certificate's purpose is to provide operational redundency.
+
+### Dual Usage
+This purpose indicates the referenced certificate's purpose is for dual usage.
+
+## Signature Algorithm and Public Key Algorithm fields
+The signatureAlgorithm is used to indicates the signature algorithm used in the Secondary Certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.
+
+When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether or not to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.
+
 
 The semantics of other id-ad-certDiscovery accessLocation name forms are not defined.
 
