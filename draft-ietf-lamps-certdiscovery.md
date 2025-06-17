@@ -133,7 +133,7 @@ The syntax of subject information access extension syntax is repeated here for c
            accessLocation        GeneralName  }
 ~~~
 
-This document defines a new access method `id-ad-certDiscovery` which is an OBJECT IDENTIFIER that indicates the `accessMethod` is for certificate discovery. 
+This document defines a new access method `id-ad-certDiscovery` which is an OBJECT IDENTIFIER that indicates the `accessMethod` is for certificate discovery.
 
 ~~~
 id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
