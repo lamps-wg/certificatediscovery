@@ -118,7 +118,7 @@ Primary Certificate: The X.509 certificate that has the subjectInfoAccess extens
 
 Secondary Certificate: The X.509 certificate that is referenced by the Primary Certificate in the subjectInfoAccess extension certDiscovery accessMethod
 
-# Certificate Discovery Access Method Certificates
+# Certificate Discovery Access Method
 
 This document specifies the new certDiscovery access method for X.509 Subject Information Access (SIA) extension defined in {{!RFC5280}}.
 
@@ -136,7 +136,12 @@ The syntax of subject information access extension syntax is repeated here for c
 This document defines a new access method `ia-ad-certDiscovery` which defines an `accessMethod` identifier along with the `accessLocation` which is a GeneralName `OTHER NAME` type defined as `id-on-relatedCertificateDescriptor` which defines the `RelatedCertificateDescriptor`.
 
 ~~~
- -- Certificate Discovery Access Descriptor --
+   id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
+
+   -- Other Name OID Arc --
+   id-on OBJECT IDENTIFIER ::= { id-pkix 8 }
+
+   -- Certificate Discovery Access Descriptor --
    id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }
 
    on-RelatedCertificateDescriptor OTHER-NAME ::= {
@@ -170,7 +175,7 @@ This document defines a new access method `ia-ad-certDiscovery` which defines an
    }
 ~~~
 
-Which is a CHOICE defining either a `direct` reference to a Certificate (meaning the full encoded Certificate from [RFC 5280] is included), or and `indirect` reference which means the certificate is reference by an IA5String that has the URL reference to the secondary certificate. The `indirect` reference also includes an optional `certHash` value which when include is a cryptographic Hash of the DER Encoded referenced certificate.
+Which is a CHOICE defining either a `direct` reference to a Certificate (meaning the full encoded Certificate from [RFC 5280] is included), or and `indirect` reference which means the certificate is reference by an IA5String that has the URL reference to the secondary certificate. The `indirect` reference also includes an optional `certHash` value which when include is a cryptographic hash of the DER Encoded referenced certificate.
 
 ~~~~
    CertHash ::= SEQUENCE {
@@ -205,7 +210,7 @@ This purpose indicates the referenced certificate's purpose is to provide operat
 This purpose indicates the referenced certificate's purpose is for dual usage.
 
 ## Signature Algorithm and Public Key Algorithm fields
-The signatureAlgorithm is used to indicates the signature algorithm used in the Secondary Certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.
+The signatureAlgorithm is used to indicates the signature algorithm used in the secondary certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.
 
 When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether or not to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.
 
