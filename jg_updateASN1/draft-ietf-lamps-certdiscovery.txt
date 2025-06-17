@@ -264,6 +264,13 @@ Table of Contents
    relatedCertificateDescriptor which defines the
    RelatedCertificateDescriptor.
 
+ -- Certificate Discovery Access Descriptor --
+   id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }
+
+   on-RelatedCertificateDescriptor OTHER-NAME ::= {
+      RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
+   }
+
    RelatedCertificateDescriptor is defined as follows:
 
     RelatedCertificateDescriptor ::= SEQUENCE {

@@ -1316,17 +1316,27 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 </pre><a href="#section-3-3" class="pilcrow">¶</a>
 </div>
 <p id="section-3-4">This document defines a new access method <code>ia-ad-certDiscovery</code> which defines an <code>accessMethod</code> identifier along with the <code>accessLocation</code> which is a GeneralName <code>OTHER NAME</code> type defined as <code>id-on-relatedCertificateDescriptor</code> which defines the <code>RelatedCertificateDescriptor</code>.<a href="#section-3-4" class="pilcrow">¶</a></p>
-<p id="section-3-5"><code>RelatedCertificateDescriptor</code> is defined as follows:<a href="#section-3-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3-6">
+<div class="alignLeft art-text artwork" id="section-3-5">
+<pre>
+ -- Certificate Discovery Access Descriptor --
+   id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }
+
+   on-RelatedCertificateDescriptor OTHER-NAME ::= {
+      RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
+   }
+</pre><a href="#section-3-5" class="pilcrow">¶</a>
+</div>
+<p id="section-3-6"><code>RelatedCertificateDescriptor</code> is defined as follows:<a href="#section-3-6" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3-7">
 <pre>
  RelatedCertificateDescriptor ::= SEQUENCE {
       certref CertReference,
       purpose DiscoveryPurposeId,
       signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
       publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL }
-</pre><a href="#section-3-6" class="pilcrow">¶</a>
+</pre><a href="#section-3-7" class="pilcrow">¶</a>
 </div>
-<p id="section-3-7"><code>RelatedCertificateDescriptor</code> is composed of 4 components which are defined below.<a href="#section-3-7" class="pilcrow">¶</a></p>
+<p id="section-3-8"><code>RelatedCertificateDescriptor</code> is composed of 4 components which are defined below.<a href="#section-3-8" class="pilcrow">¶</a></p>
 <div id="certreference">
 <section id="section-3.1">
         <h3 id="name-certreference">
