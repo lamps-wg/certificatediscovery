@@ -2,10 +2,10 @@
 
 This is the working area for the individual Internet-Draft, "TODO - Your title".
 
-* [Editor's Copy](https://tomofumiokubo.github.io/certificatediscovery/#go.draft-lamps-okubo-certdiscovery.html)
-* [Datatracker Page](https://datatracker.ietf.org/doc/draft-lamps-okubo-certdiscovery)
-* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-lamps-okubo-certdiscovery)
-* [Compare Editor's Copy to Individual Draft](https://tomofumiokubo.github.io/certificatediscovery/#go.draft-lamps-okubo-certdiscovery.diff)
+* [Editor's Copy](https://lamps-wg.github.io/certificatediscovery/draft-ietf-lamps-certdiscovery.html)
+* [Datatracker Page](https://datatracker.ietf.org/doc/draft-ietf-lamps-certdiscovery)
+* [Individual Draft](https://datatracker.ietf.org/doc/html/draft-ietf-lamps-certdiscovery)
+* [Compare Editor's Copy to Individual Draft](https://lamps-wg.github.io/certificatediscovery/#go.draft-ietf-lamps-certdiscovery.diff)
 
 
 ## Contributing
