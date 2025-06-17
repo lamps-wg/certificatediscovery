@@ -133,26 +133,36 @@ The syntax of subject information access extension syntax is repeated here for c
            accessLocation        GeneralName  }
 ~~~
 
-This document defines a new access method `id-ad-certDiscovery` which is an OBJECT IDENTIFIER that indicates the `accessMethod` of the AccessDescription will contain an `on-RelatedCertificateDescriptor` as defined below.
-
-
-is for certificate discovery.   The `accessLocation` is a GeneralName OTHER NAME type defined as `on-relatedCertificateDescriptor` and is identified by the 'id-on-relatedCertificateDescriptor' OBJECT IDENTIFIER which has a value of `RelatedCertificateDescriptor`.
+This document defines a new access method `id-ad-certDiscovery` which is an OBJECT IDENTIFIER that indicates the `accessMethod` is for certificate discovery. 
 
 ~~~
 id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
+~~~
 
+The 'accessLocation' is a GeneralName otherName type as defined in [RFC5280].   Recall that the otherName type is defined as `AnotherName`:
+
+~~~
+AnotherName ::= SEQUENCE {
+     type-id    OBJECT IDENTIFIER,
+     value      [0] EXPLICIT ANY DEFINED BY type-id }
+~~~
+
+Which this document defines as:
+
+~~~
 -- Other Name OID Arc --
 id-on OBJECT IDENTIFIER ::= { id-pkix 8 }
 
 -- Certificate Discovery Access Descriptor --
-id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::=
-                                                   { id-on TBD }
+id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }
 
 on-RelatedCertificateDescriptor OTHER-NAME ::= {
-   RelatedCertificateDescriptor IDENTIFIED BY
-                                 id-on-relatedCertificateDescriptor
-}
+      RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
+   }
 ~~~
+
+Where `id-on-relatedCertificateDescriptor` is the OBJECT IDENTIFIER (type-id) and the value is `RelatedCertificateDescriptor`
+
 
 `RelatedCertificateDescriptor` is defined as follows:
 
@@ -190,7 +200,7 @@ CertHash ::= SEQUENCE {
 }
 ~~~~
 
-`certHash` is defined as a SEQUENCE containing the OCTET STRING `value` which is the hash of the DER Encoded reference certificate as well as the `hashAlgorithm`  which contains the AlgorithmIdentifier for the chosen Hash value.  The default Hash algorithm is SHA-256.
+`certHash` is defined as a SEQUENCE containing the OCTET STRING `value` which is the hash of the DER Encoded reference certificate as well as the `hashAlgorithm`  which contains the AlgorithmIdentifier for the chosen Hash value. All implementations MUST support SHA-256 via `id-sha256`, and other hash functions MAY be supported.
 
 ## Purpose
 
