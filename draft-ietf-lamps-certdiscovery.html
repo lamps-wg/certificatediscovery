@@ -1318,36 +1318,46 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
            accessLocation        GeneralName  }
 </pre><a href="#section-3-3" class="pilcrow">¶</a>
 </div>
-<p id="section-3-4">This document defines a new access method <code>id-ad-certDiscovery</code> which is an OBJECT IDENTIFIER that indicates the <code>accessMethod</code> of the AccessDescription will contain an <code>on-RelatedCertificateDescriptor</code> as defined below.<a href="#section-3-4" class="pilcrow">¶</a></p>
-<p id="section-3-5">is for certificate discovery.   The <code>accessLocation</code> is a GeneralName OTHER NAME type defined as <code>on-relatedCertificateDescriptor</code> and is identified by the 'id-on-relatedCertificateDescriptor' OBJECT IDENTIFIER which has a value of <code>RelatedCertificateDescriptor</code>.<a href="#section-3-5" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3-6">
+<p id="section-3-4">This document defines a new access method <code>id-ad-certDiscovery</code> which is an OBJECT IDENTIFIER that indicates the <code>accessMethod</code> is for certificate discovery.<a href="#section-3-4" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3-5">
 <pre>
 id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
-
+</pre><a href="#section-3-5" class="pilcrow">¶</a>
+</div>
+<p id="section-3-6">The 'accessLocation' is a GeneralName otherName type as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.   Recall that the otherName type is defined as <code>AnotherName</code>:<a href="#section-3-6" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3-7">
+<pre>
+AnotherName ::= SEQUENCE {
+     type-id    OBJECT IDENTIFIER,
+     value      [0] EXPLICIT ANY DEFINED BY type-id }
+</pre><a href="#section-3-7" class="pilcrow">¶</a>
+</div>
+<p id="section-3-8">Which this document defines as:<a href="#section-3-8" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3-9">
+<pre>
 -- Other Name OID Arc --
 id-on OBJECT IDENTIFIER ::= { id-pkix 8 }
 
 -- Certificate Discovery Access Descriptor --
-id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::=
-                                                   { id-on TBD }
+id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }
 
 on-RelatedCertificateDescriptor OTHER-NAME ::= {
-   RelatedCertificateDescriptor IDENTIFIED BY
-                                 id-on-relatedCertificateDescriptor
-}
-</pre><a href="#section-3-6" class="pilcrow">¶</a>
+      RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
+   }
+</pre><a href="#section-3-9" class="pilcrow">¶</a>
 </div>
-<p id="section-3-7"><code>RelatedCertificateDescriptor</code> is defined as follows:<a href="#section-3-7" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3-8">
+<p id="section-3-10">Where <code>id-on-relatedCertificateDescriptor</code> is the OBJECT IDENTIFIER (type-id) and the value is <code>RelatedCertificateDescriptor</code><a href="#section-3-10" class="pilcrow">¶</a></p>
+<p id="section-3-11"><code>RelatedCertificateDescriptor</code> is defined as follows:<a href="#section-3-11" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3-12">
 <pre>
  RelatedCertificateDescriptor ::= SEQUENCE {
       certref CertReference,
       purpose DiscoveryPurposeId,
       signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
       publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL }
-</pre><a href="#section-3-8" class="pilcrow">¶</a>
+</pre><a href="#section-3-12" class="pilcrow">¶</a>
 </div>
-<p id="section-3-9"><code>RelatedCertificateDescriptor</code> is composed of 4 components which are defined below.<a href="#section-3-9" class="pilcrow">¶</a></p>
+<p id="section-3-13"><code>RelatedCertificateDescriptor</code> is composed of 4 components which are defined below.<a href="#section-3-13" class="pilcrow">¶</a></p>
 <div id="certreference">
 <section id="section-3.1">
         <h3 id="name-certreference">
@@ -1375,7 +1385,7 @@ CertHash ::= SEQUENCE {
 }
 </pre><a href="#section-3.1-4" class="pilcrow">¶</a>
 </div>
-<p id="section-3.1-5"><code>certHash</code> is defined as a SEQUENCE containing the OCTET STRING <code>value</code> which is the hash of the DER Encoded reference certificate as well as the <code>hashAlgorithm</code>  which contains the AlgorithmIdentifier for the chosen Hash value.  The default Hash algorithm is SHA-256.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
+<p id="section-3.1-5"><code>certHash</code> is defined as a SEQUENCE containing the OCTET STRING <code>value</code> which is the hash of the DER Encoded reference certificate as well as the <code>hashAlgorithm</code>  which contains the AlgorithmIdentifier for the chosen Hash value. All implementations <span class="bcp14">MUST</span> support SHA-256 via <code>id-sha256</code>, and other hash functions <span class="bcp14">MAY</span> be supported.<a href="#section-3.1-5" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="purpose">
