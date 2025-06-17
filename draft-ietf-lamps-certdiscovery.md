@@ -133,20 +133,25 @@ The syntax of subject information access extension syntax is repeated here for c
            accessLocation        GeneralName  }
 ~~~
 
-This document defines a new access method `id-ad-certDiscovery` which is an OBJECT IDENTIFIER that indicates the `accessMethod` of the AccessDescription is for certificate discovery.   The `accessLocation` is a GeneralName OTHER NAME type defined as `on-relatedCertificateDescriptor` and is identified by the 'id-on-relatedCertificateDescriptor' OBJECT IDENTIFIER which has a value of `RelatedCertificateDescriptor`.
+This document defines a new access method `id-ad-certDiscovery` which is an OBJECT IDENTIFIER that indicates the `accessMethod` of the AccessDescription will contain an `on-RelatedCertificateDescriptor` as defined below.
+
+
+is for certificate discovery.   The `accessLocation` is a GeneralName OTHER NAME type defined as `on-relatedCertificateDescriptor` and is identified by the 'id-on-relatedCertificateDescriptor' OBJECT IDENTIFIER which has a value of `RelatedCertificateDescriptor`.
 
 ~~~
-   id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
+id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
 
-   -- Other Name OID Arc --
-   id-on OBJECT IDENTIFIER ::= { id-pkix 8 }
+-- Other Name OID Arc --
+id-on OBJECT IDENTIFIER ::= { id-pkix 8 }
 
-   -- Certificate Discovery Access Descriptor --
-   id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }
+-- Certificate Discovery Access Descriptor --
+id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::=
+                                                   { id-on TBD }
 
-   on-RelatedCertificateDescriptor OTHER-NAME ::= {
-      RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
-   }
+on-RelatedCertificateDescriptor OTHER-NAME ::= {
+   RelatedCertificateDescriptor IDENTIFIED BY
+                                 id-on-relatedCertificateDescriptor
+}
 ~~~
 
 `RelatedCertificateDescriptor` is defined as follows:
@@ -175,17 +180,17 @@ This document defines a new access method `id-ad-certDiscovery` which is an OBJE
    }
 ~~~
 
-Which is a CHOICE defining either a `direct` reference to a Certificate (meaning the full encoded Certificate from [RFC 5280] is included), or and `indirect` reference which means the certificate is reference by an IA5String that has the URL reference to the secondary certificate. The `indirect` reference also includes an optional `certHash` value which when include is a cryptographic hash of the DER Encoded referenced certificate.
+Which is a CHOICE defining either a `direct` reference to a Certificate (meaning that the full secondary certificate is embedded within the primary certificate), or an `indirect` reference which means the certificate is reference by an IA5String that has the URL reference to the secondary certificate. The `indirect` reference also includes an optional `certHash` value which can be used to include a cryptographic hash of the DER Encoded secondary certificate.
 
 ~~~~
-   CertHash ::= SEQUENCE {
-      value OCTET STRING,
-      -- TODO Add IssuerAndSerialNumber?
-      hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}
-   }
+CertHash ::= SEQUENCE {
+   value OCTET STRING,
+   -- TODO Add IssuerAndSerialNumber?
+   hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}
+}
 ~~~~
 
-`certHash` is defined as a SEQUENCE containg the OCTET STRING `value` of the DER Encoded reference certificate as well as the `hashAlgorithm`  which contains the AlgorithmIdentifier for the chosen Hash value.  The default Hash algorithm is SHA-256.
+`certHash` is defined as a SEQUENCE containing the OCTET STRING `value` which is the hash of the DER Encoded reference certificate as well as the `hashAlgorithm`  which contains the AlgorithmIdentifier for the chosen Hash value.  The default Hash algorithm is SHA-256.
 
 ## Purpose
 
@@ -193,23 +198,39 @@ The `purpose` describes the purpose of the discovery method.  Currently the foll
 
 ~~~
  -- Purpose OJBECT IDENTIFIER
-   id-rcd-agility OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 1}
-   id-rcd-redundency OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 2}
-   id-rcd-dual OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 3}
+id-rcd-alg-agility OBJECT IDENTIFIER ::=
+                               {id-on-relatedCertificateDescriptor 1}
 
-   DiscoveryPurposeId ::= OBJECT IDENTIFIER
+id-rcd-redundancy OBJECT IDENTIFIER ::=
+                               {id-on-relatedCertificateDescriptor 2}
+
+id-rcd-dual OBJECT IDENTIFIER ::=
+                               {id-on-relatedCertificateDescriptor 3}
+
+id-rcd-priv-key-stmt OBJECT IDENTIFIER ::=
+                               {id-on-relatedCertificateDescriptor 4}
 ~~~
 
-### Agility
-This purpose indicates the referenced certificate's purpose is to provide algorithm agility.
+### Algorithm Agility
 
-### Redundency
-This purpose indicates the referenced certificate's purpose is to provide operational redundency.
+This purpose indicates the referenced certificate's purpose is to provide algorithm agility; i.e. the two certificates will use different cryptographic algorithms. The two certificates SHOULD be equivalent except for cryptographic algorithm; i.e. identifiers and key usages SHOULD match.
+
+### Redundancy
+
+This purpose indicates the referenced certificate's purpose is to provide operational redundancy.
 
 ### Dual Usage
-This purpose indicates the referenced certificate's purpose is for dual usage.
+
+This purpose indicates the referenced certificate's purpose is for dual usage; i.e. the related certificates belong to the same entity and one provides a signing-type key while the other provides an encryption-type key. The two certificates SHOULD have matching identifiers.
+
+### Statement of Possession of a Private Key
+
+This purpose indicates that the primary certificate did not not do a full proof-of-possession at enrollment time, but instead it provided a statement of possession as per {{!I-D.ietf-lamps-private-key-stmt-attr}} signed by the secondary certificate.
+
+The reason for carrying a RelatedCertificateDescriptor of this type is to track that the primary certificate had a trust dependency on the secondary certificate at the time of issuance and that presumably the two private keys are co-located on the same key storage. Therefore if one certificate is revoked, they SHOULD both be revoked.
 
 ## Signature Algorithm and Public Key Algorithm fields
+
 The signatureAlgorithm is used to indicates the signature algorithm used in the secondary certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.
 
 When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether or not to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.
