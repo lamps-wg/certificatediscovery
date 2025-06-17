@@ -194,7 +194,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
 
    BEGIN
 
-   -- EXPORTS ALL --
+-- EXPORTS ALL --
 
    IMPORTS
     OTHER-NAME
@@ -207,8 +207,6 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
       { iso(1) identified-organization(3) dod(6) internet(1) security(5)
       mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-explicit-02(51) } ;
 
-   -- Access descriptor OID --
-
    id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
 
    -- Other Name OID Arc --
@@ -217,16 +215,38 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
 
    -- Certificate Discovery Access Descriptor --
 
-   id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD2 }
+   id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }
 
    on-RelatedCertificateDescriptor OTHER-NAME ::= {
-        RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
-    }
+      RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
+   }
+
+   -- Purpose OJBECT IDENTIFIER
+   id-rcd-agility OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 1}
+   id-rcd-redundency OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 2}
+   id-rcd-dual OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 3}
+
+   DiscoveryPurposeId ::= OBJECT IDENTIFIER
 
    RelatedCertificateDescriptor ::= SEQUENCE {
-	   uniformResourceIdentifier IA5String,
-	   signatureAlgorithm 	[0] IMPLICIT AlgorithmIdentifier OPTIONAL,
-	   publicKeyAlgorithm 	[1] IMPLICIT AlgorithmIdentifier OPTIONAL
+      certref CertReference,
+      purpose DiscoveryPurposeId,
+      signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
+      publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
+   }
+
+   CertReference ::= CHOICE {
+      direct Certificate,
+      indirect SEQUENCE {
+         uniformResourceIdentifier IA5String,
+         certHash [0] IMPLICIT CertHash OPTIONAL
+      }
+   }
+
+   CertHash ::= SEQUENCE {
+      value OCTET STRING,
+      -- TODO Add IssuerAndSerialNumber?
+      hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}
    }
 
    END
