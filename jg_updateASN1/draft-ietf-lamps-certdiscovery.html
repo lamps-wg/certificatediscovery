@@ -1189,7 +1189,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
             </ul>
 </li>
           <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3">
-            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-certificate-discovery-acces" class="internal xref">Certificate Discovery Access Method Certificates</a></p>
+            <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-certificate-discovery-acces" class="internal xref">Certificate Discovery Access Method</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
                 <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-certreference" class="internal xref">CertReference</a></p>
@@ -1298,10 +1298,10 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 </div>
 </section>
 </div>
-<div id="certificate-discovery-access-method-certificates">
+<div id="certificate-discovery-access-method">
 <section id="section-3">
       <h2 id="name-certificate-discovery-acces">
-<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-certificate-discovery-acces" class="section-name selfRef">Certificate Discovery Access Method Certificates</a>
+<a href="#section-3" class="section-number selfRef">3. </a><a href="#name-certificate-discovery-acces" class="section-name selfRef">Certificate Discovery Access Method</a>
       </h2>
 <p id="section-3-1">This document specifies the new certDiscovery access method for X.509 Subject Information Access (SIA) extension defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.<a href="#section-3-1" class="pilcrow">¶</a></p>
 <p id="section-3-2">The syntax of subject information access extension syntax is repeated here for convenience:<a href="#section-3-2" class="pilcrow">¶</a></p>
@@ -1318,7 +1318,12 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
 <p id="section-3-4">This document defines a new access method <code>ia-ad-certDiscovery</code> which defines an <code>accessMethod</code> identifier along with the <code>accessLocation</code> which is a GeneralName <code>OTHER NAME</code> type defined as <code>id-on-relatedCertificateDescriptor</code> which defines the <code>RelatedCertificateDescriptor</code>.<a href="#section-3-4" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3-5">
 <pre>
- -- Certificate Discovery Access Descriptor --
+   id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
+
+   -- Other Name OID Arc --
+   id-on OBJECT IDENTIFIER ::= { id-pkix 8 }
+
+   -- Certificate Discovery Access Descriptor --
    id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }
 
    on-RelatedCertificateDescriptor OTHER-NAME ::= {
@@ -1354,7 +1359,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
    }
 </pre><a href="#section-3.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-3.1-3">Which is a CHOICE defining either a <code>direct</code> reference to a Certificate (meaning the full encoded Certificate from [RFC 5280] is included), or and <code>indirect</code> reference which means the certificate is reference by an IA5String that has the URL reference to the secondary certificate. The <code>indirect</code> reference also includes an optional <code>certHash</code> value which when include is a cryptographic Hash of the DER Encoded referenced certificate.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-3">Which is a CHOICE defining either a <code>direct</code> reference to a Certificate (meaning the full encoded Certificate from [RFC 5280] is included), or and <code>indirect</code> reference which means the certificate is reference by an IA5String that has the URL reference to the secondary certificate. The <code>indirect</code> reference also includes an optional <code>certHash</code> value which when include is a cryptographic hash of the DER Encoded referenced certificate.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.1-4">
 <pre>
    CertHash ::= SEQUENCE {
@@ -1414,7 +1419,7 @@ appear in all capitals, as shown here.<a href="#section-2-1" class="pilcrow">¶<
         <h3 id="name-signature-algorithm-and-pub">
 <a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-signature-algorithm-and-pub" class="section-name selfRef">Signature Algorithm and Public Key Algorithm fields</a>
         </h3>
-<p id="section-3.3-1">The signatureAlgorithm is used to indicates the signature algorithm used in the Secondary Certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-1">The signatureAlgorithm is used to indicates the signature algorithm used in the secondary certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
 <p id="section-3.3-2">When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether or not to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.<a href="#section-3.3-2" class="pilcrow">¶</a></p>
 <p id="section-3.3-3">The semantics of other id-ad-certDiscovery accessLocation name forms are not defined.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
 <p id="section-3.3-4">Note:  For a description of uniformResourceIdentifier consult section 4.2.2.1 of [!RFC5280].<a href="#section-3.3-4" class="pilcrow">¶</a></p>
