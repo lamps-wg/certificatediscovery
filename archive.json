@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-05-29T01:40:05.281924+00:00",
+  "timestamp": "2025-06-17T01:42:37.535502+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -126,7 +126,7 @@
       "labels": [],
       "body": "\nNotes for April 22nd Authors meeting:\n\nAction Joe:  Send chairs e-mail about linking drafts in dataTracker:\nhttps://datatracker.ietf.org/doc/draft-lamps-okubo-certdiscovery/\nhttps://datatracker.ietf.org/doc/draft-ietf-lamps-certdiscovery/\n\nAction Tomofumi:  will transfer the repository ownership to lamps_wg\n\nDiscussed:  Cleaning up the text for operational redundancy\n\nPurposes we have in Mind:\n\nSolid purpose ideas:\n1.  Discovery - Discover another certificate (with our without Hash)\n\u2002\u2002\u2002\u2002\u2002\u2002- Algorithm update (RSA -> ML-DSA for example)  -> URL\n        - Strong downgrade (ML-DSA -> RSA) - strong cryptographic chaining?  ->URL\n        - Full certificate -> Full Encoded Cert\n        - Use a CHOICE (SEQUENCE { URI, OptionalPurpose, OptionalHash} or FullCert }\n2.  Dual Usage  \n\nNeed more thinking:\n3.  Statement of Possession?\n4.  Operational Redundancy?\n5.  Others?\n\n\nPossible updated ASN.1\n- Taking into account adding extensible purpose idea,\n- Alex Raliens inclusion of the full certificate\n- Added the Optional Hash for stronger 1-way binding\n\nTested via ASN.1 playground https://asn1.io/asn1playground/\n\nCertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)\n   security(5) mechanisms(5) pkix(7) id-mod(0) id-mod-CertDiscovery(TBD) }\n\n   DEFINITIONS EXPLICIT TAGS ::=\n\n   BEGIN\n\n   -- EXPORTS ALL --\n\n   IMPORTS\n    OTHER-NAME\n    FROM PKIX1Implicit-2009\n      { iso(1) identified-organization(3) dod(6) internet(1) security(5)\n      mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-implicit-02(59) }\n\n    id-pkix, id-ad, Certificate\n    FROM PKIX1Explicit-2009\n      { iso(1) identified-organization(3) dod(6) internet(1) security(5)\n      mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-explicit-02(51) } ;\n\n   -- Access descriptor OID --\n\n   id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }\n\n   -- Other Name OID Arc --\n\n   id-on OBJECT IDENTIFIER ::= { id-pkix 8 }\n\n   -- Certificate Discovery Access Descriptor --\n\n   id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }\n\n   on-RelatedCertificateDescriptor OTHER-NAME ::= {\n        RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor\n    }\n\n   -- Purpose OJBECT IDENTIFIER  \n   id-rcd-discovery OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 1}\n   id-rcd-du OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 2}\n   \n   DiscoveryPurposeId ::= OBJECT IDENTIFIER\n\n   RelatedCertificateDescriptor ::= SEQUENCE {\n       certref CertReference,  \n       purpose DiscoveryPurposeId,\n       signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,\n       publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL\n   }\n\n   CertReference ::= CHOICE {\n     direct Certificate,\n     indirect SEQUENCE {\n       uniformResourceIdentifier IA5String,\n       certHash [0] IMPLICIT CertHash OPTIONAL\n     }\n   }\n\n   CertHash ::= SEQUENCE {\n      value OCTET STRING,\n      hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}\n   }\n\n   END\n",
       "createdAt": "2025-04-22T16:45:43Z",
-      "updatedAt": "2025-05-27T14:15:00Z",
+      "updatedAt": "2025-06-16T21:25:40Z",
       "closedAt": null,
       "comments": [
         {
@@ -156,6 +156,13 @@
           "body": "Notes from May 27th\n\n- Draft submission deadline is July 7th - Aim to get publication down before this time and call for WGLC.\n- Submitted new issue #9 which we will aim to complete at the hackathon\n- Need to nail down what final format of identifier of pair certificate will look like (check RFC references listed above for inspiration).\n- Next meeting is June 17th",
           "createdAt": "2025-05-27T14:14:59Z",
           "updatedAt": "2025-05-27T14:14:59Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "RFC 5697 uses this structure for issuerSerial and includes a full Hash of the certificate.\n\nSCVPCertID ::= SEQUENCE {\n       certHash        OCTET STRING,\n       issuerSerial    SCVPIssuerSerial,\n       hashAlgorithm   AlgorithmIdentifier DEFAULT { algorithm sha-1 } }\n\nSCVPIssuerSerial ::= SEQUENCE {\n        issuer         GeneralNames,\n        serialNumber   CertificateSerialNumber\n   }\n\n\nSo we could replace our optional CertHash:\n\nCertHash ::= SEQUENCE {\n   value OCTET STRING,\n   hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}\n}\n\nWith SCVPCertID\n  -  Which would also require the issuer and Serial as well as the Hash as optional values\n\n\n",
+          "createdAt": "2025-06-16T21:14:28Z",
+          "updatedAt": "2025-06-16T21:25:40Z"
         }
       ]
     },
