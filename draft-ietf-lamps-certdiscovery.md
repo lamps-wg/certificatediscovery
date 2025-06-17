@@ -135,6 +135,15 @@ The syntax of subject information access extension syntax is repeated here for c
 
 This document defines a new access method `ia-ad-certDiscovery` which defines an `accessMethod` identifier along with the `accessLocation` which is a GeneralName `OTHER NAME` type defined as `id-on-relatedCertificateDescriptor` which defines the `RelatedCertificateDescriptor`.
 
+~~~
+ -- Certificate Discovery Access Descriptor --
+   id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }
+
+   on-RelatedCertificateDescriptor OTHER-NAME ::= {
+      RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
+   }
+~~~
+
 `RelatedCertificateDescriptor` is defined as follows:
 
 ~~~
