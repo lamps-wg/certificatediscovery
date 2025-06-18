@@ -5,13 +5,13 @@
 Network Working Group                                           T. Okubo
 Internet-Draft                              Penguin Securities Pte. Ltd.
 Intended status: Standards Track                              C. Bonnell
-Expires: 19 December 2025                                 DigiCert, Inc.
+Expires: 20 December 2025                                 DigiCert, Inc.
                                                                  J. Gray
                                                             M. Ounsworth
                                                                  Entrust
                                                                J. Mandel
                                                             AKAYLA, Inc.
-                                                            17 June 2025
+                                                            18 June 2025
 
 
               A Mechanism for X.509 Certificate Discovery
@@ -51,14 +51,14 @@ About This Document
 
    This note is to be removed before publishing as an RFC.
 
-   The latest revision of this draft can be found at
-   https://tomofumiokubo.github.io/certificatediscovery/draft-ietf-
-   lamps-certdiscovery.html.  Status information for this document may
-   be found at https://datatracker.ietf.org/doc/draft-ietf-lamps-
+   The latest revision of this draft can be found at https://lamps-
+   wg.github.io/certificatediscovery/draft-ietf-lamps-
+   certdiscovery.html.  Status information for this document may be
+   found at https://datatracker.ietf.org/doc/draft-ietf-lamps-
    certdiscovery/.
 
    Source for this draft and an issue tracker can be found at
-   https://github.com/tomofumiokubo/certificatediscovery.
+   https://github.com/lamps-wg/certificatediscovery.
 
 Status of This Memo
 
@@ -75,7 +75,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 19 December 2025.
+   This Internet-Draft will expire on 20 December 2025.
 
 Copyright Notice
 
