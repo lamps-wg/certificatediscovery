@@ -11,7 +11,7 @@ This is the working area for the individual Internet-Draft, "TODO - Your title".
 ## Contributing
 
 See the
-[guidelines for contributions](https://github.com/tomofumiokubo/certificatediscovery/blob/main/CONTRIBUTING.md).
+[guidelines for contributions](https://github.com/lamps-wg/certificatediscovery/blob/main/CONTRIBUTING.md).
 
 Contributions can be made by creating pull requests.
 The GitHub interface supports creating pull requests using the Edit (✏) button.

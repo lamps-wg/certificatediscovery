@@ -20,8 +20,8 @@ venue:
 #  type: Working Group
 #  mail: WG@example.com
 #  arch: https://example.com/WG
-  github: "tomofumiokubo/certificatediscovery"
-  latest: "https://tomofumiokubo.github.io/certificatediscovery/draft-ietf-lamps-certdiscovery.html"
+  github: "lamps-wg/certificatediscovery"
+  latest: "https://lamps-wg.github.io/certificatediscovery/draft-ietf-lamps-certdiscovery.html"
 
 author:
  -
