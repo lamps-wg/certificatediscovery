@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-17T01:42:37.535502+00:00",
+  "timestamp": "2025-06-19T01:42:48.524907+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -117,16 +117,16 @@
     {
       "number": 8,
       "id": "I_kwDOKkGlhc6zgWql",
-      "title": "April 22nd Authors meeting with updated ASN.1 proposal",
+      "title": "Past Meeting Notes",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/8",
       "state": "OPEN",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
-      "body": "\nNotes for April 22nd Authors meeting:\n\nAction Joe:  Send chairs e-mail about linking drafts in dataTracker:\nhttps://datatracker.ietf.org/doc/draft-lamps-okubo-certdiscovery/\nhttps://datatracker.ietf.org/doc/draft-ietf-lamps-certdiscovery/\n\nAction Tomofumi:  will transfer the repository ownership to lamps_wg\n\nDiscussed:  Cleaning up the text for operational redundancy\n\nPurposes we have in Mind:\n\nSolid purpose ideas:\n1.  Discovery - Discover another certificate (with our without Hash)\n\u2002\u2002\u2002\u2002\u2002\u2002- Algorithm update (RSA -> ML-DSA for example)  -> URL\n        - Strong downgrade (ML-DSA -> RSA) - strong cryptographic chaining?  ->URL\n        - Full certificate -> Full Encoded Cert\n        - Use a CHOICE (SEQUENCE { URI, OptionalPurpose, OptionalHash} or FullCert }\n2.  Dual Usage  \n\nNeed more thinking:\n3.  Statement of Possession?\n4.  Operational Redundancy?\n5.  Others?\n\n\nPossible updated ASN.1\n- Taking into account adding extensible purpose idea,\n- Alex Raliens inclusion of the full certificate\n- Added the Optional Hash for stronger 1-way binding\n\nTested via ASN.1 playground https://asn1.io/asn1playground/\n\nCertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)\n   security(5) mechanisms(5) pkix(7) id-mod(0) id-mod-CertDiscovery(TBD) }\n\n   DEFINITIONS EXPLICIT TAGS ::=\n\n   BEGIN\n\n   -- EXPORTS ALL --\n\n   IMPORTS\n    OTHER-NAME\n    FROM PKIX1Implicit-2009\n      { iso(1) identified-organization(3) dod(6) internet(1) security(5)\n      mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-implicit-02(59) }\n\n    id-pkix, id-ad, Certificate\n    FROM PKIX1Explicit-2009\n      { iso(1) identified-organization(3) dod(6) internet(1) security(5)\n      mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-explicit-02(51) } ;\n\n   -- Access descriptor OID --\n\n   id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }\n\n   -- Other Name OID Arc --\n\n   id-on OBJECT IDENTIFIER ::= { id-pkix 8 }\n\n   -- Certificate Discovery Access Descriptor --\n\n   id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }\n\n   on-RelatedCertificateDescriptor OTHER-NAME ::= {\n        RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor\n    }\n\n   -- Purpose OJBECT IDENTIFIER  \n   id-rcd-discovery OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 1}\n   id-rcd-du OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 2}\n   \n   DiscoveryPurposeId ::= OBJECT IDENTIFIER\n\n   RelatedCertificateDescriptor ::= SEQUENCE {\n       certref CertReference,  \n       purpose DiscoveryPurposeId,\n       signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,\n       publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL\n   }\n\n   CertReference ::= CHOICE {\n     direct Certificate,\n     indirect SEQUENCE {\n       uniformResourceIdentifier IA5String,\n       certHash [0] IMPLICIT CertHash OPTIONAL\n     }\n   }\n\n   CertHash ::= SEQUENCE {\n      value OCTET STRING,\n      hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}\n   }\n\n   END\n",
+      "body": "\nNotes for April 22nd Authors meeting:\n\nAction Joe:  Send chairs e-mail about linking drafts in dataTracker:\nhttps://datatracker.ietf.org/doc/draft-lamps-okubo-certdiscovery/\nhttps://datatracker.ietf.org/doc/draft-ietf-lamps-certdiscovery/\n\nAction Tomofumi:  will transfer the repository ownership to lamps_wg\n\nDiscussed:  Cleaning up the text for operational redundancy\n\nPurposes we have in Mind:\n\nSolid purpose ideas:\n1.  Discovery - Discover another certificate (with our without Hash)\n\u2002\u2002\u2002\u2002\u2002\u2002- Algorithm update (RSA -> ML-DSA for example)  -> URL\n        - Strong downgrade (ML-DSA -> RSA) - strong cryptographic chaining?  ->URL\n        - Full certificate -> Full Encoded Cert\n        - Use a CHOICE (SEQUENCE { URI, OptionalPurpose, OptionalHash} or FullCert }\n2.  Operational Redundancy? \n3.  Dual Usage  \n\nNeed more thinking:\n3.  Statement of Possession?\n\n5.  Others?\n\n\nPossible updated ASN.1\n- Taking into account adding extensible purpose idea,\n- Alex Raliens inclusion of the full certificate\n- Added the Optional Hash for stronger 1-way binding\n\nTested via ASN.1 playground https://asn1.io/asn1playground/\n\nCertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)\n   security(5) mechanisms(5) pkix(7) id-mod(0) id-mod-CertDiscovery(TBD) }\n\n   DEFINITIONS EXPLICIT TAGS ::=\n\n   BEGIN\n\n   -- EXPORTS ALL --\n\n   IMPORTS\n    OTHER-NAME\n    FROM PKIX1Implicit-2009\n      { iso(1) identified-organization(3) dod(6) internet(1) security(5)\n      mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-implicit-02(59) }\n\n    id-pkix, id-ad, Certificate\n    FROM PKIX1Explicit-2009\n      { iso(1) identified-organization(3) dod(6) internet(1) security(5)\n      mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-explicit-02(51) } ;\n\n   -- Access descriptor OID --\n\n   id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }\n\n   -- Other Name OID Arc --\n\n   id-on OBJECT IDENTIFIER ::= { id-pkix 8 }\n\n   -- Certificate Discovery Access Descriptor --\n\n   id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }\n\n   on-RelatedCertificateDescriptor OTHER-NAME ::= {\n        RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor\n    }\n\n   -- Purpose OJBECT IDENTIFIER  \n   id-rcd-agility OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 1}\n   id-rcd-redundency OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 2}\n   id-rcd-dual OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 3}\n   \n   DiscoveryPurposeId ::= OBJECT IDENTIFIER\n\n   RelatedCertificateDescriptor ::= SEQUENCE {\n       certref CertReference,  \n       purpose DiscoveryPurposeId,\n       signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,\n       publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL\n   }\n\n   CertReference ::= CHOICE {\n     direct Certificate,\n     indirect SEQUENCE {\n       uniformResourceIdentifier IA5String,\n       certHash [0] IMPLICIT CertHash OPTIONAL\n     }\n   }\n\n   CertHash ::= SEQUENCE {\n      value OCTET STRING,\n      -TODO Add IssuerAndSerialNumber?\n      hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}\n   }\n\n   END\n",
       "createdAt": "2025-04-22T16:45:43Z",
-      "updatedAt": "2025-06-16T21:25:40Z",
+      "updatedAt": "2025-06-17T14:16:39Z",
       "closedAt": null,
       "comments": [
         {
@@ -163,6 +163,13 @@
           "body": "RFC 5697 uses this structure for issuerSerial and includes a full Hash of the certificate.\n\nSCVPCertID ::= SEQUENCE {\n       certHash        OCTET STRING,\n       issuerSerial    SCVPIssuerSerial,\n       hashAlgorithm   AlgorithmIdentifier DEFAULT { algorithm sha-1 } }\n\nSCVPIssuerSerial ::= SEQUENCE {\n        issuer         GeneralNames,\n        serialNumber   CertificateSerialNumber\n   }\n\n\nSo we could replace our optional CertHash:\n\nCertHash ::= SEQUENCE {\n   value OCTET STRING,\n   hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}\n}\n\nWith SCVPCertID\n  -  Which would also require the issuer and Serial as well as the Hash as optional values\n\n\n",
           "createdAt": "2025-06-16T21:14:28Z",
           "updatedAt": "2025-06-16T21:25:40Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Notes from June 16th:\n- If we want to use IssuerSerialNumber look at Russ's private key statement draft\n- UUID_DISCOVERY as part of the URI - recommend a URI structure that defines \n- Opened a number of issues:  #13, #12, #11, #10\n  ",
+          "createdAt": "2025-06-17T13:51:40Z",
+          "updatedAt": "2025-06-17T14:16:39Z"
         }
       ]
     },
@@ -181,6 +188,103 @@
       "updatedAt": "2025-05-27T13:32:32Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 10,
+      "id": "I_kwDOKkGlhc67-C__",
+      "title": "URI containing an Identifier",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/10",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "CBonnell"
+      ],
+      "labels": [],
+      "body": "- We should look at whether the URI can contain some kind of unique identifier (like a UUID).\n- Corey suggested looking at the existing CRLDP mechanism\n- ",
+      "createdAt": "2025-06-17T13:53:34Z",
+      "updatedAt": "2025-06-17T13:53:34Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 11,
+      "id": "I_kwDOKkGlhc67-IBF",
+      "title": "Updated the ASN.1 to reflect latest discussions",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/11",
+      "state": "CLOSED",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "johngray-dev"
+      ],
+      "labels": [],
+      "body": "DEFINITIONS EXPLICIT TAGS ::=\n\nBEGIN\n\n-- EXPORTS ALL --\n\nIMPORTS\nOTHER-NAME\nFROM PKIX1Implicit-2009\n{ iso(1) identified-organization(3) dod(6) internet(1) security(5)\nmechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-implicit-02(59) }\n\nid-pkix, id-ad, Certificate\nFROM PKIX1Explicit-2009\n  { iso(1) identified-organization(3) dod(6) internet(1) security(5)\n  mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-explicit-02(51) } ;\n-- Access descriptor OID --\n\nid-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }\n\n-- Other Name OID Arc --\n\nid-on OBJECT IDENTIFIER ::= { id-pkix 8 }\n\n-- Certificate Discovery Access Descriptor --\n\nid-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }\n\non-RelatedCertificateDescriptor OTHER-NAME ::= {\nRelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor\n}\n\n-- Purpose OJBECT IDENTIFIER\nid-rcd-agility OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 1}\nid-rcd-redundency OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 2}\nid-rcd-dual OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 3}\n\nDiscoveryPurposeId ::= OBJECT IDENTIFIER\n\nRelatedCertificateDescriptor ::= SEQUENCE {\ncertref CertReference,\npurpose DiscoveryPurposeId,\nsignatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,\npublicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL\n}\n\nCertReference ::= CHOICE {\ndirect Certificate,\nindirect SEQUENCE {\nuniformResourceIdentifier IA5String,\ncertHash [0] IMPLICIT CertHash OPTIONAL\n}\n}\n\nCertHash ::= SEQUENCE {\nvalue OCTET STRING,\n-TODO Add IssuerAndSerialNumber?\nhashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}\n}\n\nEND",
+      "createdAt": "2025-06-17T13:59:36Z",
+      "updatedAt": "2025-06-17T16:27:08Z",
+      "closedAt": "2025-06-17T16:27:08Z",
+      "comments": []
+    },
+    {
+      "number": 12,
+      "id": "I_kwDOKkGlhc67-Iar",
+      "title": "Fix the links in the readme",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/12",
+      "state": "CLOSED",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "CBonnell",
+        "johngray-dev"
+      ],
+      "labels": [],
+      "body": "The links in the readme need to be fixed.",
+      "createdAt": "2025-06-17T14:00:06Z",
+      "updatedAt": "2025-06-17T18:00:31Z",
+      "closedAt": "2025-06-17T18:00:31Z",
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I fixed the links:\nhttps://github.com/lamps-wg/certificatediscovery/commit/0af34662e70ec059436b4ac4d7e7ee811c835439\n",
+          "createdAt": "2025-06-17T18:00:31Z",
+          "updatedAt": "2025-06-17T18:00:31Z"
+        }
+      ]
+    },
+    {
+      "number": 13,
+      "id": "I_kwDOKkGlhc67-Jd1",
+      "title": "Add a Purpose for private-key-stmt-attr",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/13",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "ounsworth"
+      ],
+      "labels": [],
+      "body": "Cross-link to Russ' draft.",
+      "createdAt": "2025-06-17T14:01:21Z",
+      "updatedAt": "2025-06-17T14:01:21Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 15,
+      "id": "I_kwDOKkGlhc67-cxn",
+      "title": "Need to add a section to describe the purpose Id's",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/15",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "We need to add a section to describe the 3 defined purpose ids.\n\n",
+      "createdAt": "2025-06-17T14:25:21Z",
+      "updatedAt": "2025-06-17T14:25:21Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -196,7 +300,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2023-10-23T19:22:12Z",
-      "updatedAt": "2023-10-23T19:33:35Z",
+      "updatedAt": "2025-06-18T14:24:38Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "9196540e73f05f119e0ac6eb35348610280c3c6a",
@@ -224,7 +328,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2024-03-17T00:32:36Z",
-      "updatedAt": "2024-03-17T04:38:47Z",
+      "updatedAt": "2025-06-18T14:24:52Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "6e7037f73845eb5067c02ec4854ceefa01a90a95",
@@ -288,7 +392,7 @@
       "labels": [],
       "body": "Remove references to GeneralName and the fixed the names in the description of the fields.",
       "createdAt": "2024-10-24T18:44:50Z",
-      "updatedAt": "2024-10-29T20:32:26Z",
+      "updatedAt": "2025-06-18T14:24:53Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "1ee394b30405835bd27f319252f50aa46e2e32ef",
@@ -300,6 +404,62 @@
       "mergedBy": "johngray-dev",
       "mergeCommit": {
         "oid": "6dd2e5de6c3af7b1d56b48422f099e676c5ad171"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 14,
+      "id": "PR_kwDOKkGlhc6a6Swm",
+      "title": "Updated the ASN.1 from latest discussion",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/14",
+      "state": "MERGED",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #11 ",
+      "createdAt": "2025-06-17T14:12:50Z",
+      "updatedAt": "2025-06-17T16:27:16Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "08a79f15c17e8392ac82486b7b533a05d3e08a8a",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "jg_updateASN1",
+      "headRefOid": "6d451d398e56e9abcfd97b699a3ba9891ee98bc5",
+      "closedAt": "2025-06-17T16:27:07Z",
+      "mergedAt": "2025-06-17T16:27:07Z",
+      "mergedBy": "ounsworth",
+      "mergeCommit": {
+        "oid": "003dfbc032dbb4a1d4c831d3c65933533b27789e"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 16,
+      "id": "PR_kwDOKkGlhc6bFvLX",
+      "title": "Repo migration fixups",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/16",
+      "state": "MERGED",
+      "author": "CBonnell",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-06-18T14:31:57Z",
+      "updatedAt": "2025-06-18T14:34:03Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "14bdbaf1624ca82d00c1555e5f5164a6d0ab3d06",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "repo-migration-cleanup",
+      "headRefOid": "09263b51ad2ce282e7b1e470209064614f1e6d2f",
+      "closedAt": "2025-06-18T14:33:56Z",
+      "mergedAt": "2025-06-18T14:33:56Z",
+      "mergedBy": "CBonnell",
+      "mergeCommit": {
+        "oid": "6a7dcfe882de82e525a67795ea3cbcf1f985cdfe"
       },
       "comments": [],
       "reviews": []
