@@ -5,13 +5,13 @@
 Network Working Group                                           T. Okubo
 Internet-Draft                              Penguin Securities Pte. Ltd.
 Intended status: Standards Track                              C. Bonnell
-Expires: 25 December 2025                                 DigiCert, Inc.
+Expires: 26 December 2025                                 DigiCert, Inc.
                                                                  J. Gray
                                                             M. Ounsworth
                                                                  Entrust
                                                                J. Mandel
                                                             AKAYLA, Inc.
-                                                            23 June 2025
+                                                            24 June 2025
 
 
               A Mechanism for X.509 Certificate Discovery
@@ -75,7 +75,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 December 2025.
+   This Internet-Draft will expire on 26 December 2025.
 
 Copyright Notice
 
@@ -321,7 +321,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 
    CertIndirectReference ::= SEQUENCE {
             uniformResourceIdentifier IA5String,
-            certHash [0] IMPLICIT CertHash OPTIONAL
+            certHash CertHash OPTIONAL
          }
 
    The certificate is referenced by an IA5String that has the URL
@@ -543,7 +543,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
 
    CertIndirectReference ::= SEQUENCE {
       uniformResourceIdentifier IA5String,
-      certHash [0] IMPLICIT CertHash OPTIONAL
+      certHash CertHash OPTIONAL
    }
 
    CertHash ::= SEQUENCE {
