@@ -196,7 +196,7 @@ Which is a CHOICE defining either a `direct` reference to a Certificate (meaning
 ~~~
 CertIndirectReference ::= SEQUENCE {
          uniformResourceIdentifier IA5String,
-         certHash [0] IMPLICIT CertHash OPTIONAL
+         certHash CertHash OPTIONAL
       }
 ~~~
 
@@ -345,7 +345,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
 
    CertIndirectReference ::= SEQUENCE {
       uniformResourceIdentifier IA5String,
-      certHash [0] IMPLICIT CertHash OPTIONAL
+      certHash CertHash OPTIONAL
    }
 
    CertHash ::= SEQUENCE {
