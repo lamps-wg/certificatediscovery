@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-24T01:42:59.297174+00:00",
+  "timestamp": "2025-06-26T01:42:12.846078+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -476,19 +476,33 @@
       "labels": [],
       "body": "Both direct/indirect CHOICE options have tag 0x30. This PR implicitly tags the indirect case.",
       "createdAt": "2025-06-23T18:20:16Z",
-      "updatedAt": "2025-06-23T18:20:45Z",
+      "updatedAt": "2025-06-24T14:07:24Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "6a7dcfe882de82e525a67795ea3cbcf1f985cdfe",
       "headRepository": "lamps-wg/certificatediscovery",
       "headRefName": "asn1-fix",
-      "headRefOid": "d9792dfda0def8a52266559519e44d13e505601a",
+      "headRefOid": "2da4f65ecb51b880575dbb39891a2e535d1a16af",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKkGlhc6wD2xg",
+          "commit": {
+            "abbreviatedOid": "d9792df"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-06-24T13:17:18Z",
+          "updatedAt": "2025-06-24T13:17:18Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
