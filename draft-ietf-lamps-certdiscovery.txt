@@ -5,13 +5,13 @@
 Network Working Group                                           T. Okubo
 Internet-Draft                              Penguin Securities Pte. Ltd.
 Intended status: Standards Track                              C. Bonnell
-Expires: 20 December 2025                                 DigiCert, Inc.
+Expires: 29 December 2025                                 DigiCert, Inc.
                                                                  J. Gray
                                                             M. Ounsworth
                                                                  Entrust
                                                                J. Mandel
                                                             AKAYLA, Inc.
-                                                            18 June 2025
+                                                            27 June 2025
 
 
               A Mechanism for X.509 Certificate Discovery
@@ -75,7 +75,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 December 2025.
+   This Internet-Draft will expire on 29 December 2025.
 
 Copyright Notice
 
@@ -101,12 +101,14 @@ Table of Contents
      2.1.  Definitions
    3.  Certificate Discovery Access Method
      3.1.  CertReference
-     3.2.  Purpose
-       3.2.1.  Algorithm Agility
-       3.2.2.  Redundancy
-       3.2.3.  Dual Usage
-       3.2.4.  Statement of Possession of a Private Key
-     3.3.  Signature Algorithm and Public Key Algorithm fields
+     3.2.  CertIndirectReference
+     3.3.  CertHash
+     3.4.  Purpose
+       3.4.1.  Algorithm Agility
+       3.4.2.  Redundancy
+       3.4.3.  Dual Usage
+       3.4.4.  Statement of Possession of a Private Key
+     3.5.  Signature Algorithm and Public Key Algorithm fields
    4.  Security Considerations
    5.  IANA Considerations
    6.  Normative References
@@ -304,19 +306,33 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 
     CertReference ::= CHOICE {
          direct Certificate,
-         indirect SEQUENCE {
-            uniformResourceIdentifier IA5String,
-            certHash [0] IMPLICIT CertHash OPTIONAL
-         }
+         indirect [0] IMPLICIT CertIndirectReference
       }
 
    Which is a CHOICE defining either a direct reference to a Certificate
    (meaning that the full secondary certificate is embedded within the
-   primary certificate), or an indirect reference which means the
-   certificate is reference by an IA5String that has the URL reference
-   to the secondary certificate.  The indirect reference also includes
-   an optional certHash value which can be used to include a
-   cryptographic hash of the DER Encoded secondary certificate.
+   primary certificate), or an indirect reference (meaning that
+   information to fetch the secondary certificate is provided).  The
+   syntax of an indirect reference is described below.
+
+3.2.  CertIndirectReference
+
+   CertIndirectReference is defined by the following:
+
+   CertIndirectReference ::= SEQUENCE {
+            uniformResourceIdentifier IA5String,
+            certHash CertHash OPTIONAL
+         }
+
+   The certificate is referenced by an IA5String that has the URL
+   reference to the secondary certificate.  The indirect reference also
+   includes an optional certHash value which can be used to include a
+   cryptographic hash of the DER Encoded secondary certificate.  The
+   syntax of a certHash is described below.
+
+3.3.  CertHash
+
+   CertHash is defined by the following:
 
    CertHash ::= SEQUENCE {
       value OCTET STRING,
@@ -330,7 +346,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    chosen Hash value.  All implementations MUST support SHA-256 via id-
    sha256, and other hash functions MAY be supported.
 
-3.2.  Purpose
+3.4.  Purpose
 
    The purpose describes the purpose of the discovery method.  Currently
    the following purpose id's are defined:
@@ -348,7 +364,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    id-rcd-priv-key-stmt OBJECT IDENTIFIER ::=
                                   {id-on-relatedCertificateDescriptor 4}
 
-3.2.1.  Algorithm Agility
+3.4.1.  Algorithm Agility
 
    This purpose indicates the referenced certificate's purpose is to
    provide algorithm agility; i.e. the two certificates will use
@@ -356,12 +372,12 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    equivalent except for cryptographic algorithm; i.e. identifiers and
    key usages SHOULD match.
 
-3.2.2.  Redundancy
+3.4.2.  Redundancy
 
    This purpose indicates the referenced certificate's purpose is to
    provide operational redundancy.
 
-3.2.3.  Dual Usage
+3.4.3.  Dual Usage
 
    This purpose indicates the referenced certificate's purpose is for
    dual usage; i.e. the related certificates belong to the same entity
@@ -369,7 +385,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    encryption-type key.  The two certificates SHOULD have matching
    identifiers.
 
-3.2.4.  Statement of Possession of a Private Key
+3.4.4.  Statement of Possession of a Private Key
 
    This purpose indicates that the primary certificate did not not do a
    full proof-of-possession at enrollment time, but instead it provided
@@ -383,7 +399,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    the two private keys are co-located on the same key storage.
    Therefore if one certificate is revoked, they SHOULD both be revoked.
 
-3.3.  Signature Algorithm and Public Key Algorithm fields
+3.5.  Signature Algorithm and Public Key Algorithm fields
 
    The signatureAlgorithm is used to indicates the signature algorithm
    used in the secondary certificate and is an optional field.  The
@@ -444,9 +460,9 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    [I-D.ietf-lamps-private-key-stmt-attr]
               Housley, R., "An Attribute for Statement of Possession of
               a Private Key", Work in Progress, Internet-Draft, draft-
-              ietf-lamps-private-key-stmt-attr-08, 15 June 2025,
+              ietf-lamps-private-key-stmt-attr-09, 26 June 2025,
               <https://datatracker.ietf.org/doc/html/draft-ietf-lamps-
-              private-key-stmt-attr-08>.
+              private-key-stmt-attr-09>.
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -520,12 +536,14 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
       publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
    }
 
-   CertReference ::= CHOICE {
+    CertReference ::= CHOICE {
       direct Certificate,
-      indirect SEQUENCE {
-         uniformResourceIdentifier IA5String,
-         certHash [0] IMPLICIT CertHash OPTIONAL
-      }
+      indirect [0] IMPLICIT CertIndirectReference
+   }
+
+   CertIndirectReference ::= SEQUENCE {
+      uniformResourceIdentifier IA5String,
+      certHash CertHash OPTIONAL
    }
 
    CertHash ::= SEQUENCE {
