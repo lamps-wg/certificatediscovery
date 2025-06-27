@@ -183,14 +183,28 @@ Where `id-on-relatedCertificateDescriptor` is the OBJECT IDENTIFIER (type-id) an
 ~~~
  CertReference ::= CHOICE {
       direct Certificate,
-      indirect SEQUENCE {
-         uniformResourceIdentifier IA5String,
-         certHash [0] IMPLICIT CertHash OPTIONAL
-      }
+      indirect [0] IMPLICIT CertIndirectReference
    }
 ~~~
 
-Which is a CHOICE defining either a `direct` reference to a Certificate (meaning that the full secondary certificate is embedded within the primary certificate), or an `indirect` reference which means the certificate is reference by an IA5String that has the URL reference to the secondary certificate. The `indirect` reference also includes an optional `certHash` value which can be used to include a cryptographic hash of the DER Encoded secondary certificate.
+Which is a CHOICE defining either a `direct` reference to a Certificate (meaning that the full secondary certificate is embedded within the primary certificate), or an `indirect` reference (meaning that information to fetch the secondary certificate is provided). The syntax of an `indirect` reference is described below.
+
+## CertIndirectReference
+
+`CertIndirectReference` is defined by the following:
+
+~~~
+CertIndirectReference ::= SEQUENCE {
+         uniformResourceIdentifier IA5String,
+         certHash CertHash OPTIONAL
+      }
+~~~
+
+The certificate is referenced by an IA5String that has the URL reference to the secondary certificate. The `indirect` reference also includes an optional `certHash` value which can be used to include a cryptographic hash of the DER Encoded secondary certificate. The syntax of a `certHash` is described below.
+
+## CertHash
+
+`CertHash` is defined by the following:
 
 ~~~~
 CertHash ::= SEQUENCE {
@@ -324,12 +338,14 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
       publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
    }
 
-   CertReference ::= CHOICE {
+    CertReference ::= CHOICE {
       direct Certificate,
-      indirect SEQUENCE {
-         uniformResourceIdentifier IA5String,
-         certHash [0] IMPLICIT CertHash OPTIONAL
-      }
+      indirect [0] IMPLICIT CertIndirectReference
+   }
+
+   CertIndirectReference ::= SEQUENCE {
+      uniformResourceIdentifier IA5String,
+      certHash CertHash OPTIONAL
    }
 
    CertHash ::= SEQUENCE {
