@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-26T01:42:12.846078+00:00",
+  "timestamp": "2025-06-29T01:51:51.772266+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -469,24 +469,26 @@
       "id": "PR_kwDOKkGlhc6btsf2",
       "title": "Fix CHOICE tag conflict",
       "url": "https://github.com/lamps-wg/certificatediscovery/pull/17",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "CBonnell",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Both direct/indirect CHOICE options have tag 0x30. This PR implicitly tags the indirect case.",
       "createdAt": "2025-06-23T18:20:16Z",
-      "updatedAt": "2025-06-24T14:07:24Z",
+      "updatedAt": "2025-06-27T17:39:52Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "6a7dcfe882de82e525a67795ea3cbcf1f985cdfe",
       "headRepository": "lamps-wg/certificatediscovery",
       "headRefName": "asn1-fix",
       "headRefOid": "2da4f65ecb51b880575dbb39891a2e535d1a16af",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-06-27T17:39:49Z",
+      "mergedAt": "2025-06-27T17:39:49Z",
+      "mergedBy": "CBonnell",
+      "mergeCommit": {
+        "oid": "2b15d5510c86799dfbbe0247c01a185e3f4358a0"
+      },
       "comments": [],
       "reviews": [
         {
