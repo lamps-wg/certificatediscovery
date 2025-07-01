@@ -182,7 +182,7 @@ Where `id-on-relatedCertificateDescriptor` is the OBJECT IDENTIFIER (type-id) an
 CertLocation ::= IA5String
 ~~~
 
-`CertLocation` is to specify the Uniform Resource Identifier ({{RFC3986}}) where the secondary certificate is located.
+`CertLocation` is to specify the Uniform Resource Identifier ({{!RFC3986}}) where the secondary certificate is located.
 
 ## CertReference
 
