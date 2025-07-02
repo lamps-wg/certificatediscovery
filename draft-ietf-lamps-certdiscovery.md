@@ -65,8 +65,7 @@ This document specifies a method to discover a secondary X.509 certificate assoc
 
 The primary motivation for this method is to address the limitations of traditional certificate management approaches, which often lack flexibility, scalability, and seamless update capabilities. By leveraging this mechanism, subscribers can achieve cryptographic agility by facilitating the transition between different algorithms or X.509 certificate types. Operational redundancy is enhanced by enabling the use of backup certificates and minimizing the impact of primary certificate expiration or CA infrastructure failures.
 
-The approach ensures backward compatibility with existing systems and leverages established mechanisms, such as the subjectInfoAccess extension, to enable seamless integration. It does not focus on identity assurance between the primary and secondary certificates, deferring such considerations to complementary mechanisms.
-
+The approach ensures backward compatibility with existing systems and leverages established mechanisms, such as the subjectInfoAccess extension, to enable seamless integration.
 
 --- middle
 
@@ -80,9 +79,7 @@ Second, the proposed method improves operational availability by introducing red
 
 Finally, the approach accommodates multi-key/certificate usage, allowing for a relying party to obtain certificates to perform cryptographic operations that are not certified by a single certificate.
 
-The proposed method is designed to maximize compatibility with existing systems, including legacy implementations. It leverages the SIA extension, which is already established in X.509 certificates, and does not require modifications to the referring certificates. This ensures ease of adoption and avoids disruptions to current certificate management practices.
-
-It's important to note that this specification does not aim to solve or assure the identity (subject) binding between the primary and secondary certificates. Instead, it focuses on providing a mechanism for efficient certificate discovery, while identity assurance can be addressed through complementary mechanisms such as draft-becker-guthrie-cert-binding-for-multi-auth-02.
+The proposed method is designed to maximize compatibility with existing systems, including legacy implementations. It leverages the subjectInfoAccess extension, which is already established in X.509 certificates, and does not require modifications to the referring certificates. This ensures ease of adoption and avoids disruptions to current certificate management practices.
 
 In the following sections, we will outline the details of the proposed approach, including the structure of the SIA extension, the modes of operation, and the considerations for secure implementation and deployment.
 
@@ -116,7 +113,8 @@ For conciseness, this section defines several terms that are frequently used thr
 
 Primary Certificate: The X.509 certificate that has the subjectInfoAccess extension with the certDiscovery accessMethod pointing to a Secondary Certificate.
 
-Secondary Certificate: The X.509 certificate that is referenced by the Primary Certificate in the subjectInfoAccess extension certDiscovery accessMethod
+Secondary Certificate: The X.509 certificate that is referenced by the Primary Certificate in the subjectInfoAccess extension certDiscovery accessMethod. This certificate may also have a reference to the Primary Certificate in the
+subjectInfoAccess extension.
 
 # Certificate Discovery Access Method
 
@@ -176,6 +174,16 @@ Where `id-on-relatedCertificateDescriptor` is the OBJECT IDENTIFIER (type-id) an
 
 `RelatedCertificateDescriptor` is composed of 4 components which are defined below.
 
+## CertLocation
+
+`CertLocation` is defined by the following:
+
+~~~
+CertLocation ::= IA5String
+~~~
+
+`CertLocation` is to specify the Uniform Resource Identifier ({{!RFC3986}}) where the secondary certificate is located.
+
 ## CertReference
 
 `CertReference` is defined by the following:
@@ -195,8 +203,8 @@ Which is a CHOICE defining either a `direct` reference to a Certificate (meaning
 
 ~~~
 CertIndirectReference ::= SEQUENCE {
-         uniformResourceIdentifier IA5String,
-         certHash CertHash OPTIONAL
+         location CertLocation,
+         certHash [0] IMPLICIT CertHash OPTIONAL
       }
 ~~~
 
@@ -233,17 +241,24 @@ id-rcd-dual OBJECT IDENTIFIER ::=
 
 id-rcd-priv-key-stmt OBJECT IDENTIFIER ::=
                                {id-on-relatedCertificateDescriptor 4}
+
+id-rcd-self OBJECT IDENTIFIER ::=
+                               {id-on-relatedCertificateDescriptor 5}
 ~~~
 
 ### Algorithm Agility
 
-This purpose indicates the referenced certificate's purpose is to provide algorithm agility; i.e. the two certificates will use different cryptographic algorithms. The two certificates SHOULD be equivalent except for cryptographic algorithm; i.e. identifiers and key usages SHOULD match.
+This purpose indicates the referenced certificate's purpose is to provide algorithm agility; i.e. the two certificates will use different cryptographic algorithms for the same key operations. The two certificates SHOULD be equivalent except for cryptographic algorithm; i.e. the key usages SHOULD match.
 
 ### Redundancy
 
 This purpose indicates the referenced certificate's purpose is to provide operational redundancy.
 
+// TODO: Joe to provide more text
+
 ### Dual Usage
+
+
 
 This purpose indicates the referenced certificate's purpose is for dual usage; i.e. the related certificates belong to the same entity and one provides a signing-type key while the other provides an encryption-type key. The two certificates SHOULD have matching identifiers.
 
@@ -253,12 +268,17 @@ This purpose indicates that the primary certificate did not not do a full proof-
 
 The reason for carrying a RelatedCertificateDescriptor of this type is to track that the primary certificate had a trust dependency on the secondary certificate at the time of issuance and that presumably the two private keys are co-located on the same key storage. Therefore if one certificate is revoked, they SHOULD both be revoked.
 
+## Self reference
+
+This purpose indicates the Uniform Resource Identifier where this certificate is located. Applications which retrieve this certificate can then compare the retrieved certificate with this value to ensure that the correct certificate certificate was retrieved.
+
+This purpose can be used to bind the subjects of primary and secondary certificates. The primary certificate contains a self reference to its location, as well as a reference to the secondary certificate. The secondary certificate contains a self reference to its location, and a reference to the primary certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.
+
 ## Signature Algorithm and Public Key Algorithm fields
 
 The signatureAlgorithm is used to indicates the signature algorithm used in the secondary certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.
 
 When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether or not to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.
-
 
 The semantics of other id-ad-certDiscovery accessLocation name forms are not defined.
 
@@ -266,11 +286,14 @@ Note:  For a description of uniformResourceIdentifier consult section 4.2.2.1 of
 
 # Security Considerations
 
-This mechanism does not assure the binding of the identity of the subject in the Primary Certificate and the Secondary Certificate. To assure the binding of identities of the two certificates, a confirming CA should adopt a separate mechanism such as draft-becker-guthrie-cert-binding-for-multi-auth-02 for to explicitly express the binding of identities.
+Retrieval of the secondary certificate is not sufficient to consider the secondary certificate trustworthy. The certification path validation algorithm as defined in section 6 of {{RFC5280}} MUST be performed for the secondary certificate.
 
-There is a chance the Secondary Certificate may also have the certDiscovery access method. In order to avoid cyclic loops or infinite chaining, the validator should be mindful of how many fetching attempts it allows in one validation.
+The use of the self-reference purpose can be used to provide a subject binding between the Primary and Secondary Certificates. However, the procedure for validating subject equivalance MUST be defined by policy. As a result, validation of
+subject equivalence is out of scope of this document.
 
-The same security considerations for CAIssuer access method outlined in {{RFC5280}} applies to the certDiscovery access method. In order to avoid recursive certificate validations which involve online revocation checking, untrusted transport protocols (such as plaintext HTTP) are commonly used for serving certificate files. While the use of such protocols avoids issues with recursive certification path validations and associated online revocation checking, it also enables an attacker to tamper with data and perform substitution attacks. Clients fetching certificates using the mechanism specified in this document MUST treat downloaded certificate data as untrusted and perform requisite checks to ensure that the downloaded data is not malicious.
+The Secondary Certificate may also have the certDiscovery access method. In order to avoid cyclic loops or infinite chaining, the validator should be mindful of how many fetching attempts it allows in one validation.
+
+The same security considerations for `caIssuers` access method outlined in {{RFC5280}} applies to the certDiscovery access method. In order to avoid recursive certificate validations which involve online revocation checking, untrusted transport protocols (such as plaintext HTTP) are commonly used for serving certificate files. While the use of such protocols avoids issues with recursive certification path validations and associated online revocation checking, it also enables an attacker to tamper with data and perform substitution attacks. Clients fetching certificates using the mechanism specified in this document MUST treat downloaded certificate data as untrusted and perform requisite checks to ensure that the downloaded data is not malicious.
 
 # IANA Considerations
 
@@ -345,7 +368,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
 
    CertIndirectReference ::= SEQUENCE {
       uniformResourceIdentifier IA5String,
-      certHash CertHash OPTIONAL
+      certHash [0] IMPLICIT CertHash OPTIONAL
    }
 
    CertHash ::= SEQUENCE {
