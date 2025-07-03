@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-06-29T01:51:51.772266+00:00",
+  "timestamp": "2025-07-03T01:43:18.380464+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -183,9 +183,9 @@
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
-      "body": "It would be great if we could create a reference implementation of certificate discovery in python that could be used as a reference. \n\nThis would be a great hackathon project.",
+      "body": "It would be great if we could create a reference implementation of certificate discovery in python that could be used as a reference. \n\nThis would be a great hackathon project.\n\n- Output of a couple of examples showing encoded certificates\n  - one example with at least 2 SIA extensions showing different purposes",
       "createdAt": "2025-05-27T13:32:32Z",
-      "updatedAt": "2025-05-27T13:32:32Z",
+      "updatedAt": "2025-07-02T13:37:34Z",
       "closedAt": null,
       "comments": []
     },
@@ -194,7 +194,7 @@
       "id": "I_kwDOKkGlhc67-C__",
       "title": "URI containing an Identifier",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/10",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -203,8 +203,8 @@
       "labels": [],
       "body": "- We should look at whether the URI can contain some kind of unique identifier (like a UUID).\n- Corey suggested looking at the existing CRLDP mechanism\n- ",
       "createdAt": "2025-06-17T13:53:34Z",
-      "updatedAt": "2025-06-17T13:53:34Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-02T13:31:14Z",
+      "closedAt": "2025-07-02T13:31:14Z",
       "comments": []
     },
     {
@@ -257,7 +257,7 @@
       "id": "I_kwDOKkGlhc67-Jd1",
       "title": "Add a Purpose for private-key-stmt-attr",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/13",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ounsworth",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -266,8 +266,8 @@
       "labels": [],
       "body": "Cross-link to Russ' draft.",
       "createdAt": "2025-06-17T14:01:21Z",
-      "updatedAt": "2025-06-17T14:01:21Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-02T13:31:19Z",
+      "closedAt": "2025-07-02T13:31:19Z",
       "comments": []
     },
     {
@@ -275,14 +275,48 @@
       "id": "I_kwDOKkGlhc67-cxn",
       "title": "Need to add a section to describe the purpose Id's",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/15",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "We need to add a section to describe the 3 defined purpose ids.\n\n",
       "createdAt": "2025-06-17T14:25:21Z",
-      "updatedAt": "2025-06-17T14:25:21Z",
+      "updatedAt": "2025-07-02T13:31:26Z",
+      "closedAt": "2025-07-02T13:31:26Z",
+      "comments": []
+    },
+    {
+      "number": 19,
+      "id": "I_kwDOKkGlhc6-fmdQ",
+      "title": "Cleanup Pass",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/19",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "mandelj7"
+      ],
+      "labels": [],
+      "body": "We need to clean up inconsistencies, items that no longer make sense (like references to unicorns), and clean up grammer.\n",
+      "createdAt": "2025-07-02T13:36:33Z",
+      "updatedAt": "2025-07-02T13:36:33Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 20,
+      "id": "I_kwDOKkGlhc6-fn5A",
+      "title": "Add text about how to use alternate purposes",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/20",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Add a paragraph explaining procedure on how someone should use a different purpose ID if needed.\n",
+      "createdAt": "2025-07-02T13:38:30Z",
+      "updatedAt": "2025-07-02T13:38:30Z",
       "closedAt": null,
       "comments": []
     }
@@ -505,6 +539,34 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 18,
+      "id": "PR_kwDOKkGlhc6c-oPI",
+      "title": "Cbonnell opinionated edits",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/18",
+      "state": "MERGED",
+      "author": "CBonnell",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-07-01T21:11:47Z",
+      "updatedAt": "2025-07-02T13:30:47Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "2b15d5510c86799dfbbe0247c01a185e3f4358a0",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "cbonnell-opinionated-edits",
+      "headRefOid": "c0e94a2e934a83aa51e5b4cfb24feba49f914462",
+      "closedAt": "2025-07-02T13:30:44Z",
+      "mergedAt": "2025-07-02T13:30:44Z",
+      "mergedBy": "CBonnell",
+      "mergeCommit": {
+        "oid": "6113db0653f5772b9b42f26cdcfb00eb92b40eb2"
+      },
+      "comments": [],
+      "reviews": []
     }
   ]
 }
