@@ -12,14 +12,14 @@ v: 3
 # area: AREA
 # workgroup: WG Working Group
 keyword:
- - next generation
- - unicorn
- - sparkling distributed ledger
+ - Algorithm Agility
+ - Operational Redundancy
+ - Dual Use
 venue:
 #  group: WG
 #  type: Working Group
-#  mail: WG@example.com
-#  arch: https://example.com/WG
+#  mail: spasm@ietf.org
+#  arch: https://mailarchive.ietf.org/arch/browse/spasm/
   github: "lamps-wg/certificatediscovery"
   latest: "https://lamps-wg.github.io/certificatediscovery/draft-ietf-lamps-certdiscovery.html"
 
@@ -61,9 +61,9 @@ informative:
 
 --- abstract
 
-This document specifies a method to discover a secondary X.509 certificate associated with an X.509 certificate to enable efficient multi-certificate handling in protocols. The objective is threefold: to enhance cryptographic agility, improve operational availability, and accommodate multi-key/certificate usage. The proposed method aims to maximize compatibility with existing systems and is designed to be legacy-friendly, making it suitable for environments with a mix of legacy and new implementations. It includes mechanisms to provide information about the target certificate's signature algorithm, public key algorithm and the location of the secondary X.509 certificate, empowering relying parties to make informed decisions on whether or not to fetch the secondary certificate.
+This document specifies a method to discover a secondary X.509 certificate associated with an X.509 certificate to enable efficient multi-certificate handling in protocols. The objective is threefold: to enhance cryptographic agility, improve operational availability, and accommodate multi-key/certificate usage. The proposed method aims to maximize compatibility with existing systems and is designed to be legacy-friendly, making it suitable for environments with a mix of legacy and new implementations. It includes mechanisms to provide information about the target certificate's signature algorithm, public key algorithm and the location of the secondary X.509 certificate, empowering relying parties to make informed decisions on whether or not to fetch the Secondary Certificate.
 
-The primary motivation for this method is to address the limitations of traditional certificate management approaches, which often lack flexibility, scalability, and seamless update capabilities. By leveraging this mechanism, subscribers can achieve cryptographic agility by facilitating the transition between different algorithms or X.509 certificate types. Operational redundancy is enhanced by enabling the use of backup certificates and minimizing the impact of primary certificate expiration or CA infrastructure failures.
+The primary motivation for this method is to address the limitations of traditional certificate management approaches, which often lack flexibility, scalability, and seamless update capabilities. By leveraging this mechanism, subscribers can achieve cryptographic agility by facilitating the transition between different algorithms or X.509 certificate types. Operational redundancy is enhanced by enabling the use of backup certificates and minimizing the impact of Primary Certificate expiration or CA infrastructure failures.
 
 The approach ensures backward compatibility with existing systems and leverages established mechanisms, such as the subjectInfoAccess extension, to enable seamless integration.
 
@@ -75,7 +75,7 @@ The efficient discovery of X.509 certificates play a critical role in modern cry
 
 The primary objective of this approach is to enable efficient multi-certificate handling in protocols, offering several key benefits. First, it enhances cryptographic agility by facilitating smooth transitions between different algorithms or X.509 certificate types. This is particularly valuable in scenarios where subscribers need to upgrade their cryptographic algorithms or adopt new certificate types while maintaining backward compatibility with existing systems.
 
-Second, the proposed method improves operational availability by introducing redundancy in certificate usage. It enables the use of secondary certificates that can serve as backups, ensuring seamless continuity of services even in the event of primary certificate expiration or disruptions in the CA infrastructure.
+Second, the proposed method improves operational availability by introducing redundancy in certificate usage. It enables the use of secondary certificates that can serve as backups, ensuring seamless continuity of services even in the event of Primary Certificate expiration or disruptions in the CA infrastructure.
 
 Finally, the approach accommodates multi-key/certificate usage, allowing for a relying party to obtain certificates to perform cryptographic operations that are not certified by a single certificate.
 
@@ -195,7 +195,7 @@ CertLocation ::= IA5String
    }
 ~~~
 
-Which is a CHOICE defining either a `direct` reference to a Certificate (meaning that the full secondary certificate is embedded within the primary certificate), or an `indirect` reference (meaning that information to fetch the secondary certificate is provided). The syntax of an `indirect` reference is described below.
+Which is a CHOICE defining either a `direct` reference to a Certificate (meaning that the full Secondary Certificate is embedded within the Primary Certificate), or an `indirect` reference (meaning that information to fetch the Secondary Certificate is provided). The syntax of an `indirect` reference is described below.
 
 ## CertIndirectReference
 
@@ -208,7 +208,7 @@ CertIndirectReference ::= SEQUENCE {
       }
 ~~~
 
-The certificate is referenced by an IA5String that has the URL reference to the secondary certificate. The `indirect` reference also includes an optional `certHash` value which can be used to include a cryptographic hash of the DER Encoded secondary certificate. The syntax of a `certHash` is described below.
+The certificate is referenced by an IA5String that has the URL reference to the Secondary Certificate. The `indirect` reference also includes an optional `certHash` value which can be used to include a cryptographic hash of the DER Encoded Secondary Certificate. The syntax of a `certHash` is described below.
 
 ## CertHash
 
@@ -252,9 +252,8 @@ This purpose indicates the referenced certificate's purpose is to provide algori
 
 ### Redundancy
 
-This purpose indicates the referenced certificate's purpose is to provide operational redundancy.
+This purpose indicates the referenced certificate's purpose is to provide operational redundancy; i.e. the Secondary Certificate could be issued by a different CA or has a different validity period which can be used as a backup if the Primary set of certificates is about to expire.
 
-// TODO: Joe to provide more text
 
 ### Dual Usage
 
@@ -264,19 +263,19 @@ This purpose indicates the referenced certificate's purpose is for dual usage; i
 
 ### Statement of Possession of a Private Key
 
-This purpose indicates that the primary certificate did not not do a full proof-of-possession at enrollment time, but instead it provided a statement of possession as per {{!I-D.ietf-lamps-private-key-stmt-attr}} signed by the secondary certificate.
+This purpose indicates that the Primary Certificate did not not do a full proof-of-possession at enrollment time, but instead it provided a statement of possession as per {{!I-D.ietf-lamps-private-key-stmt-attr}} signed by the Secondary Certificate.
 
-The reason for carrying a RelatedCertificateDescriptor of this type is to track that the primary certificate had a trust dependency on the secondary certificate at the time of issuance and that presumably the two private keys are co-located on the same key storage. Therefore if one certificate is revoked, they SHOULD both be revoked.
+The reason for carrying a RelatedCertificateDescriptor of this type is to track that the Primary Certificate had a trust dependency on the Secondary Certificate at the time of issuance and that presumably the two private keys are co-located on the same key storage. Therefore if one certificate is revoked, they SHOULD both be revoked.
 
 ## Self reference
 
 This purpose indicates the Uniform Resource Identifier where this certificate is located. Applications which retrieve this certificate can then compare the retrieved certificate with this value to ensure that the correct certificate certificate was retrieved.
 
-This purpose can be used to bind the subjects of primary and secondary certificates. The primary certificate contains a self reference to its location, as well as a reference to the secondary certificate. The secondary certificate contains a self reference to its location, and a reference to the primary certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.
+This purpose can be used to bind the subjects of Primary and Secondary Certificates. The Primary Certificate contains a self reference to its location, as well as a reference to the Secondary Certificate. The Secondary Certificate contains a self reference to its location, and a reference to the Primary Certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.
 
 ## Signature Algorithm and Public Key Algorithm fields
 
-The signatureAlgorithm is used to indicates the signature algorithm used in the secondary certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.
+The signatureAlgorithm is used to indicates the signature algorithm used in the Secondary Certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.
 
 When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether or not to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.
 
@@ -286,7 +285,7 @@ Note:  For a description of uniformResourceIdentifier consult section 4.2.2.1 of
 
 # Security Considerations
 
-Retrieval of the secondary certificate is not sufficient to consider the secondary certificate trustworthy. The certification path validation algorithm as defined in section 6 of {{RFC5280}} MUST be performed for the secondary certificate.
+Retrieval of the Secondary Certificate is not sufficient to consider the Secondary Certificate trustworthy. The certification path validation algorithm as defined in section 6 of {{RFC5280}} MUST be performed for the Secondary Certificate.
 
 The use of the self-reference purpose can be used to provide a subject binding between the Primary and Secondary Certificates. However, the procedure for validating subject equivalance MUST be defined by policy. As a result, validation of
 subject equivalence is out of scope of this document.
@@ -351,6 +350,8 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    id-rcd-agility OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 1}
    id-rcd-redundency OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 2}
    id-rcd-dual OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 3}
+   id-rcd-priv-key-stmt OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 4}
+   id-rcd-self OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 5}
 
    DiscoveryPurposeId ::= OBJECT IDENTIFIER
 
