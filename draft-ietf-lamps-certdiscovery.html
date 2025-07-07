@@ -11,14 +11,14 @@
 <meta content="Mike Ounsworth" name="author">
 <meta content="Joe Mandel" name="author">
 <meta content="
-       This document specifies a method to discover a secondary X.509 certificate associated with an X.509 certificate to enable efficient multi-certificate handling in protocols. The objective is threefold: to enhance cryptographic agility, improve operational availability, and accommodate multi-key/certificate usage. The proposed method aims to maximize compatibility with existing systems and is designed to be legacy-friendly, making it suitable for environments with a mix of legacy and new implementations. It includes mechanisms to provide information about the target certificate's signature algorithm, public key algorithm and the location of the secondary X.509 certificate, empowering relying parties to make informed decisions on whether or not to fetch the secondary certificate. 
-       The primary motivation for this method is to address the limitations of traditional certificate management approaches, which often lack flexibility, scalability, and seamless update capabilities. By leveraging this mechanism, subscribers can achieve cryptographic agility by facilitating the transition between different algorithms or X.509 certificate types. Operational redundancy is enhanced by enabling the use of backup certificates and minimizing the impact of primary certificate expiration or CA infrastructure failures. 
+       This document specifies a method to discover a secondary X.509 certificate associated with an X.509 certificate to enable efficient multi-certificate handling in protocols. The objective is threefold: to enhance cryptographic agility, improve operational availability, and accommodate multi-key/certificate usage. The proposed method aims to maximize compatibility with existing systems and is designed to be legacy-friendly, making it suitable for environments with a mix of legacy and new implementations. It includes mechanisms to provide information about the target certificate's signature algorithm, public key algorithm and the location of the secondary X.509 certificate, empowering relying parties to make informed decisions on whether or not to fetch the Secondary Certificate. 
+       The primary motivation for this method is to address the limitations of traditional certificate management approaches, which often lack flexibility, scalability, and seamless update capabilities. By leveraging this mechanism, subscribers can achieve cryptographic agility by facilitating the transition between different algorithms or X.509 certificate types. Operational redundancy is enhanced by enabling the use of backup certificates and minimizing the impact of Primary Certificate expiration or CA infrastructure failures. 
        The approach ensures backward compatibility with existing systems and leverages established mechanisms, such as the subjectInfoAccess extension, to enable seamless integration. 
     " name="description">
 <meta content="xml2rfc 3.29.0" name="generator">
-<meta content="next generation" name="keyword">
-<meta content="unicorn" name="keyword">
-<meta content="sparkling distributed ledger" name="keyword">
+<meta content="Algorithm Agility" name="keyword">
+<meta content="Operational Redundancy" name="keyword">
+<meta content="Dual Use" name="keyword">
 <meta content="draft-ietf-lamps-certdiscovery-latest" name="ietf.draft">
 <!-- Generator version information:
   xml2rfc 3.29.0
@@ -1056,7 +1056,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Okubo, et al.</td>
-<td class="center">Expires 3 January 2026</td>
+<td class="center">Expires 8 January 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1069,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-certdiscovery-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-07-02" class="published">2 July 2025</time>
+<time datetime="2025-07-07" class="published">7 July 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-01-03">3 January 2026</time></dd>
+<dd class="expires"><time datetime="2026-01-08">8 January 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1103,8 +1103,8 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <h1 id="title">A Mechanism for X.509 Certificate Discovery</h1>
 <section id="section-abstract">
       <h2 id="abstract"><a href="#abstract" class="selfRef">Abstract</a></h2>
-<p id="section-abstract-1">This document specifies a method to discover a secondary X.509 certificate associated with an X.509 certificate to enable efficient multi-certificate handling in protocols. The objective is threefold: to enhance cryptographic agility, improve operational availability, and accommodate multi-key/certificate usage. The proposed method aims to maximize compatibility with existing systems and is designed to be legacy-friendly, making it suitable for environments with a mix of legacy and new implementations. It includes mechanisms to provide information about the target certificate's signature algorithm, public key algorithm and the location of the secondary X.509 certificate, empowering relying parties to make informed decisions on whether or not to fetch the secondary certificate.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
-<p id="section-abstract-2">The primary motivation for this method is to address the limitations of traditional certificate management approaches, which often lack flexibility, scalability, and seamless update capabilities. By leveraging this mechanism, subscribers can achieve cryptographic agility by facilitating the transition between different algorithms or X.509 certificate types. Operational redundancy is enhanced by enabling the use of backup certificates and minimizing the impact of primary certificate expiration or CA infrastructure failures.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
+<p id="section-abstract-1">This document specifies a method to discover a secondary X.509 certificate associated with an X.509 certificate to enable efficient multi-certificate handling in protocols. The objective is threefold: to enhance cryptographic agility, improve operational availability, and accommodate multi-key/certificate usage. The proposed method aims to maximize compatibility with existing systems and is designed to be legacy-friendly, making it suitable for environments with a mix of legacy and new implementations. It includes mechanisms to provide information about the target certificate's signature algorithm, public key algorithm and the location of the secondary X.509 certificate, empowering relying parties to make informed decisions on whether or not to fetch the Secondary Certificate.<a href="#section-abstract-1" class="pilcrow">¶</a></p>
+<p id="section-abstract-2">The primary motivation for this method is to address the limitations of traditional certificate management approaches, which often lack flexibility, scalability, and seamless update capabilities. By leveraging this mechanism, subscribers can achieve cryptographic agility by facilitating the transition between different algorithms or X.509 certificate types. Operational redundancy is enhanced by enabling the use of backup certificates and minimizing the impact of Primary Certificate expiration or CA infrastructure failures.<a href="#section-abstract-2" class="pilcrow">¶</a></p>
 <p id="section-abstract-3">The approach ensures backward compatibility with existing systems and leverages established mechanisms, such as the subjectInfoAccess extension, to enable seamless integration.<a href="#section-abstract-3" class="pilcrow">¶</a></p>
 </section>
 <section class="note rfcEditorRemove" id="section-note.1">
@@ -1137,7 +1137,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 3 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 8 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1257,7 +1257,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
       </h2>
 <p id="section-1-1">The efficient discovery of X.509 certificates play a critical role in modern cryptographic systems. Traditional certificate management approaches often face challenges in terms of flexibility, scalability, and seamless updates. To address these limitations, this document proposes a novel approach to certificate discovery utilizing the Subject Information Access extension within X.509 certificates.<a href="#section-1-1" class="pilcrow">¶</a></p>
 <p id="section-1-2">The primary objective of this approach is to enable efficient multi-certificate handling in protocols, offering several key benefits. First, it enhances cryptographic agility by facilitating smooth transitions between different algorithms or X.509 certificate types. This is particularly valuable in scenarios where subscribers need to upgrade their cryptographic algorithms or adopt new certificate types while maintaining backward compatibility with existing systems.<a href="#section-1-2" class="pilcrow">¶</a></p>
-<p id="section-1-3">Second, the proposed method improves operational availability by introducing redundancy in certificate usage. It enables the use of secondary certificates that can serve as backups, ensuring seamless continuity of services even in the event of primary certificate expiration or disruptions in the CA infrastructure.<a href="#section-1-3" class="pilcrow">¶</a></p>
+<p id="section-1-3">Second, the proposed method improves operational availability by introducing redundancy in certificate usage. It enables the use of secondary certificates that can serve as backups, ensuring seamless continuity of services even in the event of Primary Certificate expiration or disruptions in the CA infrastructure.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">Finally, the approach accommodates multi-key/certificate usage, allowing for a relying party to obtain certificates to perform cryptographic operations that are not certified by a single certificate.<a href="#section-1-4" class="pilcrow">¶</a></p>
 <p id="section-1-5">The proposed method is designed to maximize compatibility with existing systems, including legacy implementations. It leverages the subjectInfoAccess extension, which is already established in X.509 certificates, and does not require modifications to the referring certificates. This ensures ease of adoption and avoids disruptions to current certificate management practices.<a href="#section-1-5" class="pilcrow">¶</a></p>
 <p id="section-1-6">In the following sections, we will outline the details of the proposed approach, including the structure of the SIA extension, the modes of operation, and the considerations for secure implementation and deployment.<a href="#section-1-6" class="pilcrow">¶</a></p>
@@ -1398,7 +1398,7 @@ CertLocation ::= IA5String
    }
 </pre><a href="#section-3.2-2" class="pilcrow">¶</a>
 </div>
-<p id="section-3.2-3">Which is a CHOICE defining either a <code>direct</code> reference to a Certificate (meaning that the full secondary certificate is embedded within the primary certificate), or an <code>indirect</code> reference (meaning that information to fetch the secondary certificate is provided). The syntax of an <code>indirect</code> reference is described below.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.2-3">Which is a CHOICE defining either a <code>direct</code> reference to a Certificate (meaning that the full Secondary Certificate is embedded within the Primary Certificate), or an <code>indirect</code> reference (meaning that information to fetch the Secondary Certificate is provided). The syntax of an <code>indirect</code> reference is described below.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="certindirectreference">
@@ -1415,7 +1415,7 @@ CertIndirectReference ::= SEQUENCE {
       }
 </pre><a href="#section-3.3-2" class="pilcrow">¶</a>
 </div>
-<p id="section-3.3-3">The certificate is referenced by an IA5String that has the URL reference to the secondary certificate. The <code>indirect</code> reference also includes an optional <code>certHash</code> value which can be used to include a cryptographic hash of the DER Encoded secondary certificate. The syntax of a <code>certHash</code> is described below.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.3-3">The certificate is referenced by an IA5String that has the URL reference to the Secondary Certificate. The <code>indirect</code> reference also includes an optional <code>certHash</code> value which can be used to include a cryptographic hash of the DER Encoded Secondary Certificate. The syntax of a <code>certHash</code> is described below.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="certhash">
@@ -1474,8 +1474,7 @@ id-rcd-self OBJECT IDENTIFIER ::=
           <h4 id="name-redundancy">
 <a href="#section-3.5.2" class="section-number selfRef">3.5.2. </a><a href="#name-redundancy" class="section-name selfRef">Redundancy</a>
           </h4>
-<p id="section-3.5.2-1">This purpose indicates the referenced certificate's purpose is to provide operational redundancy.<a href="#section-3.5.2-1" class="pilcrow">¶</a></p>
-<p id="section-3.5.2-2">// TODO: Joe to provide more text<a href="#section-3.5.2-2" class="pilcrow">¶</a></p>
+<p id="section-3.5.2-1">This purpose indicates the referenced certificate's purpose is to provide operational redundancy; i.e. the Secondary Certificate could be issued by a different CA or has a different validity period which can be used as a backup if the Primary set of certificates is about to expire.<a href="#section-3.5.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="dual-usage">
@@ -1491,8 +1490,8 @@ id-rcd-self OBJECT IDENTIFIER ::=
           <h4 id="name-statement-of-possession-of-">
 <a href="#section-3.5.4" class="section-number selfRef">3.5.4. </a><a href="#name-statement-of-possession-of-" class="section-name selfRef">Statement of Possession of a Private Key</a>
           </h4>
-<p id="section-3.5.4-1">This purpose indicates that the primary certificate did not not do a full proof-of-possession at enrollment time, but instead it provided a statement of possession as per <span>[<a href="#I-D.ietf-lamps-private-key-stmt-attr" class="cite xref">I-D.ietf-lamps-private-key-stmt-attr</a>]</span> signed by the secondary certificate.<a href="#section-3.5.4-1" class="pilcrow">¶</a></p>
-<p id="section-3.5.4-2">The reason for carrying a RelatedCertificateDescriptor of this type is to track that the primary certificate had a trust dependency on the secondary certificate at the time of issuance and that presumably the two private keys are co-located on the same key storage. Therefore if one certificate is revoked, they <span class="bcp14">SHOULD</span> both be revoked.<a href="#section-3.5.4-2" class="pilcrow">¶</a></p>
+<p id="section-3.5.4-1">This purpose indicates that the Primary Certificate did not not do a full proof-of-possession at enrollment time, but instead it provided a statement of possession as per <span>[<a href="#I-D.ietf-lamps-private-key-stmt-attr" class="cite xref">I-D.ietf-lamps-private-key-stmt-attr</a>]</span> signed by the Secondary Certificate.<a href="#section-3.5.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.5.4-2">The reason for carrying a RelatedCertificateDescriptor of this type is to track that the Primary Certificate had a trust dependency on the Secondary Certificate at the time of issuance and that presumably the two private keys are co-located on the same key storage. Therefore if one certificate is revoked, they <span class="bcp14">SHOULD</span> both be revoked.<a href="#section-3.5.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1503,7 +1502,7 @@ id-rcd-self OBJECT IDENTIFIER ::=
 <a href="#section-3.6" class="section-number selfRef">3.6. </a><a href="#name-self-reference" class="section-name selfRef">Self reference</a>
         </h3>
 <p id="section-3.6-1">This purpose indicates the Uniform Resource Identifier where this certificate is located. Applications which retrieve this certificate can then compare the retrieved certificate with this value to ensure that the correct certificate certificate was retrieved.<a href="#section-3.6-1" class="pilcrow">¶</a></p>
-<p id="section-3.6-2">This purpose can be used to bind the subjects of primary and secondary certificates. The primary certificate contains a self reference to its location, as well as a reference to the secondary certificate. The secondary certificate contains a self reference to its location, and a reference to the primary certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.<a href="#section-3.6-2" class="pilcrow">¶</a></p>
+<p id="section-3.6-2">This purpose can be used to bind the subjects of Primary and Secondary Certificates. The Primary Certificate contains a self reference to its location, as well as a reference to the Secondary Certificate. The Secondary Certificate contains a self reference to its location, and a reference to the Primary Certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.<a href="#section-3.6-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="signature-algorithm-and-public-key-algorithm-fields">
@@ -1511,7 +1510,7 @@ id-rcd-self OBJECT IDENTIFIER ::=
         <h3 id="name-signature-algorithm-and-pub">
 <a href="#section-3.7" class="section-number selfRef">3.7. </a><a href="#name-signature-algorithm-and-pub" class="section-name selfRef">Signature Algorithm and Public Key Algorithm fields</a>
         </h3>
-<p id="section-3.7-1">The signatureAlgorithm is used to indicates the signature algorithm used in the secondary certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.<a href="#section-3.7-1" class="pilcrow">¶</a></p>
+<p id="section-3.7-1">The signatureAlgorithm is used to indicates the signature algorithm used in the Secondary Certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.<a href="#section-3.7-1" class="pilcrow">¶</a></p>
 <p id="section-3.7-2">When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether or not to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.<a href="#section-3.7-2" class="pilcrow">¶</a></p>
 <p id="section-3.7-3">The semantics of other id-ad-certDiscovery accessLocation name forms are not defined.<a href="#section-3.7-3" class="pilcrow">¶</a></p>
 <p id="section-3.7-4">Note:  For a description of uniformResourceIdentifier consult section 4.2.2.1 of [!RFC5280].<a href="#section-3.7-4" class="pilcrow">¶</a></p>
@@ -1524,7 +1523,7 @@ id-rcd-self OBJECT IDENTIFIER ::=
       <h2 id="name-security-considerations">
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
-<p id="section-4-1">Retrieval of the secondary certificate is not sufficient to consider the secondary certificate trustworthy. The certification path validation algorithm as defined in section 6 of <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> <span class="bcp14">MUST</span> be performed for the secondary certificate.<a href="#section-4-1" class="pilcrow">¶</a></p>
+<p id="section-4-1">Retrieval of the Secondary Certificate is not sufficient to consider the Secondary Certificate trustworthy. The certification path validation algorithm as defined in section 6 of <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> <span class="bcp14">MUST</span> be performed for the Secondary Certificate.<a href="#section-4-1" class="pilcrow">¶</a></p>
 <p id="section-4-2">The use of the self-reference purpose can be used to provide a subject binding between the Primary and Secondary Certificates. However, the procedure for validating subject equivalance <span class="bcp14">MUST</span> be defined by policy. As a result, validation of
 subject equivalence is out of scope of this document.<a href="#section-4-2" class="pilcrow">¶</a></p>
 <p id="section-4-3">The Secondary Certificate may also have the certDiscovery access method. In order to avoid cyclic loops or infinite chaining, the validator should be mindful of how many fetching attempts it allows in one validation.<a href="#section-4-3" class="pilcrow">¶</a></p>
@@ -1622,6 +1621,8 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    id-rcd-agility OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 1}
    id-rcd-redundency OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 2}
    id-rcd-dual OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 3}
+   id-rcd-priv-key-stmt OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 4}
+   id-rcd-self OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 5}
 
    DiscoveryPurposeId ::= OBJECT IDENTIFIER
 

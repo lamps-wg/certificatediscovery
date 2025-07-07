@@ -5,13 +5,13 @@
 Network Working Group                                           T. Okubo
 Internet-Draft                              Penguin Securities Pte. Ltd.
 Intended status: Standards Track                              C. Bonnell
-Expires: 3 January 2026                                   DigiCert, Inc.
+Expires: 8 January 2026                                   DigiCert, Inc.
                                                                  J. Gray
                                                             M. Ounsworth
                                                                  Entrust
                                                                J. Mandel
                                                             AKAYLA, Inc.
-                                                             2 July 2025
+                                                             7 July 2025
 
 
               A Mechanism for X.509 Certificate Discovery
@@ -30,7 +30,7 @@ Abstract
    information about the target certificate's signature algorithm,
    public key algorithm and the location of the secondary X.509
    certificate, empowering relying parties to make informed decisions on
-   whether or not to fetch the secondary certificate.
+   whether or not to fetch the Secondary Certificate.
 
    The primary motivation for this method is to address the limitations
    of traditional certificate management approaches, which often lack
@@ -39,7 +39,7 @@ Abstract
    agility by facilitating the transition between different algorithms
    or X.509 certificate types.  Operational redundancy is enhanced by
    enabling the use of backup certificates and minimizing the impact of
-   primary certificate expiration or CA infrastructure failures.
+   Primary Certificate expiration or CA infrastructure failures.
 
    The approach ensures backward compatibility with existing systems and
    leverages established mechanisms, such as the subjectInfoAccess
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 January 2026.
+   This Internet-Draft will expire on 8 January 2026.
 
 Copyright Notice
 
@@ -137,7 +137,7 @@ Table of Contents
    Second, the proposed method improves operational availability by
    introducing redundancy in certificate usage.  It enables the use of
    secondary certificates that can serve as backups, ensuring seamless
-   continuity of services even in the event of primary certificate
+   continuity of services even in the event of Primary Certificate
    expiration or disruptions in the CA infrastructure.
 
    Finally, the approach accommodates multi-key/certificate usage,
@@ -314,9 +314,9 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
       }
 
    Which is a CHOICE defining either a direct reference to a Certificate
-   (meaning that the full secondary certificate is embedded within the
-   primary certificate), or an indirect reference (meaning that
-   information to fetch the secondary certificate is provided).  The
+   (meaning that the full Secondary Certificate is embedded within the
+   Primary Certificate), or an indirect reference (meaning that
+   information to fetch the Secondary Certificate is provided).  The
    syntax of an indirect reference is described below.
 
 3.3.  CertIndirectReference
@@ -329,9 +329,9 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
          }
 
    The certificate is referenced by an IA5String that has the URL
-   reference to the secondary certificate.  The indirect reference also
+   reference to the Secondary Certificate.  The indirect reference also
    includes an optional certHash value which can be used to include a
-   cryptographic hash of the DER Encoded secondary certificate.  The
+   cryptographic hash of the DER Encoded Secondary Certificate.  The
    syntax of a certHash is described below.
 
 3.4.  CertHash
@@ -382,9 +382,10 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 3.5.2.  Redundancy
 
    This purpose indicates the referenced certificate's purpose is to
-   provide operational redundancy.
-
-   // TODO: Joe to provide more text
+   provide operational redundancy; i.e. the Secondary Certificate could
+   be issued by a different CA or has a different validity period which
+   can be used as a backup if the Primary set of certificates is about
+   to expire.
 
 3.5.3.  Dual Usage
 
@@ -396,15 +397,15 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 
 3.5.4.  Statement of Possession of a Private Key
 
-   This purpose indicates that the primary certificate did not not do a
+   This purpose indicates that the Primary Certificate did not not do a
    full proof-of-possession at enrollment time, but instead it provided
    a statement of possession as per
-   [I-D.ietf-lamps-private-key-stmt-attr] signed by the secondary
-   certificate.
+   [I-D.ietf-lamps-private-key-stmt-attr] signed by the Secondary
+   Certificate.
 
    The reason for carrying a RelatedCertificateDescriptor of this type
-   is to track that the primary certificate had a trust dependency on
-   the secondary certificate at the time of issuance and that presumably
+   is to track that the Primary Certificate had a trust dependency on
+   the Secondary Certificate at the time of issuance and that presumably
    the two private keys are co-located on the same key storage.
    Therefore if one certificate is revoked, they SHOULD both be revoked.
 
@@ -415,11 +416,11 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    can then compare the retrieved certificate with this value to ensure
    that the correct certificate certificate was retrieved.
 
-   This purpose can be used to bind the subjects of primary and
-   secondary certificates.  The primary certificate contains a self
-   reference to its location, as well as a reference to the secondary
-   certificate.  The secondary certificate contains a self reference to
-   its location, and a reference to the primary certificate.  Provided
+   This purpose can be used to bind the subjects of Primary and
+   Secondary Certificates.  The Primary Certificate contains a self
+   reference to its location, as well as a reference to the Secondary
+   Certificate.  The Secondary Certificate contains a self reference to
+   its location, and a reference to the Primary Certificate.  Provided
    that policy requires subject equivalence when this mechanism is used,
    then the consuming application can treat both certificates as
    certifying the same entity.
@@ -427,7 +428,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 3.7.  Signature Algorithm and Public Key Algorithm fields
 
    The signatureAlgorithm is used to indicates the signature algorithm
-   used in the secondary certificate and is an optional field.  The
+   used in the Secondary Certificate and is an optional field.  The
    publicKeyAlgorithm indicates the public key algorithm used in the
    Secondary Certificate and is an optional field.
 
@@ -451,10 +452,10 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 
 4.  Security Considerations
 
-   Retrieval of the secondary certificate is not sufficient to consider
-   the secondary certificate trustworthy.  The certification path
+   Retrieval of the Secondary Certificate is not sufficient to consider
+   the Secondary Certificate trustworthy.  The certification path
    validation algorithm as defined in section 6 of [RFC5280] MUST be
-   performed for the secondary certificate.
+   performed for the Secondary Certificate.
 
    The use of the self-reference purpose can be used to provide a
    subject binding between the Primary and Secondary Certificates.
@@ -560,6 +561,8 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    id-rcd-agility OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 1}
    id-rcd-redundency OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 2}
    id-rcd-dual OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 3}
+   id-rcd-priv-key-stmt OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 4}
+   id-rcd-self OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 5}
 
    DiscoveryPurposeId ::= OBJECT IDENTIFIER
 
