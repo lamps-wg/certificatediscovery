@@ -257,8 +257,6 @@ This purpose indicates the referenced certificate's purpose is to provide operat
 
 ### Dual Usage
 
-
-
 This purpose indicates the referenced certificate's purpose is for dual usage; i.e. the related certificates belong to the same entity and one provides a signing-type key while the other provides an encryption-type key. The two certificates SHOULD have matching identifiers.
 
 ### Statement of Possession of a Private Key
@@ -267,7 +265,7 @@ This purpose indicates that the Primary Certificate did not not do a full proof-
 
 The reason for carrying a RelatedCertificateDescriptor of this type is to track that the Primary Certificate had a trust dependency on the Secondary Certificate at the time of issuance and that presumably the two private keys are co-located on the same key storage. Therefore if one certificate is revoked, they SHOULD both be revoked.
 
-## Self reference
+### Self reference
 
 This purpose indicates the Uniform Resource Identifier where this certificate is located. Applications which retrieve this certificate can then compare the retrieved certificate with this value to ensure that the correct certificate certificate was retrieved.
 
