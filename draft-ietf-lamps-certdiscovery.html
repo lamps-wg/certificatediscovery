@@ -1218,13 +1218,13 @@ svg :is([fill="white"], [fill^="#fff"]) {
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5.2.4">
                     <p id="section-toc.1-1.3.2.5.2.4.1"><a href="#section-3.5.4" class="auto internal xref">3.5.4</a>.  <a href="#name-statement-of-possession-of-" class="internal xref">Statement of Possession of a Private Key</a></p>
 </li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5.2.5">
+                    <p id="section-toc.1-1.3.2.5.2.5.1"><a href="#section-3.5.5" class="auto internal xref">3.5.5</a>.  <a href="#name-self-reference" class="internal xref">Self reference</a></p>
+</li>
                 </ul>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.6">
-                <p id="section-toc.1-1.3.2.6.1"><a href="#section-3.6" class="auto internal xref">3.6</a>.  <a href="#name-self-reference" class="internal xref">Self reference</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.7">
-                <p id="section-toc.1-1.3.2.7.1"><a href="#section-3.7" class="auto internal xref">3.7</a>.  <a href="#name-signature-algorithm-and-pub" class="internal xref">Signature Algorithm and Public Key Algorithm fields</a></p>
+                <p id="section-toc.1-1.3.2.6.1"><a href="#section-3.6" class="auto internal xref">3.6</a>.  <a href="#name-signature-algorithm-and-pub" class="internal xref">Signature Algorithm and Public Key Algorithm fields</a></p>
 </li>
             </ul>
 </li>
@@ -1494,26 +1494,26 @@ id-rcd-self OBJECT IDENTIFIER ::=
 <p id="section-3.5.4-2">The reason for carrying a RelatedCertificateDescriptor of this type is to track that the Primary Certificate had a trust dependency on the Secondary Certificate at the time of issuance and that presumably the two private keys are co-located on the same key storage. Therefore if one certificate is revoked, they <span class="bcp14">SHOULD</span> both be revoked.<a href="#section-3.5.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
+<div id="self-reference">
+<section id="section-3.5.5">
+          <h4 id="name-self-reference">
+<a href="#section-3.5.5" class="section-number selfRef">3.5.5. </a><a href="#name-self-reference" class="section-name selfRef">Self reference</a>
+          </h4>
+<p id="section-3.5.5-1">This purpose indicates the Uniform Resource Identifier where this certificate is located. Applications which retrieve this certificate can then compare the retrieved certificate with this value to ensure that the correct certificate certificate was retrieved.<a href="#section-3.5.5-1" class="pilcrow">¶</a></p>
+<p id="section-3.5.5-2">This purpose can be used to bind the subjects of Primary and Secondary Certificates. The Primary Certificate contains a self reference to its location, as well as a reference to the Secondary Certificate. The Secondary Certificate contains a self reference to its location, and a reference to the Primary Certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.<a href="#section-3.5.5-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="self-reference">
-<section id="section-3.6">
-        <h3 id="name-self-reference">
-<a href="#section-3.6" class="section-number selfRef">3.6. </a><a href="#name-self-reference" class="section-name selfRef">Self reference</a>
-        </h3>
-<p id="section-3.6-1">This purpose indicates the Uniform Resource Identifier where this certificate is located. Applications which retrieve this certificate can then compare the retrieved certificate with this value to ensure that the correct certificate certificate was retrieved.<a href="#section-3.6-1" class="pilcrow">¶</a></p>
-<p id="section-3.6-2">This purpose can be used to bind the subjects of Primary and Secondary Certificates. The Primary Certificate contains a self reference to its location, as well as a reference to the Secondary Certificate. The Secondary Certificate contains a self reference to its location, and a reference to the Primary Certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.<a href="#section-3.6-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="signature-algorithm-and-public-key-algorithm-fields">
-<section id="section-3.7">
+<section id="section-3.6">
         <h3 id="name-signature-algorithm-and-pub">
-<a href="#section-3.7" class="section-number selfRef">3.7. </a><a href="#name-signature-algorithm-and-pub" class="section-name selfRef">Signature Algorithm and Public Key Algorithm fields</a>
+<a href="#section-3.6" class="section-number selfRef">3.6. </a><a href="#name-signature-algorithm-and-pub" class="section-name selfRef">Signature Algorithm and Public Key Algorithm fields</a>
         </h3>
-<p id="section-3.7-1">The signatureAlgorithm is used to indicates the signature algorithm used in the Secondary Certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.<a href="#section-3.7-1" class="pilcrow">¶</a></p>
-<p id="section-3.7-2">When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether or not to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.<a href="#section-3.7-2" class="pilcrow">¶</a></p>
-<p id="section-3.7-3">The semantics of other id-ad-certDiscovery accessLocation name forms are not defined.<a href="#section-3.7-3" class="pilcrow">¶</a></p>
-<p id="section-3.7-4">Note:  For a description of uniformResourceIdentifier consult section 4.2.2.1 of [!RFC5280].<a href="#section-3.7-4" class="pilcrow">¶</a></p>
+<p id="section-3.6-1">The signatureAlgorithm is used to indicates the signature algorithm used in the Secondary Certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.<a href="#section-3.6-1" class="pilcrow">¶</a></p>
+<p id="section-3.6-2">When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether or not to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.<a href="#section-3.6-2" class="pilcrow">¶</a></p>
+<p id="section-3.6-3">The semantics of other id-ad-certDiscovery accessLocation name forms are not defined.<a href="#section-3.6-3" class="pilcrow">¶</a></p>
+<p id="section-3.6-4">Note:  For a description of uniformResourceIdentifier consult section 4.2.2.1 of [!RFC5280].<a href="#section-3.6-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>

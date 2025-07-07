@@ -107,8 +107,8 @@ Table of Contents
        3.5.2.  Redundancy
        3.5.3.  Dual Usage
        3.5.4.  Statement of Possession of a Private Key
-     3.6.  Self reference
-     3.7.  Signature Algorithm and Public Key Algorithm fields
+       3.5.5.  Self reference
+     3.6.  Signature Algorithm and Public Key Algorithm fields
    4.  Security Considerations
    5.  IANA Considerations
    6.  Normative References
@@ -409,7 +409,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    the two private keys are co-located on the same key storage.
    Therefore if one certificate is revoked, they SHOULD both be revoked.
 
-3.6.  Self reference
+3.5.5.  Self reference
 
    This purpose indicates the Uniform Resource Identifier where this
    certificate is located.  Applications which retrieve this certificate
@@ -425,7 +425,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    then the consuming application can treat both certificates as
    certifying the same entity.
 
-3.7.  Signature Algorithm and Public Key Algorithm fields
+3.6.  Signature Algorithm and Public Key Algorithm fields
 
    The signatureAlgorithm is used to indicates the signature algorithm
    used in the Secondary Certificate and is an optional field.  The
