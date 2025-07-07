@@ -30,7 +30,7 @@ Abstract
    information about the target certificate's signature algorithm,
    public key algorithm and the location of the secondary X.509
    certificate, empowering relying parties to make informed decisions on
-   whether or not to fetch the Secondary Certificate.
+   whether to fetch the Secondary Certificate.
 
    The primary motivation for this method is to address the limitations
    of traditional certificate management approaches, which often lack
@@ -179,18 +179,18 @@ Table of Contents
    necessary to make an informed decision on the best timing to do an
    algorithm rollover without relying on third parties or security
    researchers.  This is particularly useful for PKIs that have a wide
-   array of client software and requires careful considerations.
+   array of client software and requires careful consideration.
 
 1.2.  Use Case 2: Operational Redundancy
 
    The second use case is where the Primary and Secondary Certificate
    adopts the same cryptographic algorithms but for instance, uses
-   certificates issued by two different CAs or two certificates that has
-   different validity periods.  The Secondary Certificate may be used as
-   a backup certificate in case the Primary Certificate validity is
-   about to expire.
+   certificates issued by two different CAs or two certificates that
+   have different validity periods.  The Secondary Certificate may be
+   used as a backup certificate in case the Primary Certificate validity
+   is about to expire.
 
-   A common issue is when the intermediate CA certificate expires and
+   A common issue is when the intermediate CA certificate expires, and
    the subscriber forgets to update the intermediate CA configured on
    the server.  Similar to when some software collects the parent
    certificate through authorityInfoAccess CA Issuer access method when
@@ -211,7 +211,7 @@ Table of Contents
    subject for a particular cryptographic operation and a relying party
    wishes to obtain the public key of the named subject for a different
    cryptographic operation.  For example, the recipient of an email
-   message which was signed using a key that is certified by a single-
+   message which was signed using a key that is certified by a single
    use signing S/MIME certificate may wish to send an encrypted email to
    the sender.  In this case, the recipient will need the sender's
    public key used for encryption.  A pointer to the named subject's
@@ -353,9 +353,9 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 3.5.  Purpose
 
    The purpose describes the purpose of the discovery method.  Currently
-   the following purpose id's are defined:
+   the following purpose ids are defined:
 
-    -- Purpose OJBECT IDENTIFIER
+    -- Purpose OBJECT IDENTIFIER
    id-rcd-alg-agility OBJECT IDENTIFIER ::=
                                   {id-on-relatedCertificateDescriptor 1}
 
@@ -414,12 +414,12 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    This purpose indicates the Uniform Resource Identifier where this
    certificate is located.  Applications which retrieve this certificate
    can then compare the retrieved certificate with this value to ensure
-   that the correct certificate certificate was retrieved.
+   that the correct certificate was retrieved.
 
    This purpose can be used to bind the subjects of Primary and
-   Secondary Certificates.  The Primary Certificate contains a self
+   Secondary Certificates.  The Primary Certificate contains a self-
    reference to its location, as well as a reference to the Secondary
-   Certificate.  The Secondary Certificate contains a self reference to
+   Certificate.  The Secondary Certificate contains a self-reference to
    its location, and a reference to the Primary Certificate.  Provided
    that policy requires subject equivalence when this mechanism is used,
    then the consuming application can treat both certificates as
@@ -427,14 +427,14 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 
 3.6.  Signature Algorithm and Public Key Algorithm fields
 
-   The signatureAlgorithm is used to indicates the signature algorithm
+   The signatureAlgorithm is used to indicate the signature algorithm
    used in the Secondary Certificate and is an optional field.  The
    publicKeyAlgorithm indicates the public key algorithm used in the
    Secondary Certificate and is an optional field.
 
    When the validation of the Primary Certificate fails, the software
    that understands the SIA extension and the certDiscovery access
-   method uses the information to determine whether or not to fetch the
+   method uses the information to determine whether to fetch the
    Secondary Certificate.  The software will look at the
    signatureAlgorithm and publicKeyAlgorithm to determine whether the
    Secondary Certificate has the signature algorithm and certificate
@@ -459,7 +459,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 
    The use of the self-reference purpose can be used to provide a
    subject binding between the Primary and Secondary Certificates.
-   However, the procedure for validating subject equivalance MUST be
+   However, the procedure for validating subject equivalence MUST be
    defined by policy.  As a result, validation of subject equivalence is
    out of scope of this document.
 
@@ -557,7 +557,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
       RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
    }
 
-   -- Purpose OJBECT IDENTIFIER
+   -- Purpose OBJECT IDENTIFIER
    id-rcd-agility OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 1}
    id-rcd-redundency OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 2}
    id-rcd-dual OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 3}
