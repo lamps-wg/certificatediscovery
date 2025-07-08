@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-03T01:43:18.380464+00:00",
+  "timestamp": "2025-07-08T01:43:50.238180+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -79,15 +79,15 @@
       "id": "I_kwDOKkGlhc6btfX-",
       "title": "Should we include an optional hash for stronger 1-way binding of certificates?",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/6",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "I was wondering if we should include an optional hash of the related certificate.   That would constrain issuance order (as the hash of one of them would need to be known), but it would give you the guarantee that you got the right certificate and that someone didn't compromise the URL location.    So it would be an optional stronger binding.\r\n\r\nRelatedCertificateDescriptor ::= SEQUENCE {\r\n\t   uniformResourceIdentifier IA5String,\r\n\t   signatureAlgorithm \t[0] IMPLICIT AlgorithmIdentifier OPTIONAL,\r\n\t   publicKeyAlgorithm \t[1] IMPLICIT AlgorithmIdentifier OPTIONAL,\r\n           hashAlgorithmId      [2] IMPLICIT AlgorithmIdentifier OPTIONAL,\r\n           certHash             [3] IMPLICIT OCTET STRING OPTIONAL \r\n   }\r\n\r\nThe hashAlgorithmId would be the hashAlgorithm used for certHash.   The certHash would be the hash of the related certificate using the specified hashAlgorithmId.   It is optional and would be a useful check if it is there and would offer a strong binding in one direction (which is still better than weak two-way binding).\r\n\r\nExample UseCase...   PQ transition:    Issue ML-DSA certificate first with weak binding (no hash) to the location of a future traditional cert, then issue the Traditional RSA cert with this extension with the hash of the ML-DSA certificate.    Traditional software works fine.   When traditional software is upgraded the reference is used and hash verified.  If ML-DSA side needs to check traditional, it can still use the weaker (no hash) reference.   It could check that the traditional RSA has a reference including a hash of itself (but there would be no guarantee that a compromised traditional RSA certificate couldn't have just copied the public hash of the ML-DSA cert).   However this is not any weaker than what we are already proposing.\r\n\r\nAlternatively, we could change certhash into TBSCertificate hash which could allow strong two-way binding, but then we would have to remove the RelatedCertificateDescriptor extension from each of the TBSCertificates first before computing the hash which would strongly couple issuance.   I don't think we want this one.  \r\n\r\nSo I think adding a hash in one direction is straight forward and gives it a stronger property.   I think most use-cases would only use it in one direction anyway.\r\n",
       "createdAt": "2024-10-24T19:25:25Z",
-      "updatedAt": "2024-10-29T20:42:21Z",
-      "closedAt": null,
+      "updatedAt": "2025-07-07T16:13:19Z",
+      "closedAt": "2025-07-07T16:13:19Z",
       "comments": [
         {
           "author": "johngray-dev",
@@ -95,6 +95,13 @@
           "body": "RelatedCertificateDescriptor ::= SEQUENCE {\r\n  uniformResourceIdentifier IA5String,\r\n  signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,\r\n  publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL,\r\n  certHash [2] IMPLICIT  CertHash OPTIONAL\r\n}\r\n\r\nCertHash ::= SEQUENCE {\r\n       value       OCTET STRING,\r\n       hashAlgorithm  AlgorithmIdentifier DEFAULT {algorithm sha-256}}\r\n}",
           "createdAt": "2024-10-29T20:42:20Z",
           "updatedAt": "2024-10-29T20:42:20Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yes, we added an optional Hash in recent updates.    \n\nCertIndirectReference ::= SEQUENCE {\n         location CertLocation,\n         certHash [0] IMPLICIT CertHash OPTIONAL\n      }\n\n",
+          "createdAt": "2025-07-07T16:13:19Z",
+          "updatedAt": "2025-07-07T16:13:19Z"
         }
       ]
     },
@@ -103,16 +110,24 @@
       "id": "I_kwDOKkGlhc6n82bR",
       "title": "Would a dataURI be allowed in RelatedCertificateDescriptor.uniformResourceIdentifier?",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/7",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "ralienpp",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Asking for a friend; would it be possible to use a [dataURI ](https://www.rfc-editor.org/rfc/rfc2397.html)in the `uniformResourceIdentifier` field?\n\n```\nRelatedCertificateDescriptor ::= SEQUENCE { \n    uniformResourceIdentifier IA5String,    // here, something like `data:application/pkix-cert;base64,blablabla`\n    signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL, \n    publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL \n}\n```\n\n\nLet's say, in my scenario I have limited connectivity options and it is not guaranteed that I'll be able to fetch the other certificate, so it would be nice if I get it right away on a platter.\n",
       "createdAt": "2025-01-29T10:04:14Z",
-      "updatedAt": "2025-01-29T10:04:14Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-07-07T16:16:03Z",
+      "closedAt": "2025-07-07T16:16:03Z",
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We solved this using a `CertReference` structure:\n\n~~~\nCertReference ::= CHOICE {\n      direct Certificate,\n      indirect [0] IMPLICIT CertIndirectReference\n   }\n\nCertIndirectReference ::= SEQUENCE {\n         location CertLocation,\n         certHash [0] IMPLICIT CertHash OPTIONAL\n      }\n~~~\n\nSo a direct certificate can be included if needed.",
+          "createdAt": "2025-07-07T16:16:03Z",
+          "updatedAt": "2025-07-07T16:16:03Z"
+        }
+      ]
     },
     {
       "number": 8,
@@ -291,7 +306,7 @@
       "id": "I_kwDOKkGlhc6-fmdQ",
       "title": "Cleanup Pass",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/19",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -300,9 +315,17 @@
       "labels": [],
       "body": "We need to clean up inconsistencies, items that no longer make sense (like references to unicorns), and clean up grammer.\n",
       "createdAt": "2025-07-02T13:36:33Z",
-      "updatedAt": "2025-07-02T13:36:33Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2025-07-07T18:23:32Z",
+      "closedAt": "2025-07-07T18:23:32Z",
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Looks like Joe has fixed this one in:  https://github.com/lamps-wg/certificatediscovery/pull/21",
+          "createdAt": "2025-07-07T16:11:44Z",
+          "updatedAt": "2025-07-07T16:11:44Z"
+        }
+      ]
     },
     {
       "number": 20,
@@ -567,6 +590,48 @@
       },
       "comments": [],
       "reviews": []
+    },
+    {
+      "number": 21,
+      "id": "PR_kwDOKkGlhc6dpQOO",
+      "title": "Clean up edit",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/21",
+      "state": "MERGED",
+      "author": "mandelj7",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-07-06T17:13:28Z",
+      "updatedAt": "2025-07-07T18:11:25Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "6113db0653f5772b9b42f26cdcfb00eb92b40eb2",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "Edits",
+      "headRefOid": "e12d994179614e96a5b49f063f8885109bc5809f",
+      "closedAt": "2025-07-07T18:11:25Z",
+      "mergedAt": "2025-07-07T18:11:25Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "dcd0a8731c765ef5edf4b7ee1a260e2e63bcf9dd"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKkGlhc6yfFJm",
+          "commit": {
+            "abbreviatedOid": "e12d994"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-07-07T16:10:30Z",
+          "updatedAt": "2025-07-07T16:10:30Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
