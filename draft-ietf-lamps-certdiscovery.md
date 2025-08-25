@@ -81,7 +81,7 @@ Finally, the approach accommodates multi-key/certificate usage, allowing for a r
 
 The proposed method is designed to maximize compatibility with existing systems, including legacy implementations. It leverages the subjectInfoAccess extension, which is already established in X.509 certificates, and does not require modifications to the referring certificates. This ensures ease of adoption and avoids disruptions to current certificate management practices.
 
-In the following sections, we will outline the details of the proposed approach, including the structure of the SIA extension, the modes of operation, and the considerations for secure implementation and deployment.
+The following sections outline the details of the proposed approach, including the structure of the SIA extension, the modes of operation, and the considerations for secure implementation and deployment.
 
 By leveraging the capabilities of the SIA extension for certificate discovery, organizations can enhance cryptographic agility, improve operational availability, and accommodate complex multi-key/certificate scenarios, leading to more secure and resilient cryptographic systems.
 
@@ -166,49 +166,49 @@ Where `id-on-relatedCertificateDescriptor` is the OBJECT IDENTIFIER (type-id) an
 
 ~~~
  RelatedCertificateDescriptor ::= SEQUENCE {
-      certref CertReference,
-      purpose DiscoveryPurposeId,
-      signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
-      publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL }
+   method CertDiscoveryMethod,
+   purpose DiscoveryPurposeId OPTIONAL,
+   signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
+   publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
+}
 ~~~
 
 `RelatedCertificateDescriptor` is composed of 4 components which are defined below.
+
+## CertDiscoveryMethod
+
+`CertDiscoveryMethod` is defined by the following:
+
+~~~
+CertDiscoveryMethod ::= CHOICE {
+  byUri [0] IMPLICIT CertLocation
+  byInclusion Certificate,
+  byLocalPolicy NULL
+}
+~~~
+
+`CertDiscoveryMethod` is the only required field of `RelatedCertificateDescriptor`. It describes how the related certificate can be retrieved.
+
+There are three methods:
+
+1. The `byUri` method provides a location where the related certificate can be retrieved. The syntax of `CertLocation` is described below.
+2. The `byInclusion` method encodes the DER encoding of the related certificate directly.
+3. The `byLocalPolicy` method signals that the related certificate is available in a repository that is usable by the application consuming the certificate.
 
 ## CertLocation
 
 `CertLocation` is defined by the following:
 
 ~~~
-CertLocation ::= IA5String
+CertLocation ::= SEQUENCE {
+   uri IA5String,
+   certHash [0] IMPLICIT CertHash OPTIONAL
+}
 ~~~
 
-`CertLocation` is to specify the Uniform Resource Identifier ({{!RFC3986}}) where the secondary certificate is located.
+The certificate is referenced by an IA5String that contains the URI of the Secondary Certificate. The DER encoding of the Secondary Certificate MUST be available at the specified location.
 
-## CertReference
-
-`CertReference` is defined by the following:
-
-~~~
- CertReference ::= CHOICE {
-      direct Certificate,
-      indirect [0] IMPLICIT CertIndirectReference
-   }
-~~~
-
-Which is a CHOICE defining either a `direct` reference to a Certificate (meaning that the full Secondary Certificate is embedded within the Primary Certificate), or an `indirect` reference (meaning that information to fetch the Secondary Certificate is provided). The syntax of an `indirect` reference is described below.
-
-## CertIndirectReference
-
-`CertIndirectReference` is defined by the following:
-
-~~~
-CertIndirectReference ::= SEQUENCE {
-         location CertLocation,
-         certHash [0] IMPLICIT CertHash OPTIONAL
-      }
-~~~
-
-The certificate is referenced by an IA5String that has the URL reference to the Secondary Certificate. The `indirect` reference also includes an optional `certHash` value which can be used to include a cryptographic hash of the DER Encoded Secondary Certificate. The syntax of a `certHash` is described below.
+`CertLocation` MAY include an optional `certHash` value which can be used to include a cryptographic hash of the DER Encoded Secondary Certificate. The syntax of `CertHash` is described below.
 
 ## CertHash
 
@@ -222,11 +222,13 @@ CertHash ::= SEQUENCE {
 }
 ~~~~
 
-`certHash` is defined as a SEQUENCE containing the OCTET STRING `value` which is the hash of the DER Encoded reference certificate as well as the `hashAlgorithm`  which contains the AlgorithmIdentifier for the chosen Hash value. All implementations MUST support SHA-256 via `id-sha256`, and other hash functions MAY be supported.
+`certHash` is defined as a SEQUENCE containing the OCTET STRING `value` which is the hash of the DER Encoded reference certificate as well as the `hashAlgorithm`, which contains the AlgorithmIdentifier for the chosen Hash value. All implementations MUST support SHA-256 via `id-sha256`, and other hash functions MAY be supported.
 
-## Purpose
+## DiscoveryPurposeId
 
-The `purpose` describes the purpose of the discovery method.  Currently the following purpose ids are defined:
+`DiscoveryPurposeId` provides optional information to describe the purpose of including the discovery information for the related certificate.
+
+Currently, the following purpose identifiers are defined:
 
 ~~~
  -- Purpose OBJECT IDENTIFIER
@@ -354,25 +356,25 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    DiscoveryPurposeId ::= OBJECT IDENTIFIER
 
    RelatedCertificateDescriptor ::= SEQUENCE {
-      certref CertReference,
-      purpose DiscoveryPurposeId,
-      signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
-      publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
+     method CertDiscoveryMethod,
+     purpose DiscoveryPurposeId OPTIONAL,
+     signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
+     publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
    }
 
-    CertReference ::= CHOICE {
-      direct Certificate,
-      indirect [0] IMPLICIT CertIndirectReference
+   CertDiscoveryMethod ::= CHOICE {
+     byUri [0] IMPLICIT CertLocation
+     byInclusion Certificate,
+     byLocalPolicy NULL
    }
 
-   CertIndirectReference ::= SEQUENCE {
-      uniformResourceIdentifier IA5String,
+   CertLocation ::= SEQUENCE {
+      uri IA5String,
       certHash [0] IMPLICIT CertHash OPTIONAL
    }
 
    CertHash ::= SEQUENCE {
       value OCTET STRING,
-      -- TODO Add IssuerAndSerialNumber?
       hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}
    }
 
