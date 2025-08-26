@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-07-08T01:43:50.238180+00:00",
+  "timestamp": "2025-08-26T01:37:44.156292+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -629,6 +629,46 @@
           "body": "",
           "createdAt": "2025-07-07T16:10:30Z",
           "updatedAt": "2025-07-07T16:10:30Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 22,
+      "id": "PR_kwDOKkGlhc6lRTk_",
+      "title": "Revamped ASN.1",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/22",
+      "state": "OPEN",
+      "author": "CBonnell",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2025-08-25T19:14:23Z",
+      "updatedAt": "2025-08-25T20:22:26Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "0fcc91395a1fd6e9a15bff39a25930c2d78a63bb",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "new-asn1",
+      "headRefOid": "4ba13bbe8e9c997f594e6d20bf03b22ffbed8573",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKkGlhc677XyJ",
+          "commit": {
+            "abbreviatedOid": "4ba13bb"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Thanks Corey for making these changes.  Looks good to me!",
+          "createdAt": "2025-08-25T20:22:26Z",
+          "updatedAt": "2025-08-25T20:22:26Z",
           "comments": []
         }
       ]
