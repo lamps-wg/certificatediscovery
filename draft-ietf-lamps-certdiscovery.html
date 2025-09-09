@@ -15,23 +15,23 @@
        The primary motivation for this method is to address the limitations of traditional certificate management approaches, which often lack flexibility, scalability, and seamless update capabilities. By leveraging this mechanism, subscribers can achieve cryptographic agility by facilitating the transition between different algorithms or X.509 certificate types. Operational redundancy is enhanced by enabling the use of backup certificates and minimizing the impact of Primary Certificate expiration or CA infrastructure failures. 
        The approach ensures backward compatibility with existing systems and leverages established mechanisms, such as the subjectInfoAccess extension, to enable seamless integration. 
     " name="description">
-<meta content="xml2rfc 3.29.0" name="generator">
+<meta content="xml2rfc 3.30.1" name="generator">
 <meta content="Algorithm Agility" name="keyword">
 <meta content="Operational Redundancy" name="keyword">
 <meta content="Dual Use" name="keyword">
 <meta content="draft-ietf-lamps-certdiscovery-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.29.0
+  xml2rfc 3.30.1
     Python 3.12.11
     ConfigArgParse 1.7
     google-i18n-address 3.1.1
     intervaltree 3.1.0
     Jinja2 3.1.6
     lxml 5.3.1
-    platformdirs 4.3.8
+    platformdirs 4.4.0
     pycountry 24.6.1
     PyYAML 6.0.2
-    requests 2.32.4
+    requests 2.32.5
     setuptools 80.9.0
     wcwidth 0.2.13
 -->
@@ -1052,11 +1052,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">TODO - Abbreviation</td>
-<td class="right">July 2025</td>
+<td class="right">September 2025</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Okubo, et al.</td>
-<td class="center">Expires 8 January 2026</td>
+<td class="center">Expires 13 March 2026</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1069,12 +1069,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-certdiscovery-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-07-07" class="published">7 July 2025</time>
+<time datetime="2025-09-09" class="published">9 September 2025</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-01-08">8 January 2026</time></dd>
+<dd class="expires"><time datetime="2026-03-13">13 March 2026</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1137,7 +1137,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 8 January 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 13 March 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1192,39 +1192,36 @@ svg :is([fill="white"], [fill^="#fff"]) {
             <p id="section-toc.1-1.3.1"><a href="#section-3" class="auto internal xref">3</a>.  <a href="#name-certificate-discovery-acces" class="internal xref">Certificate Discovery Access Method</a></p>
 <ul class="compact toc ulBare ulEmpty">
 <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1">
-                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-certlocation" class="internal xref">CertLocation</a></p>
+                <p id="section-toc.1-1.3.2.1.1"><a href="#section-3.1" class="auto internal xref">3.1</a>.  <a href="#name-certdiscoverymethod" class="internal xref">CertDiscoveryMethod</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.2">
-                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-certreference" class="internal xref">CertReference</a></p>
+                <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-certlocation" class="internal xref">CertLocation</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
-                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-certindirectreference" class="internal xref">CertIndirectReference</a></p>
+                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-certhash" class="internal xref">CertHash</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
-                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-certhash" class="internal xref">CertHash</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5">
-                <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="auto internal xref">3.5</a>.  <a href="#name-purpose" class="internal xref">Purpose</a></p>
+                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-discoverypurposeid" class="internal xref">DiscoveryPurposeId</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5.2.1">
-                    <p id="section-toc.1-1.3.2.5.2.1.1"><a href="#section-3.5.1" class="auto internal xref">3.5.1</a>.  <a href="#name-algorithm-agility" class="internal xref">Algorithm Agility</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4.2.1">
+                    <p id="section-toc.1-1.3.2.4.2.1.1"><a href="#section-3.4.1" class="auto internal xref">3.4.1</a>.  <a href="#name-algorithm-agility" class="internal xref">Algorithm Agility</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5.2.2">
-                    <p id="section-toc.1-1.3.2.5.2.2.1"><a href="#section-3.5.2" class="auto internal xref">3.5.2</a>.  <a href="#name-redundancy" class="internal xref">Redundancy</a></p>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4.2.2">
+                    <p id="section-toc.1-1.3.2.4.2.2.1"><a href="#section-3.4.2" class="auto internal xref">3.4.2</a>.  <a href="#name-redundancy" class="internal xref">Redundancy</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5.2.3">
-                    <p id="section-toc.1-1.3.2.5.2.3.1"><a href="#section-3.5.3" class="auto internal xref">3.5.3</a>.  <a href="#name-dual-usage" class="internal xref">Dual Usage</a></p>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4.2.3">
+                    <p id="section-toc.1-1.3.2.4.2.3.1"><a href="#section-3.4.3" class="auto internal xref">3.4.3</a>.  <a href="#name-dual-usage" class="internal xref">Dual Usage</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5.2.4">
-                    <p id="section-toc.1-1.3.2.5.2.4.1"><a href="#section-3.5.4" class="auto internal xref">3.5.4</a>.  <a href="#name-statement-of-possession-of-" class="internal xref">Statement of Possession of a Private Key</a></p>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4.2.4">
+                    <p id="section-toc.1-1.3.2.4.2.4.1"><a href="#section-3.4.4" class="auto internal xref">3.4.4</a>.  <a href="#name-statement-of-possession-of-" class="internal xref">Statement of Possession of a Private Key</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5.2.5">
-                    <p id="section-toc.1-1.3.2.5.2.5.1"><a href="#section-3.5.5" class="auto internal xref">3.5.5</a>.  <a href="#name-self-reference" class="internal xref">Self reference</a></p>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4.2.5">
+                    <p id="section-toc.1-1.3.2.4.2.5.1"><a href="#section-3.4.5" class="auto internal xref">3.4.5</a>.  <a href="#name-self-reference" class="internal xref">Self reference</a></p>
 </li>
                 </ul>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.6">
-                <p id="section-toc.1-1.3.2.6.1"><a href="#section-3.6" class="auto internal xref">3.6</a>.  <a href="#name-signature-algorithm-and-pub" class="internal xref">Signature Algorithm and Public Key Algorithm fields</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5">
+                <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="auto internal xref">3.5</a>.  <a href="#name-signature-algorithm-and-pub" class="internal xref">Signature Algorithm and Public Key Algorithm fields</a></p>
 </li>
             </ul>
 </li>
@@ -1260,7 +1257,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <p id="section-1-3">Second, the proposed method improves operational availability by introducing redundancy in certificate usage. It enables the use of secondary certificates that can serve as backups, ensuring seamless continuity of services even in the event of Primary Certificate expiration or disruptions in the CA infrastructure.<a href="#section-1-3" class="pilcrow">¶</a></p>
 <p id="section-1-4">Finally, the approach accommodates multi-key/certificate usage, allowing for a relying party to obtain certificates to perform cryptographic operations that are not certified by a single certificate.<a href="#section-1-4" class="pilcrow">¶</a></p>
 <p id="section-1-5">The proposed method is designed to maximize compatibility with existing systems, including legacy implementations. It leverages the subjectInfoAccess extension, which is already established in X.509 certificates, and does not require modifications to the referring certificates. This ensures ease of adoption and avoids disruptions to current certificate management practices.<a href="#section-1-5" class="pilcrow">¶</a></p>
-<p id="section-1-6">In the following sections, we will outline the details of the proposed approach, including the structure of the SIA extension, the modes of operation, and the considerations for secure implementation and deployment.<a href="#section-1-6" class="pilcrow">¶</a></p>
+<p id="section-1-6">The following sections outline the details of the proposed approach, including the structure of the SIA extension, the modes of operation, and the considerations for secure implementation and deployment.<a href="#section-1-6" class="pilcrow">¶</a></p>
 <p id="section-1-7">By leveraging the capabilities of the SIA extension for certificate discovery, organizations can enhance cryptographic agility, improve operational availability, and accommodate complex multi-key/certificate scenarios, leading to more secure and resilient cryptographic systems.<a href="#section-1-7" class="pilcrow">¶</a></p>
 <div id="use-case-1-algorithm-agility">
 <section id="section-1.1">
@@ -1363,86 +1360,88 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 <div class="alignLeft art-text artwork" id="section-3-12">
 <pre>
  RelatedCertificateDescriptor ::= SEQUENCE {
-      certref CertReference,
-      purpose DiscoveryPurposeId,
-      signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
-      publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL }
+   method CertDiscoveryMethod,
+   purpose DiscoveryPurposeId OPTIONAL,
+   signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
+   publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
+}
 </pre><a href="#section-3-12" class="pilcrow">¶</a>
 </div>
 <p id="section-3-13"><code>RelatedCertificateDescriptor</code> is composed of 4 components which are defined below.<a href="#section-3-13" class="pilcrow">¶</a></p>
-<div id="certlocation">
+<div id="certdiscoverymethod">
 <section id="section-3.1">
-        <h3 id="name-certlocation">
-<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-certlocation" class="section-name selfRef">CertLocation</a>
+        <h3 id="name-certdiscoverymethod">
+<a href="#section-3.1" class="section-number selfRef">3.1. </a><a href="#name-certdiscoverymethod" class="section-name selfRef">CertDiscoveryMethod</a>
         </h3>
-<p id="section-3.1-1"><code>CertLocation</code> is defined by the following:<a href="#section-3.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.1-1"><code>CertDiscoveryMethod</code> is defined by the following:<a href="#section-3.1-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.1-2">
 <pre>
-CertLocation ::= IA5String
+CertDiscoveryMethod ::= CHOICE {
+  byUri [0] IMPLICIT CertLocation
+  byInclusion Certificate,
+  byLocalPolicy NULL
+}
 </pre><a href="#section-3.1-2" class="pilcrow">¶</a>
 </div>
-<p id="section-3.1-3"><code>CertLocation</code> is to specify the Uniform Resource Identifier (<span>[<a href="#RFC3986" class="cite xref">RFC3986</a>]</span>) where the secondary certificate is located.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-3"><code>CertDiscoveryMethod</code> is the only required field of <code>RelatedCertificateDescriptor</code>. It describes how the related certificate can be retrieved.<a href="#section-3.1-3" class="pilcrow">¶</a></p>
+<p id="section-3.1-4">There are three methods:<a href="#section-3.1-4" class="pilcrow">¶</a></p>
+<ol start="1" type="1" class="normal type-1" id="section-3.1-5">
+<li id="section-3.1-5.1">
+            <p id="section-3.1-5.1.1">The <code>byUri</code> method provides a location where the related certificate can be retrieved. The syntax of <code>CertLocation</code> is described below.<a href="#section-3.1-5.1.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-3.1-5.2">
+            <p id="section-3.1-5.2.1">The <code>byInclusion</code> method encodes the DER encoding of the related certificate directly.<a href="#section-3.1-5.2.1" class="pilcrow">¶</a></p>
+</li>
+          <li id="section-3.1-5.3">
+            <p id="section-3.1-5.3.1">The <code>byLocalPolicy</code> method signals that the related certificate is available in a repository that is usable by the application consuming the certificate.<a href="#section-3.1-5.3.1" class="pilcrow">¶</a></p>
+</li>
+        </ol>
 </section>
 </div>
-<div id="certreference">
+<div id="certlocation">
 <section id="section-3.2">
-        <h3 id="name-certreference">
-<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-certreference" class="section-name selfRef">CertReference</a>
+        <h3 id="name-certlocation">
+<a href="#section-3.2" class="section-number selfRef">3.2. </a><a href="#name-certlocation" class="section-name selfRef">CertLocation</a>
         </h3>
-<p id="section-3.2-1"><code>CertReference</code> is defined by the following:<a href="#section-3.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.2-1"><code>CertLocation</code> is defined by the following:<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.2-2">
 <pre>
- CertReference ::= CHOICE {
-      direct Certificate,
-      indirect [0] IMPLICIT CertIndirectReference
-   }
+CertLocation ::= SEQUENCE {
+   uri IA5String,
+   certHash [0] IMPLICIT CertHash OPTIONAL
+}
 </pre><a href="#section-3.2-2" class="pilcrow">¶</a>
 </div>
-<p id="section-3.2-3">Which is a CHOICE defining either a <code>direct</code> reference to a Certificate (meaning that the full Secondary Certificate is embedded within the Primary Certificate), or an <code>indirect</code> reference (meaning that information to fetch the Secondary Certificate is provided). The syntax of an <code>indirect</code> reference is described below.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="certindirectreference">
-<section id="section-3.3">
-        <h3 id="name-certindirectreference">
-<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-certindirectreference" class="section-name selfRef">CertIndirectReference</a>
-        </h3>
-<p id="section-3.3-1"><code>CertIndirectReference</code> is defined by the following:<a href="#section-3.3-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.3-2">
-<pre>
-CertIndirectReference ::= SEQUENCE {
-         location CertLocation,
-         certHash [0] IMPLICIT CertHash OPTIONAL
-      }
-</pre><a href="#section-3.3-2" class="pilcrow">¶</a>
-</div>
-<p id="section-3.3-3">The certificate is referenced by an IA5String that has the URL reference to the Secondary Certificate. The <code>indirect</code> reference also includes an optional <code>certHash</code> value which can be used to include a cryptographic hash of the DER Encoded Secondary Certificate. The syntax of a <code>certHash</code> is described below.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
+<p id="section-3.2-3">The certificate is referenced by an IA5String that contains the URI of the Secondary Certificate. The DER encoding of the Secondary Certificate <span class="bcp14">MUST</span> be available at the specified location.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
+<p id="section-3.2-4"><code>CertLocation</code> <span class="bcp14">MAY</span> include an optional <code>certHash</code> value which can be used to include a cryptographic hash of the DER Encoded Secondary Certificate. The syntax of <code>CertHash</code> is described below.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="certhash">
-<section id="section-3.4">
+<section id="section-3.3">
         <h3 id="name-certhash">
-<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-certhash" class="section-name selfRef">CertHash</a>
+<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-certhash" class="section-name selfRef">CertHash</a>
         </h3>
-<p id="section-3.4-1"><code>CertHash</code> is defined by the following:<a href="#section-3.4-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.4-2">
+<p id="section-3.3-1"><code>CertHash</code> is defined by the following:<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.3-2">
 <pre>
 CertHash ::= SEQUENCE {
    value OCTET STRING,
    -- TODO Add IssuerAndSerialNumber?
    hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}
 }
-</pre><a href="#section-3.4-2" class="pilcrow">¶</a>
+</pre><a href="#section-3.3-2" class="pilcrow">¶</a>
 </div>
-<p id="section-3.4-3"><code>certHash</code> is defined as a SEQUENCE containing the OCTET STRING <code>value</code> which is the hash of the DER Encoded reference certificate as well as the <code>hashAlgorithm</code>  which contains the AlgorithmIdentifier for the chosen Hash value. All implementations <span class="bcp14">MUST</span> support SHA-256 via <code>id-sha256</code>, and other hash functions <span class="bcp14">MAY</span> be supported.<a href="#section-3.4-3" class="pilcrow">¶</a></p>
+<p id="section-3.3-3"><code>certHash</code> is defined as a SEQUENCE containing the OCTET STRING <code>value</code> which is the hash of the DER Encoded reference certificate as well as the <code>hashAlgorithm</code>, which contains the AlgorithmIdentifier for the chosen Hash value. All implementations <span class="bcp14">MUST</span> support SHA-256 via <code>id-sha256</code>, and other hash functions <span class="bcp14">MAY</span> be supported.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="purpose">
-<section id="section-3.5">
-        <h3 id="name-purpose">
-<a href="#section-3.5" class="section-number selfRef">3.5. </a><a href="#name-purpose" class="section-name selfRef">Purpose</a>
+<div id="discoverypurposeid">
+<section id="section-3.4">
+        <h3 id="name-discoverypurposeid">
+<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-discoverypurposeid" class="section-name selfRef">DiscoveryPurposeId</a>
         </h3>
-<p id="section-3.5-1">The <code>purpose</code> describes the purpose of the discovery method.  Currently the following purpose ids are defined:<a href="#section-3.5-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.5-2">
+<p id="section-3.4-1"><code>DiscoveryPurposeId</code> provides optional information to describe the purpose of including the discovery information for the related certificate.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4-2">Currently, the following purpose identifiers are defined:<a href="#section-3.4-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.4-3">
 <pre>
  -- Purpose OBJECT IDENTIFIER
 id-rcd-alg-agility OBJECT IDENTIFIER ::=
@@ -1459,61 +1458,61 @@ id-rcd-priv-key-stmt OBJECT IDENTIFIER ::=
 
 id-rcd-self OBJECT IDENTIFIER ::=
                                {id-on-relatedCertificateDescriptor 5}
-</pre><a href="#section-3.5-2" class="pilcrow">¶</a>
+</pre><a href="#section-3.4-3" class="pilcrow">¶</a>
 </div>
 <div id="algorithm-agility">
-<section id="section-3.5.1">
+<section id="section-3.4.1">
           <h4 id="name-algorithm-agility">
-<a href="#section-3.5.1" class="section-number selfRef">3.5.1. </a><a href="#name-algorithm-agility" class="section-name selfRef">Algorithm Agility</a>
+<a href="#section-3.4.1" class="section-number selfRef">3.4.1. </a><a href="#name-algorithm-agility" class="section-name selfRef">Algorithm Agility</a>
           </h4>
-<p id="section-3.5.1-1">This purpose indicates the referenced certificate's purpose is to provide algorithm agility; i.e. the two certificates will use different cryptographic algorithms for the same key operations. The two certificates <span class="bcp14">SHOULD</span> be equivalent except for cryptographic algorithm; i.e. the key usages <span class="bcp14">SHOULD</span> match.<a href="#section-3.5.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.4.1-1">This purpose indicates the referenced certificate's purpose is to provide algorithm agility; i.e. the two certificates will use different cryptographic algorithms for the same key operations. The two certificates <span class="bcp14">SHOULD</span> be equivalent except for cryptographic algorithm; i.e. the key usages <span class="bcp14">SHOULD</span> match.<a href="#section-3.4.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="redundancy">
-<section id="section-3.5.2">
+<section id="section-3.4.2">
           <h4 id="name-redundancy">
-<a href="#section-3.5.2" class="section-number selfRef">3.5.2. </a><a href="#name-redundancy" class="section-name selfRef">Redundancy</a>
+<a href="#section-3.4.2" class="section-number selfRef">3.4.2. </a><a href="#name-redundancy" class="section-name selfRef">Redundancy</a>
           </h4>
-<p id="section-3.5.2-1">This purpose indicates the referenced certificate's purpose is to provide operational redundancy; i.e. the Secondary Certificate could be issued by a different CA or has a different validity period which can be used as a backup if the Primary set of certificates is about to expire.<a href="#section-3.5.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.4.2-1">This purpose indicates the referenced certificate's purpose is to provide operational redundancy; i.e. the Secondary Certificate could be issued by a different CA or has a different validity period which can be used as a backup if the Primary set of certificates is about to expire.<a href="#section-3.4.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="dual-usage">
-<section id="section-3.5.3">
+<section id="section-3.4.3">
           <h4 id="name-dual-usage">
-<a href="#section-3.5.3" class="section-number selfRef">3.5.3. </a><a href="#name-dual-usage" class="section-name selfRef">Dual Usage</a>
+<a href="#section-3.4.3" class="section-number selfRef">3.4.3. </a><a href="#name-dual-usage" class="section-name selfRef">Dual Usage</a>
           </h4>
-<p id="section-3.5.3-1">This purpose indicates the referenced certificate's purpose is for dual usage; i.e. the related certificates belong to the same entity and one provides a signing-type key while the other provides an encryption-type key. The two certificates <span class="bcp14">SHOULD</span> have matching identifiers.<a href="#section-3.5.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.4.3-1">This purpose indicates the referenced certificate's purpose is for dual usage; i.e. the related certificates belong to the same entity and one provides a signing-type key while the other provides an encryption-type key. The two certificates <span class="bcp14">SHOULD</span> have matching identifiers.<a href="#section-3.4.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="statement-of-possession-of-a-private-key">
-<section id="section-3.5.4">
+<section id="section-3.4.4">
           <h4 id="name-statement-of-possession-of-">
-<a href="#section-3.5.4" class="section-number selfRef">3.5.4. </a><a href="#name-statement-of-possession-of-" class="section-name selfRef">Statement of Possession of a Private Key</a>
+<a href="#section-3.4.4" class="section-number selfRef">3.4.4. </a><a href="#name-statement-of-possession-of-" class="section-name selfRef">Statement of Possession of a Private Key</a>
           </h4>
-<p id="section-3.5.4-1">This purpose indicates that the Primary Certificate did not not do a full proof-of-possession at enrollment time, but instead it provided a statement of possession as per <span>[<a href="#I-D.ietf-lamps-private-key-stmt-attr" class="cite xref">I-D.ietf-lamps-private-key-stmt-attr</a>]</span> signed by the Secondary Certificate.<a href="#section-3.5.4-1" class="pilcrow">¶</a></p>
-<p id="section-3.5.4-2">The reason for carrying a RelatedCertificateDescriptor of this type is to track that the Primary Certificate had a trust dependency on the Secondary Certificate at the time of issuance and that presumably the two private keys are co-located on the same key storage. Therefore if one certificate is revoked, they <span class="bcp14">SHOULD</span> both be revoked.<a href="#section-3.5.4-2" class="pilcrow">¶</a></p>
+<p id="section-3.4.4-1">This purpose indicates that the Primary Certificate did not not do a full proof-of-possession at enrollment time, but instead it provided a statement of possession as per <span>[<a href="#I-D.ietf-lamps-private-key-stmt-attr" class="cite xref">I-D.ietf-lamps-private-key-stmt-attr</a>]</span> signed by the Secondary Certificate.<a href="#section-3.4.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4.4-2">The reason for carrying a RelatedCertificateDescriptor of this type is to track that the Primary Certificate had a trust dependency on the Secondary Certificate at the time of issuance and that presumably the two private keys are co-located on the same key storage. Therefore if one certificate is revoked, they <span class="bcp14">SHOULD</span> both be revoked.<a href="#section-3.4.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="self-reference">
-<section id="section-3.5.5">
+<section id="section-3.4.5">
           <h4 id="name-self-reference">
-<a href="#section-3.5.5" class="section-number selfRef">3.5.5. </a><a href="#name-self-reference" class="section-name selfRef">Self reference</a>
+<a href="#section-3.4.5" class="section-number selfRef">3.4.5. </a><a href="#name-self-reference" class="section-name selfRef">Self reference</a>
           </h4>
-<p id="section-3.5.5-1">This purpose indicates the Uniform Resource Identifier where this certificate is located. Applications which retrieve this certificate can then compare the retrieved certificate with this value to ensure that the correct certificate was retrieved.<a href="#section-3.5.5-1" class="pilcrow">¶</a></p>
-<p id="section-3.5.5-2">This purpose can be used to bind the subjects of Primary and Secondary Certificates. The Primary Certificate contains a self-reference to its location, as well as a reference to the Secondary Certificate. The Secondary Certificate contains a self-reference to its location, and a reference to the Primary Certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.<a href="#section-3.5.5-2" class="pilcrow">¶</a></p>
+<p id="section-3.4.5-1">This purpose indicates the Uniform Resource Identifier where this certificate is located. Applications which retrieve this certificate can then compare the retrieved certificate with this value to ensure that the correct certificate was retrieved.<a href="#section-3.4.5-1" class="pilcrow">¶</a></p>
+<p id="section-3.4.5-2">This purpose can be used to bind the subjects of Primary and Secondary Certificates. The Primary Certificate contains a self-reference to its location, as well as a reference to the Secondary Certificate. The Secondary Certificate contains a self-reference to its location, and a reference to the Primary Certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.<a href="#section-3.4.5-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
 <div id="signature-algorithm-and-public-key-algorithm-fields">
-<section id="section-3.6">
+<section id="section-3.5">
         <h3 id="name-signature-algorithm-and-pub">
-<a href="#section-3.6" class="section-number selfRef">3.6. </a><a href="#name-signature-algorithm-and-pub" class="section-name selfRef">Signature Algorithm and Public Key Algorithm fields</a>
+<a href="#section-3.5" class="section-number selfRef">3.5. </a><a href="#name-signature-algorithm-and-pub" class="section-name selfRef">Signature Algorithm and Public Key Algorithm fields</a>
         </h3>
-<p id="section-3.6-1">The signatureAlgorithm is used to indicate the signature algorithm used in the Secondary Certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.<a href="#section-3.6-1" class="pilcrow">¶</a></p>
-<p id="section-3.6-2">When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.<a href="#section-3.6-2" class="pilcrow">¶</a></p>
-<p id="section-3.6-3">The semantics of other id-ad-certDiscovery accessLocation name forms are not defined.<a href="#section-3.6-3" class="pilcrow">¶</a></p>
-<p id="section-3.6-4">Note:  For a description of uniformResourceIdentifier consult section 4.2.2.1 of [!RFC5280].<a href="#section-3.6-4" class="pilcrow">¶</a></p>
+<p id="section-3.5-1">The signatureAlgorithm is used to indicate the signature algorithm used in the Secondary Certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
+<p id="section-3.5-2">When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.<a href="#section-3.5-2" class="pilcrow">¶</a></p>
+<p id="section-3.5-3">The semantics of other id-ad-certDiscovery accessLocation name forms are not defined.<a href="#section-3.5-3" class="pilcrow">¶</a></p>
+<p id="section-3.5-4">Note:  For a description of uniformResourceIdentifier consult section 4.2.2.1 of [!RFC5280].<a href="#section-3.5-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1551,10 +1550,6 @@ subject equivalence is out of scope of this document.<a href="#section-4-2" clas
 <dt id="RFC2119">[RFC2119]</dt>
       <dd>
 <span class="refAuthor">Bradner, S.</span>, <span class="refTitle">"Key words for use in RFCs to Indicate Requirement Levels"</span>, <span class="seriesInfo">BCP 14</span>, <span class="seriesInfo">RFC 2119</span>, <span class="seriesInfo">DOI 10.17487/RFC2119</span>, <time datetime="1997-03" class="refDate">March 1997</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc2119">https://www.rfc-editor.org/rfc/rfc2119</a>&gt;</span>. </dd>
-<dd class="break"></dd>
-<dt id="RFC3986">[RFC3986]</dt>
-      <dd>
-<span class="refAuthor">Berners-Lee, T.</span>, <span class="refAuthor">Fielding, R.</span>, and <span class="refAuthor">L. Masinter</span>, <span class="refTitle">"Uniform Resource Identifier (URI): Generic Syntax"</span>, <span class="seriesInfo">STD 66</span>, <span class="seriesInfo">RFC 3986</span>, <span class="seriesInfo">DOI 10.17487/RFC3986</span>, <time datetime="2005-01" class="refDate">January 2005</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc3986">https://www.rfc-editor.org/rfc/rfc3986</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC5280">[RFC5280]</dt>
       <dd>
@@ -1627,25 +1622,25 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    DiscoveryPurposeId ::= OBJECT IDENTIFIER
 
    RelatedCertificateDescriptor ::= SEQUENCE {
-      certref CertReference,
-      purpose DiscoveryPurposeId,
-      signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
-      publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
+     method CertDiscoveryMethod,
+     purpose DiscoveryPurposeId OPTIONAL,
+     signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
+     publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
    }
 
-    CertReference ::= CHOICE {
-      direct Certificate,
-      indirect [0] IMPLICIT CertIndirectReference
+   CertDiscoveryMethod ::= CHOICE {
+     byUri [0] IMPLICIT CertLocation
+     byInclusion Certificate,
+     byLocalPolicy NULL
    }
 
-   CertIndirectReference ::= SEQUENCE {
-      uniformResourceIdentifier IA5String,
+   CertLocation ::= SEQUENCE {
+      uri IA5String,
       certHash [0] IMPLICIT CertHash OPTIONAL
    }
 
    CertHash ::= SEQUENCE {
       value OCTET STRING,
-      -- TODO Add IssuerAndSerialNumber?
       hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}
    }
 

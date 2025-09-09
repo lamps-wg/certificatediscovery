@@ -5,13 +5,13 @@
 Network Working Group                                           T. Okubo
 Internet-Draft                              Penguin Securities Pte. Ltd.
 Intended status: Standards Track                              C. Bonnell
-Expires: 8 January 2026                                   DigiCert, Inc.
+Expires: 13 March 2026                                    DigiCert, Inc.
                                                                  J. Gray
                                                             M. Ounsworth
                                                                  Entrust
                                                                J. Mandel
                                                             AKAYLA, Inc.
-                                                             7 July 2025
+                                                        9 September 2025
 
 
               A Mechanism for X.509 Certificate Discovery
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 8 January 2026.
+   This Internet-Draft will expire on 13 March 2026.
 
 Copyright Notice
 
@@ -98,17 +98,16 @@ Table of Contents
    2.  Conventions and Definitions
      2.1.  Definitions
    3.  Certificate Discovery Access Method
-     3.1.  CertLocation
-     3.2.  CertReference
-     3.3.  CertIndirectReference
-     3.4.  CertHash
-     3.5.  Purpose
-       3.5.1.  Algorithm Agility
-       3.5.2.  Redundancy
-       3.5.3.  Dual Usage
-       3.5.4.  Statement of Possession of a Private Key
-       3.5.5.  Self reference
-     3.6.  Signature Algorithm and Public Key Algorithm fields
+     3.1.  CertDiscoveryMethod
+     3.2.  CertLocation
+     3.3.  CertHash
+     3.4.  DiscoveryPurposeId
+       3.4.1.  Algorithm Agility
+       3.4.2.  Redundancy
+       3.4.3.  Dual Usage
+       3.4.4.  Statement of Possession of a Private Key
+       3.4.5.  Self reference
+     3.5.  Signature Algorithm and Public Key Algorithm fields
    4.  Security Considerations
    5.  IANA Considerations
    6.  Normative References
@@ -152,10 +151,9 @@ Table of Contents
    certificates.  This ensures ease of adoption and avoids disruptions
    to current certificate management practices.
 
-   In the following sections, we will outline the details of the
-   proposed approach, including the structure of the SIA extension, the
-   modes of operation, and the considerations for secure implementation
-   and deployment.
+   The following sections outline the details of the proposed approach,
+   including the structure of the SIA extension, the modes of operation,
+   and the considerations for secure implementation and deployment.
 
    By leveraging the capabilities of the SIA extension for certificate
    discovery, organizations can enhance cryptographic agility, improve
@@ -287,54 +285,60 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    RelatedCertificateDescriptor is defined as follows:
 
     RelatedCertificateDescriptor ::= SEQUENCE {
-         certref CertReference,
-         purpose DiscoveryPurposeId,
-         signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
-         publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL }
+      method CertDiscoveryMethod,
+      purpose DiscoveryPurposeId OPTIONAL,
+      signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
+      publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
+   }
 
    RelatedCertificateDescriptor is composed of 4 components which are
    defined below.
 
-3.1.  CertLocation
+3.1.  CertDiscoveryMethod
+
+   CertDiscoveryMethod is defined by the following:
+
+   CertDiscoveryMethod ::= CHOICE {
+     byUri [0] IMPLICIT CertLocation
+     byInclusion Certificate,
+     byLocalPolicy NULL
+   }
+
+   CertDiscoveryMethod is the only required field of
+   RelatedCertificateDescriptor.  It describes how the related
+   certificate can be retrieved.
+
+   There are three methods:
+
+   1.  The byUri method provides a location where the related
+       certificate can be retrieved.  The syntax of CertLocation is
+       described below.
+
+   2.  The byInclusion method encodes the DER encoding of the related
+       certificate directly.
+
+   3.  The byLocalPolicy method signals that the related certificate is
+       available in a repository that is usable by the application
+       consuming the certificate.
+
+3.2.  CertLocation
 
    CertLocation is defined by the following:
 
-   CertLocation ::= IA5String
+   CertLocation ::= SEQUENCE {
+      uri IA5String,
+      certHash [0] IMPLICIT CertHash OPTIONAL
+   }
 
-   CertLocation is to specify the Uniform Resource Identifier
-   ([RFC3986]) where the secondary certificate is located.
+   The certificate is referenced by an IA5String that contains the URI
+   of the Secondary Certificate.  The DER encoding of the Secondary
+   Certificate MUST be available at the specified location.
 
-3.2.  CertReference
+   CertLocation MAY include an optional certHash value which can be used
+   to include a cryptographic hash of the DER Encoded Secondary
+   Certificate.  The syntax of CertHash is described below.
 
-   CertReference is defined by the following:
-
-    CertReference ::= CHOICE {
-         direct Certificate,
-         indirect [0] IMPLICIT CertIndirectReference
-      }
-
-   Which is a CHOICE defining either a direct reference to a Certificate
-   (meaning that the full Secondary Certificate is embedded within the
-   Primary Certificate), or an indirect reference (meaning that
-   information to fetch the Secondary Certificate is provided).  The
-   syntax of an indirect reference is described below.
-
-3.3.  CertIndirectReference
-
-   CertIndirectReference is defined by the following:
-
-   CertIndirectReference ::= SEQUENCE {
-            location CertLocation,
-            certHash [0] IMPLICIT CertHash OPTIONAL
-         }
-
-   The certificate is referenced by an IA5String that has the URL
-   reference to the Secondary Certificate.  The indirect reference also
-   includes an optional certHash value which can be used to include a
-   cryptographic hash of the DER Encoded Secondary Certificate.  The
-   syntax of a certHash is described below.
-
-3.4.  CertHash
+3.3.  CertHash
 
    CertHash is defined by the following:
 
@@ -346,14 +350,17 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 
    certHash is defined as a SEQUENCE containing the OCTET STRING value
    which is the hash of the DER Encoded reference certificate as well as
-   the hashAlgorithm which contains the AlgorithmIdentifier for the
+   the hashAlgorithm, which contains the AlgorithmIdentifier for the
    chosen Hash value.  All implementations MUST support SHA-256 via id-
    sha256, and other hash functions MAY be supported.
 
-3.5.  Purpose
+3.4.  DiscoveryPurposeId
 
-   The purpose describes the purpose of the discovery method.  Currently
-   the following purpose ids are defined:
+   DiscoveryPurposeId provides optional information to describe the
+   purpose of including the discovery information for the related
+   certificate.
+
+   Currently, the following purpose identifiers are defined:
 
     -- Purpose OBJECT IDENTIFIER
    id-rcd-alg-agility OBJECT IDENTIFIER ::=
@@ -371,7 +378,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    id-rcd-self OBJECT IDENTIFIER ::=
                                   {id-on-relatedCertificateDescriptor 5}
 
-3.5.1.  Algorithm Agility
+3.4.1.  Algorithm Agility
 
    This purpose indicates the referenced certificate's purpose is to
    provide algorithm agility; i.e. the two certificates will use
@@ -379,7 +386,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    two certificates SHOULD be equivalent except for cryptographic
    algorithm; i.e. the key usages SHOULD match.
 
-3.5.2.  Redundancy
+3.4.2.  Redundancy
 
    This purpose indicates the referenced certificate's purpose is to
    provide operational redundancy; i.e. the Secondary Certificate could
@@ -387,7 +394,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    can be used as a backup if the Primary set of certificates is about
    to expire.
 
-3.5.3.  Dual Usage
+3.4.3.  Dual Usage
 
    This purpose indicates the referenced certificate's purpose is for
    dual usage; i.e. the related certificates belong to the same entity
@@ -395,7 +402,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    encryption-type key.  The two certificates SHOULD have matching
    identifiers.
 
-3.5.4.  Statement of Possession of a Private Key
+3.4.4.  Statement of Possession of a Private Key
 
    This purpose indicates that the Primary Certificate did not not do a
    full proof-of-possession at enrollment time, but instead it provided
@@ -409,7 +416,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    the two private keys are co-located on the same key storage.
    Therefore if one certificate is revoked, they SHOULD both be revoked.
 
-3.5.5.  Self reference
+3.4.5.  Self reference
 
    This purpose indicates the Uniform Resource Identifier where this
    certificate is located.  Applications which retrieve this certificate
@@ -425,7 +432,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    then the consuming application can treat both certificates as
    certifying the same entity.
 
-3.6.  Signature Algorithm and Public Key Algorithm fields
+3.5.  Signature Algorithm and Public Key Algorithm fields
 
    The signatureAlgorithm is used to indicate the signature algorithm
    used in the Secondary Certificate and is an optional field.  The
@@ -499,11 +506,6 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
               DOI 10.17487/RFC2119, March 1997,
               <https://www.rfc-editor.org/rfc/rfc2119>.
 
-   [RFC3986]  Berners-Lee, T., Fielding, R., and L. Masinter, "Uniform
-              Resource Identifier (URI): Generic Syntax", STD 66,
-              RFC 3986, DOI 10.17487/RFC3986, January 2005,
-              <https://www.rfc-editor.org/rfc/rfc3986>.
-
    [RFC5280]  Cooper, D., Santesson, S., Farrell, S., Boeyen, S.,
               Housley, R., and W. Polk, "Internet X.509 Public Key
               Infrastructure Certificate and Certificate Revocation List
@@ -567,25 +569,25 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    DiscoveryPurposeId ::= OBJECT IDENTIFIER
 
    RelatedCertificateDescriptor ::= SEQUENCE {
-      certref CertReference,
-      purpose DiscoveryPurposeId,
-      signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
-      publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
+     method CertDiscoveryMethod,
+     purpose DiscoveryPurposeId OPTIONAL,
+     signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
+     publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
    }
 
-    CertReference ::= CHOICE {
-      direct Certificate,
-      indirect [0] IMPLICIT CertIndirectReference
+   CertDiscoveryMethod ::= CHOICE {
+     byUri [0] IMPLICIT CertLocation
+     byInclusion Certificate,
+     byLocalPolicy NULL
    }
 
-   CertIndirectReference ::= SEQUENCE {
-      uniformResourceIdentifier IA5String,
+   CertLocation ::= SEQUENCE {
+      uri IA5String,
       certHash [0] IMPLICIT CertHash OPTIONAL
    }
 
    CertHash ::= SEQUENCE {
       value OCTET STRING,
-      -- TODO Add IssuerAndSerialNumber?
       hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}
    }
 
