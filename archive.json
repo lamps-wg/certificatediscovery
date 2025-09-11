@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-08-28T01:26:02.355002+00:00",
+  "timestamp": "2025-09-11T01:25:03.098574+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -339,9 +339,17 @@
       "labels": [],
       "body": "Add a paragraph explaining procedure on how someone should use a different purpose ID if needed.\n",
       "createdAt": "2025-07-02T13:38:30Z",
-      "updatedAt": "2025-07-02T13:38:30Z",
+      "updatedAt": "2025-09-09T13:18:58Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Also add a section on IANA considerations.",
+          "createdAt": "2025-09-09T13:18:58Z",
+          "updatedAt": "2025-09-09T13:18:58Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -638,24 +646,26 @@
       "id": "PR_kwDOKkGlhc6lRTk_",
       "title": "Revamped ASN.1",
       "url": "https://github.com/lamps-wg/certificatediscovery/pull/22",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "CBonnell",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2025-08-25T19:14:23Z",
-      "updatedAt": "2025-08-26T14:04:24Z",
+      "updatedAt": "2025-09-09T13:18:17Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "0fcc91395a1fd6e9a15bff39a25930c2d78a63bb",
       "headRepository": "lamps-wg/certificatediscovery",
       "headRefName": "new-asn1",
       "headRefOid": "4ba13bbe8e9c997f594e6d20bf03b22ffbed8573",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-09-09T13:18:06Z",
+      "mergedAt": "2025-09-09T13:18:06Z",
+      "mergedBy": "CBonnell",
+      "mergeCommit": {
+        "oid": "6a64a53bf94811d3d0fc2ac4dfc2449387e053d1"
+      },
       "comments": [],
       "reviews": [
         {
