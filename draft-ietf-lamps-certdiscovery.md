@@ -233,19 +233,19 @@ Currently, the following purpose identifiers are defined:
 ~~~
  -- Purpose OBJECT IDENTIFIER
 id-rcd-alg-agility OBJECT IDENTIFIER ::=
-                               {id-on-relatedCertificateDescriptor 1}
+                               {id-rcd 1}
 
 id-rcd-redundancy OBJECT IDENTIFIER ::=
-                               {id-on-relatedCertificateDescriptor 2}
+                               {id-rcd 2}
 
 id-rcd-dual OBJECT IDENTIFIER ::=
-                               {id-on-relatedCertificateDescriptor 3}
+                               {id-rcd 3}
 
 id-rcd-priv-key-stmt OBJECT IDENTIFIER ::=
-                               {id-on-relatedCertificateDescriptor 4}
+                               {id-rcd 4}
 
 id-rcd-self OBJECT IDENTIFIER ::=
-                               {id-on-relatedCertificateDescriptor 5}
+                               {id-rcd 5}
 ~~~
 
 ### Algorithm Agility
@@ -296,8 +296,51 @@ The same security considerations for `caIssuers` access method outlined in {{RFC
 
 # IANA Considerations
 
-TBD
+## Module Identifier
 
+IANA is requested to add the following entry in the "SMI Security for PKIX Module Identifier" registry, defined by [RFC7299]:
+
+| Decimal | Description          | References |
+| ------- | -------------------- | ---------- |
+| TBD1    | id-mod-CertDiscovery | [this-RFC] |
+
+## Access Descriptor
+
+IANA is requested to add the following entry in the "SMI Security for PKIX Access Descriptor" registry, defined by [RFC7299]:
+
+| Decimal | Description          | References |
+| ------- | -------------------- | ---------- |
+| TBD2    | id-ad-certDiscovery  | [this-RFC] |
+
+## Other Name Form
+
+IANA is requested to add the following entry in the "SMI Security for PKIX Access Descriptor" registry, defined by [RFC7299]:
+
+| Decimal | Description                        | References |
+| ------- | ---------------------------------- | ---------- |
+| TBD3    | id-on-relatedCertificateDescriptor | [this-RFC] |
+
+## Certificate Discovery Purpose Identifiers
+
+To allocate id-rcd, this document introduces a new PKIX OID arc for certificate discovery purpose identifiers:
+
+IANA is requested to add the following entry to "SMI Security for PKIX" registry, defined by [RFC 7299]:
+
+| Decimal | Description | References |
+| ------- | ----------- | ---------- |
+| TBD4    | Certificate Discovery Purpose Identifier | [this-RFC] |
+
+IANA is requested to create the "Certificate Discovery Purpose Identifiers" registry with the following initial values:
+
+| Decimal | Description          | References |
+| ------- | -------------------- | ---------- |
+| 1       | id-rcd-agility       | [this-RFC] |
+| 2       | id-rcd-redundanc     | [this-RFC] |
+| 3       | id-rcd-dual          | [this-RFC] |
+| 3       | id-rcd-priv-key-stmt | [this-RFC] |
+| 5       | id-rcd-self          | [this-RFC] |
+
+Updates to this table are to be made according to the Specification Required policy as defined in [RFC8126].
 
 --- back
 
@@ -332,7 +375,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
       { iso(1) identified-organization(3) dod(6) internet(1) security(5)
       mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-explicit-02(51) } ;
 
-   id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
+   id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD2 }
 
    -- Other Name OID Arc --
 
@@ -340,18 +383,22 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
 
    -- Certificate Discovery Access Descriptor --
 
-   id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }
+   id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD3 }
 
    on-RelatedCertificateDescriptor OTHER-NAME ::= {
       RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
    }
 
-   -- Purpose OBJECT IDENTIFIER
-   id-rcd-agility OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 1}
-   id-rcd-redundency OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 2}
-   id-rcd-dual OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 3}
-   id-rcd-priv-key-stmt OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 4}
-   id-rcd-self OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 5}
+   id-rcd ::= OBJECT IDENTIFIER { iso(1) identified-organization(3) dod(6) internet(1) security(5)
+      mechanisms(5) pkix(7) id-rcd(TBD4) }
+
+   -- Purpose OBJECT IDENTIFIERs
+
+   id-rcd-agility OBJECT IDENTIFIER ::= {id-rcd 1}
+   id-rcd-redundency OBJECT IDENTIFIER ::= {id-rcd 2}
+   id-rcd-dual OBJECT IDENTIFIER ::= {id-rcd 3}
+   id-rcd-priv-key-stmt OBJECT IDENTIFIER ::= {id-rcd 4}
+   id-rcd-self OBJECT IDENTIFIER ::= {id-rcd 5}
 
    DiscoveryPurposeId ::= OBJECT IDENTIFIER
 
