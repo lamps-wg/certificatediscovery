@@ -1770,13 +1770,14 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
 
    -- Purpose OBJECT IDENTIFIERs
 
-   id-rcd-agility OBJECT IDENTIFIER ::= {id-rcd 1}
-   id-rcd-redundency OBJECT IDENTIFIER ::= {id-rcd 2}
-   id-rcd-dual OBJECT IDENTIFIER ::= {id-rcd 3}
-   id-rcd-priv-key-stmt OBJECT IDENTIFIER ::= {id-rcd 4}
-   id-rcd-self OBJECT IDENTIFIER ::= {id-rcd 5}
-
    DiscoveryPurposeId ::= OBJECT IDENTIFIER
+
+   id-rcd-agility DisoveryPurposeId ::= {id-rcd 1}
+   id-rcd-redundency DisoveryPurposeId ::= {id-rcd 2}
+   id-rcd-dual DisoveryPurposeId ::= {id-rcd 3}
+   id-rcd-priv-key-stmt DisoveryPurposeId ::= {id-rcd 4}
+   id-rcd-self DisoveryPurposeId ::= {id-rcd 5}
+
 
    RelatedCertificateDescriptor ::= SEQUENCE {
      method CertDiscoveryMethod,
