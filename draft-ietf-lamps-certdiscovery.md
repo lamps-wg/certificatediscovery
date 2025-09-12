@@ -232,7 +232,7 @@ Currently, the following purpose identifiers are defined:
 
 ~~~
  -- Purpose OBJECT IDENTIFIER
-id-rcd-alg-agility OBJECT IDENTIFIER ::=
+id-rcd-agility OBJECT IDENTIFIER ::=
                                {id-rcd 1}
 
 id-rcd-redundancy OBJECT IDENTIFIER ::=
