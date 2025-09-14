@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-09-11T01:25:03.098574+00:00",
+  "timestamp": "2025-09-14T01:36:13.885195+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -708,6 +708,32 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 23,
+      "id": "PR_kwDOKkGlhc6oSW9L",
+      "title": "Add IANA considerations",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/23",
+      "state": "OPEN",
+      "author": "CBonnell",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Resolves #20.",
+      "createdAt": "2025-09-12T16:53:24Z",
+      "updatedAt": "2025-09-12T18:03:07Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "6a64a53bf94811d3d0fc2ac4dfc2449387e053d1",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "iana",
+      "headRefOid": "6e2fe225b3566d716134de024ac9d3a97231ae3f",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
