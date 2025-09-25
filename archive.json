@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-09-14T01:36:13.885195+00:00",
+  "timestamp": "2025-09-25T01:24:59.532642+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -141,7 +141,7 @@
       "labels": [],
       "body": "\nNotes for April 22nd Authors meeting:\n\nAction Joe:  Send chairs e-mail about linking drafts in dataTracker:\nhttps://datatracker.ietf.org/doc/draft-lamps-okubo-certdiscovery/\nhttps://datatracker.ietf.org/doc/draft-ietf-lamps-certdiscovery/\n\nAction Tomofumi:  will transfer the repository ownership to lamps_wg\n\nDiscussed:  Cleaning up the text for operational redundancy\n\nPurposes we have in Mind:\n\nSolid purpose ideas:\n1.  Discovery - Discover another certificate (with our without Hash)\n\u2002\u2002\u2002\u2002\u2002\u2002- Algorithm update (RSA -> ML-DSA for example)  -> URL\n        - Strong downgrade (ML-DSA -> RSA) - strong cryptographic chaining?  ->URL\n        - Full certificate -> Full Encoded Cert\n        - Use a CHOICE (SEQUENCE { URI, OptionalPurpose, OptionalHash} or FullCert }\n2.  Operational Redundancy? \n3.  Dual Usage  \n\nNeed more thinking:\n3.  Statement of Possession?\n\n5.  Others?\n\n\nPossible updated ASN.1\n- Taking into account adding extensible purpose idea,\n- Alex Raliens inclusion of the full certificate\n- Added the Optional Hash for stronger 1-way binding\n\nTested via ASN.1 playground https://asn1.io/asn1playground/\n\nCertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)\n   security(5) mechanisms(5) pkix(7) id-mod(0) id-mod-CertDiscovery(TBD) }\n\n   DEFINITIONS EXPLICIT TAGS ::=\n\n   BEGIN\n\n   -- EXPORTS ALL --\n\n   IMPORTS\n    OTHER-NAME\n    FROM PKIX1Implicit-2009\n      { iso(1) identified-organization(3) dod(6) internet(1) security(5)\n      mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-implicit-02(59) }\n\n    id-pkix, id-ad, Certificate\n    FROM PKIX1Explicit-2009\n      { iso(1) identified-organization(3) dod(6) internet(1) security(5)\n      mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-explicit-02(51) } ;\n\n   -- Access descriptor OID --\n\n   id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }\n\n   -- Other Name OID Arc --\n\n   id-on OBJECT IDENTIFIER ::= { id-pkix 8 }\n\n   -- Certificate Discovery Access Descriptor --\n\n   id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }\n\n   on-RelatedCertificateDescriptor OTHER-NAME ::= {\n        RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor\n    }\n\n   -- Purpose OJBECT IDENTIFIER  \n   id-rcd-agility OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 1}\n   id-rcd-redundency OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 2}\n   id-rcd-dual OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 3}\n   \n   DiscoveryPurposeId ::= OBJECT IDENTIFIER\n\n   RelatedCertificateDescriptor ::= SEQUENCE {\n       certref CertReference,  \n       purpose DiscoveryPurposeId,\n       signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,\n       publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL\n   }\n\n   CertReference ::= CHOICE {\n     direct Certificate,\n     indirect SEQUENCE {\n       uniformResourceIdentifier IA5String,\n       certHash [0] IMPLICIT CertHash OPTIONAL\n     }\n   }\n\n   CertHash ::= SEQUENCE {\n      value OCTET STRING,\n      -TODO Add IssuerAndSerialNumber?\n      hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}\n   }\n\n   END\n",
       "createdAt": "2025-04-22T16:45:43Z",
-      "updatedAt": "2025-06-17T14:16:39Z",
+      "updatedAt": "2025-09-23T13:46:55Z",
       "closedAt": null,
       "comments": [
         {
@@ -185,6 +185,13 @@
           "body": "Notes from June 16th:\n- If we want to use IssuerSerialNumber look at Russ's private key statement draft\n- UUID_DISCOVERY as part of the URI - recommend a URI structure that defines \n- Opened a number of issues:  #13, #12, #11, #10\n  ",
           "createdAt": "2025-06-17T13:51:40Z",
           "updatedAt": "2025-06-17T14:16:39Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "September 23rd\n- Joe and John met and looked a Corey's pull request - both agree to Merge.  \n- Merged pull request\n- Suggest doing a top to bottom read for next week and see if we are ready to push a new version and possibly ask for WGLC?",
+          "createdAt": "2025-09-23T13:28:01Z",
+          "updatedAt": "2025-09-23T13:46:55Z"
         }
       ]
     },
@@ -332,15 +339,15 @@
       "id": "I_kwDOKkGlhc6-fn5A",
       "title": "Add text about how to use alternate purposes",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/20",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Add a paragraph explaining procedure on how someone should use a different purpose ID if needed.\n",
       "createdAt": "2025-07-02T13:38:30Z",
-      "updatedAt": "2025-09-09T13:18:58Z",
-      "closedAt": null,
+      "updatedAt": "2025-09-23T13:28:20Z",
+      "closedAt": "2025-09-23T13:28:20Z",
       "comments": [
         {
           "author": "johngray-dev",
@@ -714,26 +721,42 @@
       "id": "PR_kwDOKkGlhc6oSW9L",
       "title": "Add IANA considerations",
       "url": "https://github.com/lamps-wg/certificatediscovery/pull/23",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "CBonnell",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Resolves #20.",
       "createdAt": "2025-09-12T16:53:24Z",
-      "updatedAt": "2025-09-12T18:03:07Z",
+      "updatedAt": "2025-09-23T13:28:19Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "6a64a53bf94811d3d0fc2ac4dfc2449387e053d1",
       "headRepository": "lamps-wg/certificatediscovery",
       "headRefName": "iana",
       "headRefOid": "6e2fe225b3566d716134de024ac9d3a97231ae3f",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2025-09-23T13:28:18Z",
+      "mergedAt": "2025-09-23T13:28:18Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "4c8a176918ac77bc907c7799a1fe963310cce92f"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKkGlhc7CLy9F",
+          "commit": {
+            "abbreviatedOid": "6e2fe22"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2025-09-23T12:54:40Z",
+          "updatedAt": "2025-09-23T12:54:40Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
