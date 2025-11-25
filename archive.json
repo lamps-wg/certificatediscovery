@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-09-25T01:24:59.532642+00:00",
+  "timestamp": "2025-11-25T01:40:04.666134+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -357,6 +357,22 @@
           "updatedAt": "2025-09-09T13:18:58Z"
         }
       ]
+    },
+    {
+      "number": 24,
+      "id": "I_kwDOKkGlhc7aHS-d",
+      "title": "Address Russ's comments on the new Draft",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/24",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "The ASN.1 Module in this draft does not compile. \u00a0There are many syntax problems and several things that need to be IMPORTed (like AlgorithmIdentifier, Certificate, and id-sha256).\n\nI am also concerned about the use of \"Purpose OBJECT IDENTIFIERs\". \u00a0This seems too easy to confuse with EKU, which are also call key purpose identifiers. \u00a0Can we be more descriptive to avoid confusion?\n",
+      "createdAt": "2025-11-24T15:14:22Z",
+      "updatedAt": "2025-11-24T15:14:22Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
