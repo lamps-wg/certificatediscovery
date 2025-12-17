@@ -356,7 +356,7 @@ The following ASN.1 module provides the complete definition of the Certificate D
 
 ~~~
 CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
-   security(5) mechanisms(5) pkix(7) id-mod(0) id-mod-CertDiscovery(TBD1) }
+   security(5) mechanisms(5) pkix(7) id-mod(0) id-mod-CertDiscovery(TBD) }
 
    DEFINITIONS EXPLICIT TAGS ::=
 
@@ -365,7 +365,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
 -- EXPORTS ALL --
 
    IMPORTS
-    OTHER-NAME
+    OTHER-NAME, AlgorithmIdentifier, Certificate
     FROM PKIX1Implicit-2009
       { iso(1) identified-organization(3) dod(6) internet(1) security(5)
       mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-implicit-02(59) }
@@ -389,7 +389,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
       RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
    }
 
-   id-rcd ::= OBJECT IDENTIFIER { iso(1) identified-organization(3) dod(6) internet(1) security(5)
+   id-rcd OBJECT IDENTIFIER ::= { iso(1) identified-organization(3) dod(6) internet(1) security(5)
       mechanisms(5) pkix(7) id-rcd(TBD4) }
 
    -- Purpose OBJECT IDENTIFIERs
@@ -411,7 +411,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    }
 
    CertDiscoveryMethod ::= CHOICE {
-     byUri [0] IMPLICIT CertLocation
+     byUri [0] IMPLICIT CertLocation,
      byInclusion Certificate,
      byLocalPolicy NULL
    }
