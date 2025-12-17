@@ -5,13 +5,13 @@
 Network Working Group                                           T. Okubo
 Internet-Draft                              Penguin Securities Pte. Ltd.
 Intended status: Standards Track                              C. Bonnell
-Expires: 27 March 2026                                    DigiCert, Inc.
+Expires: 20 June 2026                                     DigiCert, Inc.
                                                                  J. Gray
                                                             M. Ounsworth
                                                                  Entrust
                                                                J. Mandel
                                                             AKAYLA, Inc.
-                                                       23 September 2025
+                                                        17 December 2025
 
 
               A Mechanism for X.509 Certificate Discovery
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 27 March 2026.
+   This Internet-Draft will expire on 20 June 2026.
 
 Copyright Notice
 
@@ -605,7 +605,7 @@ Appendix A.  ASN.1 Module
    Certificate Discovery access descriptor.
 
 CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
-   security(5) mechanisms(5) pkix(7) id-mod(0) id-mod-CertDiscovery(TBD1) }
+   security(5) mechanisms(5) pkix(7) id-mod(0) id-mod-CertDiscovery(TBD) }
 
    DEFINITIONS EXPLICIT TAGS ::=
 
@@ -614,7 +614,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
 -- EXPORTS ALL --
 
    IMPORTS
-    OTHER-NAME
+    OTHER-NAME, AlgorithmIdentifier, Certificate
     FROM PKIX1Implicit-2009
       { iso(1) identified-organization(3) dod(6) internet(1) security(5)
       mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-implicit-02(59) }
@@ -638,7 +638,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
       RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
    }
 
-   id-rcd ::= OBJECT IDENTIFIER { iso(1) identified-organization(3) dod(6) internet(1) security(5)
+   id-rcd OBJECT IDENTIFIER ::= { iso(1) identified-organization(3) dod(6) internet(1) security(5)
       mechanisms(5) pkix(7) id-rcd(TBD4) }
 
    -- Purpose OBJECT IDENTIFIERs
@@ -660,7 +660,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    }
 
    CertDiscoveryMethod ::= CHOICE {
-     byUri [0] IMPLICIT CertLocation
+     byUri [0] IMPLICIT CertLocation,
      byInclusion Certificate,
      byLocalPolicy NULL
    }
