@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-11-25T01:40:04.666134+00:00",
+  "timestamp": "2025-12-18T01:41:48.097061+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -370,9 +370,45 @@
       "labels": [],
       "body": "The ASN.1 Module in this draft does not compile. \u00a0There are many syntax problems and several things that need to be IMPORTed (like AlgorithmIdentifier, Certificate, and id-sha256).\n\nI am also concerned about the use of \"Purpose OBJECT IDENTIFIERs\". \u00a0This seems too easy to confuse with EKU, which are also call key purpose identifiers. \u00a0Can we be more descriptive to avoid confusion?\n",
       "createdAt": "2025-11-24T15:14:22Z",
-      "updatedAt": "2025-11-24T15:14:22Z",
+      "updatedAt": "2025-12-17T16:09:16Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Talk about this with Joe on December 17th\n - We could use the name \"cert discovery\", or \"disco id?\" (make it fun).   Discovery purpose\n - AI suggests \"Intent ID\"  - so we could use \"Discovery Intent ID?\"\n - Other suggestions\"\n   - Reason Code (No because its too close to CRL reason code)\n   - Function ID \n   - Goal ID\n   - Use-Case ID\n   - Event (maybe discovery event)\n  ",
+          "createdAt": "2025-12-17T14:13:25Z",
+          "updatedAt": "2025-12-17T14:42:30Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Used ASN.1 playground to find issues in ASN.1, these need to be resolved:\n\nline 35 (CertDiscovery): A0083E: 'id-rcd' is not a legal typereference.  It must start with an uppercase letter.\n   id-rcd ::= OBJECT IDENTIFIER { iso(1) identified-organization(3) dod(6) internet(1) security(5)\n   ^\n\nline 35 (CertDiscovery): A0120E: Parsing error: expecting an assignment statement or 'END' but found '{'.\n   id-rcd ::= OBJECT IDENTIFIER { iso(1) identified-organization(3) dod(6) internet(1) security(5)\n                                ^\n\nline 58 (CertDiscovery): A0120E: Parsing error: expecting '}' but found byInclusion.\n     byInclusion Certificate,\n     ^\n\nline 52 (CertDiscovery): A0256W: 'AlgorithmIdentifier' is referenced, but is not defined.\n\nline 50 (CertDiscovery): A0256W: 'CertDiscoveryMethod' is referenced, but is not defined.\n\nline 42 (CertDiscovery): A0256W: 'DisoveryPurposeId' is referenced, but is not defined.\n\nline 19 (CertDiscovery): A0204W: Module 'PKIX1Explicit-2009' is not defined.\n\nline 14 (CertDiscovery): A0204W: Module 'PKIX1Implicit-2009' is not defined.\n\nC0043I: 3 error messages, 5 warning messages and 0 informatory messages issued.",
+          "createdAt": "2025-12-17T14:17:37Z",
+          "updatedAt": "2025-12-17T14:17:37Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We updated the ASN.1 so it now compiles.\n  -  TODO decide on a name change.     \n  - Joe and John like \"Cert Discovery Intent ID\"  (CDID for short)",
+          "createdAt": "2025-12-17T14:43:46Z",
+          "updatedAt": "2025-12-17T14:43:46Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "COLLABORATOR",
+          "body": "CDID sounds good to me.",
+          "createdAt": "2025-12-17T16:08:59Z",
+          "updatedAt": "2025-12-17T16:08:59Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "COLLABORATOR",
+          "body": "(oops, didn't mean to close)",
+          "createdAt": "2025-12-17T16:09:16Z",
+          "updatedAt": "2025-12-17T16:09:16Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -773,6 +809,42 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 25,
+      "id": "PR_kwDOKkGlhc65Ysj2",
+      "title": "Update ASN.1 module definitions in certdiscovery.md",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/25",
+      "state": "MERGED",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Fixed the ASN.1 module so it now compiles correctly.",
+      "createdAt": "2025-12-17T14:39:11Z",
+      "updatedAt": "2025-12-17T14:40:26Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "4c8a176918ac77bc907c7799a1fe963310cce92f",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "jgjm_asn1update",
+      "headRefOid": "94d316017ca3420a57a87ae69ab0ad70290e495f",
+      "closedAt": "2025-12-17T14:40:26Z",
+      "mergedAt": "2025-12-17T14:40:26Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "a8bdcd2e7975ba933b4c5a206c591fd21ea01f55"
+      },
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Joe and John agreed to merge since it is just fixing broken ASN.1",
+          "createdAt": "2025-12-17T14:40:20Z",
+          "updatedAt": "2025-12-17T14:40:20Z"
+        }
+      ],
+      "reviews": []
     }
   ]
 }
