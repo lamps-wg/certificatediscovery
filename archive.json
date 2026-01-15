@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2025-12-18T01:41:48.097061+00:00",
+  "timestamp": "2026-01-15T01:48:01.623089+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -370,7 +370,7 @@
       "labels": [],
       "body": "The ASN.1 Module in this draft does not compile. \u00a0There are many syntax problems and several things that need to be IMPORTed (like AlgorithmIdentifier, Certificate, and id-sha256).\n\nI am also concerned about the use of \"Purpose OBJECT IDENTIFIERs\". \u00a0This seems too easy to confuse with EKU, which are also call key purpose identifiers. \u00a0Can we be more descriptive to avoid confusion?\n",
       "createdAt": "2025-11-24T15:14:22Z",
-      "updatedAt": "2025-12-17T16:09:16Z",
+      "updatedAt": "2026-01-14T14:57:47Z",
       "closedAt": null,
       "comments": [
         {
@@ -407,6 +407,13 @@
           "body": "(oops, didn't mean to close)",
           "createdAt": "2025-12-17T16:09:16Z",
           "updatedAt": "2025-12-17T16:09:16Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "January 14th Decision:  The author group decided to go with CDID \"Cert Discovery Intent ID\".\n\nWe will update the draft with this change after the hackathon weekend on January 24th.   ",
+          "createdAt": "2026-01-14T14:56:44Z",
+          "updatedAt": "2026-01-14T14:57:47Z"
         }
       ]
     }
