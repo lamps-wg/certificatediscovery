@@ -21,3 +21,4 @@ draft-lamps-okubo-certdiscovery.xml
 package-lock.json
 report.xml
 !requirements.txt
+.idea/
