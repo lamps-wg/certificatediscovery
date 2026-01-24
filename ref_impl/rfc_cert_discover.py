@@ -13,17 +13,20 @@
 # Based on draft-lamps-okubo-certdiscovery-00
 #
 
+from pyasn1.type import char
 from pyasn1.type import namedtype
+from pyasn1.type import namedval
 from pyasn1.type import tag
 from pyasn1.type import univ
 
 from pyasn1_alt_modules import rfc5280
+from pyasn1_alt_modules import rfc4055
 from pyasn1_alt_modules import opentypemap
 
 otherNamesMap = opentypemap.get('otherNamesMap')
 
 
-# Certificate Discovery Access Method
+# Certificate Discovery Purpose Identifiers
 
 id_pkix = rfc5280.id_pkix
 
@@ -38,7 +41,7 @@ id_on = id_pkix + (8, )
 id_on_relatedCertificateDescriptor = id_on + (9993, )
 
 # "TBD4" in the draft
-id_rcd = id_pkix + (9994)
+id_rcd = id_pkix + (9994,)
 
 id_rcd_agility      = id_rcd + (1,)
 id_rcd_redundency   = id_rcd + (2,)
@@ -47,17 +50,62 @@ id_rcd_priv_key_stmt= id_rcd + (4,)
 id_rcd_self         = id_rcd + (5,)
 
 
+# Certificate Discovery Access Method
+
+class DiscoveryPurposeId(univ.ObjectIdentifier):
+    pass
+
+
+class CertHash(univ.Sequence):
+    pass
+
+
+_defaultHashAlgorithm = rfc5280.AlgorithmIdentifier()
+_defaultHashAlgorithm['algorithm'] = rfc4055.id_sha256
+
+CertHash.componentType = namedtype.NamedTypes(
+    namedtype.NamedType('value', univ.OctetString()),
+    namedtype.DefaultedNamedType('hashAlgorithm', _defaultHashAlgorithm)
+)
+
+
+class CertLocation(univ.Sequence):
+    pass
+
+
+CertLocation.componentType = namedtype.NamedTypes(
+    namedtype.NamedType('uri', char.IA5String()),
+    namedtype.OptionalNamedType('certHash', CertHash().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0)))
+)
+
+
+class CertDiscoveryMethod(univ.Choice):
+    pass
+
+
+CertDiscoveryMethod.componentType = namedtype.NamedTypes(
+    namedtype.NamedType('byUri', CertLocation().subtype(
+        implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))),
+    namedtype.NamedType('byInclusion', rfc5280.Certificate()),
+    namedtype.NamedType('byLocalPolicy', univ.Null())
+)
+
+
 class RelatedCertificateDescriptor(univ.Sequence):
-    componentType = namedtype.NamedTypes(
-        namedtype.NamedType('relatedCertificateLocation',
-            rfc5280.GeneralName()),
-        namedtype.OptionalNamedType('relatedCertificateSignatureAlgorithm',
-            rfc5280.AlgorithmIdentifier().subtype(
-                implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
-        namedtype.OptionalNamedType('relatedCertificatePublicKeyAlgorithm',
-            rfc5280.AlgorithmIdentifier().subtype(
-                implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
-    )
+    pass
+
+
+RelatedCertificateDescriptor.componentType = namedtype.NamedTypes(
+    namedtype.NamedType('method', CertDiscoveryMethod()),
+    namedtype.OptionalNamedType('purpose', DiscoveryPurposeId()),
+    namedtype.OptionalNamedType('signatureAlgorithm',
+        rfc5280.AlgorithmIdentifier().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
+    namedtype.OptionalNamedType('publicKeyAlgorithm',
+        rfc5280.AlgorithmIdentifier().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
+)
 
 
 on_RelatedCertificateDescriptor = rfc5280.AnotherName()
