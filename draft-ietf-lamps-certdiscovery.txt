@@ -5,13 +5,13 @@
 Network Working Group                                           T. Okubo
 Internet-Draft                              Penguin Securities Pte. Ltd.
 Intended status: Standards Track                              C. Bonnell
-Expires: 20 June 2026                                     DigiCert, Inc.
+Expires: 28 July 2026                                     DigiCert, Inc.
                                                                  J. Gray
                                                             M. Ounsworth
                                                                  Entrust
                                                                J. Mandel
                                                             AKAYLA, Inc.
-                                                        17 December 2025
+                                                         24 January 2026
 
 
               A Mechanism for X.509 Certificate Discovery
@@ -73,11 +73,11 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 20 June 2026.
+   This Internet-Draft will expire on 28 July 2026.
 
 Copyright Notice
 
-   Copyright (c) 2025 IETF Trust and the persons identified as the
+   Copyright (c) 2026 IETF Trust and the persons identified as the
    document authors.  All rights reserved.
 
    This document is subject to BCP 78 and the IETF Trust's Legal
