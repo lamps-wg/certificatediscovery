@@ -29,16 +29,11 @@ id_pkix = rfc5280.id_pkix
 
 id_ad = id_pkix + (48, )
 
-# "TBD2" in the draft
-id_ad_certDiscovery = id_ad + (9992, )
+id_ad_certDiscovery = id_ad + (9991, )
 
 id_on = id_pkix + (8, )
 
-# "TBD3" in the draft
-id_on_relatedCertificateDescriptor = id_on + (9993, )
-
-# "TBD4" in the draft
-id-rcd = rfc5280.id_pkix + (9994)
+id_on_relatedCertificateDescriptor = id_on + (9992, )
 
 
 class RelatedCertificateDescriptor(univ.Sequence):
