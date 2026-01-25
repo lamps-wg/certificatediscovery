@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-15T01:48:01.623089+00:00",
+  "timestamp": "2026-01-25T01:59:25.314837+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -416,6 +416,22 @@
           "updatedAt": "2026-01-14T14:57:47Z"
         }
       ]
+    },
+    {
+      "number": 28,
+      "id": "I_kwDOKkGlhc7llyAl",
+      "title": "Comments from hackathon implentation",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/28",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Here's a random list of thoughts while implementing this at the interim hackathon.\n\n\n# 3.1 / 3.2\n\nASN.1 says \"byUri\", and \"uri IA5String\".\nText says\n\n> The certificate is referenced by an IA5String that contains the URI of the Secondary Certificate. The DER encoding of the Secondary Certificate MUST be available at the specified location.\n\nTo be water-tight, we probably either need a reference to an RFC that defines the syntax of a URI, or provide some examples and do a definition-by-example.\n\nAlso, I'm not sure I agree with that \"MUST be available at the specified location\". Right off the bat, I think all of our test vectors are going to violate that because we're not running a web server to host them. I suggest instead:\n\n> The DER encoding of the Secondary Certificate SHOULD be available at the specified location, but in cases where the certificates are used in an offline environment, the `uri` MAY be used as a unique identifier instead of as a reachable address.\n\n\n# 3.4.1 Algorithm Agility\n\n\n> The two certificates SHOULD be equivalent except for cryptographic algorithm; i.e. the key usages SHOULD match.\n\nThis feels ambiguous to me and should be tightened up; specifically \"equivalent certificates\" is not a term that's defined in 5280, so I think we need a lot more words here to say what we mean. I suggest:\n\n> The two certificates SHOULD be equivalent meaning that they describe the same subject for the same purpose; i.e. have the same Subject and Subject Alternative Names, and the same EKU and other extensions, allowing for differences resulting from the two certificates MAY be issued by different CAs and therefore would have different Issuer, revocation extensions, DN suffix, etc. In general, the more differences between the two cert, the more possibility that a client rejects them.",
+      "createdAt": "2026-01-24T19:24:15Z",
+      "updatedAt": "2026-01-24T21:12:09Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -849,6 +865,70 @@
           "body": "Joe and John agreed to merge since it is just fixing broken ASN.1",
           "createdAt": "2025-12-17T14:40:20Z",
           "updatedAt": "2025-12-17T14:40:20Z"
+        }
+      ],
+      "reviews": []
+    },
+    {
+      "number": 26,
+      "id": "PR_kwDOKkGlhc6_JclA",
+      "title": "Finish ASN.1 module",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/26",
+      "state": "MERGED",
+      "author": "CBonnell",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-01-24T16:40:11Z",
+      "updatedAt": "2026-01-24T16:45:59Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "1f7e467b5b963678e0b9c1fbcb25c971f1fb634b",
+      "headRepository": "CBonnell/certificatediscovery",
+      "headRefName": "more-asn1",
+      "headRefOid": "df8cefee6141d2508d88c7ca490c26ddf5136aa6",
+      "closedAt": "2026-01-24T16:45:59Z",
+      "mergedAt": "2026-01-24T16:45:59Z",
+      "mergedBy": "ounsworth",
+      "mergeCommit": {
+        "oid": "4a7f842bfa5e8f4501651f654c8afa4bd3fa10d2"
+      },
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 27,
+      "id": "PR_kwDOKkGlhc6_Joh-",
+      "title": "Generator",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/27",
+      "state": "MERGED",
+      "author": "CBonnell",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-01-24T17:05:57Z",
+      "updatedAt": "2026-01-24T21:13:22Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "4a7f842bfa5e8f4501651f654c8afa4bd3fa10d2",
+      "headRepository": "CBonnell/certificatediscovery",
+      "headRefName": "more-asn1",
+      "headRefOid": "9c474098933f4e17655e08325fde654335066640",
+      "closedAt": "2026-01-24T21:13:22Z",
+      "mergedAt": "2026-01-24T21:13:22Z",
+      "mergedBy": "ounsworth",
+      "mergeCommit": {
+        "oid": "78221ec2d5e7867609e2da45340959506e074d1f"
+      },
+      "comments": [
+        {
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "body": "```\r\n-----BEGIN CERTIFICATE-----\r\nMIIDNDCCAhygAwIBAgIUDstUy84jHbn0oq14AI2eNxYGT9UwDQYJKoZIhvcNAQELBQAwIzEhMB8GA1UE\r\nAwwYRXhhbXBsZSBTZWxmLVNpZ25lZCBSb290MB4XDTI2MDEyNDE3MDAzMloXDTI3MDEyNDE3MDAzMlow\r\nIzEhMB8GA1UEAwwYRXhhbXBsZSBTZWxmLVNpZ25lZCBSb290MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8A\r\nMIIBCgKCAQEAukoGF+GvhWO35e/hjx3hsSFnZu51sLNpV7cGkFG6+kFZ5aHP5mha3dZ5afzek74BALUQ\r\n34S+Ux5augSuTx0mivQQ605t8bfEuTARSszQd/l9qUibABcZlzA2FYug8Vj6j5dfkl+uq90QkMKHJhuA\r\nhwIVvcV0vdyv273bfMoCUosLTn5wc2DDdjXv4sNPLJYLAbjAkT3R2wKU2LSA8hOlvT6GQK83YE92rddU\r\nrBFMST34boajVjabRJo+SGcfSj61+KQULNXYy7+s1jhGnL3/Kh5hH3SKjEXCQuu+yqYIZCy94Kajjhrv\r\nw8tnTrFRPUFEbm0mLvSa244la3Jh+/xYRQIDAQABo2AwXjBcBggrBgEFBQcBCwRQME4wTAYJKwYBBQUH\r\nMM4IoD8GCSsGAQUFBwjOCaAyMDCgIxYhaHR0cDovL2V4YW1wbGUuYXV0aG9yaXR5L3Jvb3QuZGVyBgkr\r\nBgEFBQfOCgUwDQYJKoZIhvcNAQELBQADggEBAEsPHeK6Gi1BZKJzyWF0VFGiXoTxmtZrom14ybFRob8D\r\nHznPdatUwhBBNStTnyBmSHpqBOQHtv+7udZsgdFzIDX2SjHY0nBJDOD5b6zAa9O8j1knbLfJcinDwWo8\r\nw14w5w0yq2o0/iu/IBQpGui0vAodbdwV4IHbqRfxOUmXeBPmW0wyOFI/GGZludVfrMQ8/UfxqzlqMJbI\r\nOWpLBuDesg3tFt3EyiRe+olO/oWDm+J4Ja6Bbtr3RaxX/fNMJcA6yFF1SwMc9H9LOAXj+pIgFbhrQVak\r\nNdUOouMCkbifGSVST7RdGNJ51LtNX7FYZKbmJfJwMhoItsxhhZI1JeXj2CY=\r\n-----END CERTIFICATE-----\r\n```\r\n\r\nhttps://lapo.it/asn1js/#MIIDNDCCAhygAwIBAgIUDstUy84jHbn0oq14AI2eNxYGT9UwDQYJKoZIhvcNAQELBQAwIzEhMB8GA1UEAwwYRXhhbXBsZSBTZWxmLVNpZ25lZCBSb290MB4XDTI2MDEyNDE3MDAzMloXDTI3MDEyNDE3MDAzMlowIzEhMB8GA1UEAwwYRXhhbXBsZSBTZWxmLVNpZ25lZCBSb290MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAukoGF-GvhWO35e_hjx3hsSFnZu51sLNpV7cGkFG6-kFZ5aHP5mha3dZ5afzek74BALUQ34S-Ux5augSuTx0mivQQ605t8bfEuTARSszQd_l9qUibABcZlzA2FYug8Vj6j5dfkl-uq90QkMKHJhuAhwIVvcV0vdyv273bfMoCUosLTn5wc2DDdjXv4sNPLJYLAbjAkT3R2wKU2LSA8hOlvT6GQK83YE92rddUrBFMST34boajVjabRJo-SGcfSj61-KQULNXYy7-s1jhGnL3_Kh5hH3SKjEXCQuu-yqYIZCy94Kajjhrvw8tnTrFRPUFEbm0mLvSa244la3Jh-_xYRQIDAQABo2AwXjBcBggrBgEFBQcBCwRQME4wTAYJKwYBBQUHMM4IoD8GCSsGAQUFBwjOCaAyMDCgIxYhaHR0cDovL2V4YW1wbGUuYXV0aG9yaXR5L3Jvb3QuZGVyBgkrBgEFBQfOCgUwDQYJKoZIhvcNAQELBQADggEBAEsPHeK6Gi1BZKJzyWF0VFGiXoTxmtZrom14ybFRob8DHznPdatUwhBBNStTnyBmSHpqBOQHtv-7udZsgdFzIDX2SjHY0nBJDOD5b6zAa9O8j1knbLfJcinDwWo8w14w5w0yq2o0_iu_IBQpGui0vAodbdwV4IHbqRfxOUmXeBPmW0wyOFI_GGZludVfrMQ8_UfxqzlqMJbIOWpLBuDesg3tFt3EyiRe-olO_oWDm-J4Ja6Bbtr3RaxX_fNMJcA6yFF1SwMc9H9LOAXj-pIgFbhrQVakNdUOouMCkbifGSVST7RdGNJ51LtNX7FYZKbmJfJwMhoItsxhhZI1JeXj2CY",
+          "createdAt": "2026-01-24T17:06:08Z",
+          "updatedAt": "2026-01-24T17:06:45Z"
         }
       ],
       "reviews": []
