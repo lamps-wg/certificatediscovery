@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-01-25T01:59:25.314837+00:00",
+  "timestamp": "2026-01-29T02:05:25.907004+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -207,9 +207,17 @@
       "labels": [],
       "body": "It would be great if we could create a reference implementation of certificate discovery in python that could be used as a reference. \n\nThis would be a great hackathon project.\n\n- Output of a couple of examples showing encoded certificates\n  - one example with at least 2 SIA extensions showing different purposes",
       "createdAt": "2025-05-27T13:32:32Z",
-      "updatedAt": "2025-07-02T13:37:34Z",
+      "updatedAt": "2026-01-28T14:59:24Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We should use examples of the following:\n\nDual Usage \n    -  Fully cross-link (By Uri) with a hash in one direction (ML-DSA / ML-KEM based certs)\n    -  Fully cross-linked (By Uri) with RSA base (Dual Use sign and encryption), cross linked with (ML-DSA and another with ML-KEM).  Two hashes in the RSA.  \n    -  By Inclusion (fully embedded cert - no hash needed)\n\nAlgorithm Migration\n    - RSA Cert points to new (ML-DSA)  -  By Uri with Hash of RSA cert in the ML-DSA Cert.   With text like:   \"In this use-case, you are trying to proove they are holding the correct RSA cert (by Hash inclusion).  You have to do a \"back-check\" to make sure the ML-DSA cert referenced the RSA cert.  To prevent encrypting data for the wrong certificate.\"\n   \n\n",
+          "createdAt": "2026-01-28T14:59:24Z",
+          "updatedAt": "2026-01-28T14:59:24Z"
+        }
+      ]
     },
     {
       "number": 10,
