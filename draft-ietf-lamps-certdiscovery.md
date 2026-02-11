@@ -259,7 +259,7 @@ This purpose indicates the referenced certificate's purpose is to provide operat
 
 ### Dual Usage
 
-This purpose indicates the referenced certificate's purpose is for dual usage; i.e. the related certificates belong to the same entity and one provides a signing-type key while the other provides an encryption-type key. The two certificates SHOULD have matching identifiers.
+This purpose indicates the referenced certificate's purpose is for dual usage; i.e. the related certificates belong to the same entity and one provides a signing-type key while the other provides an encryption-type key. The two certificates MUST describe the same entity and therefore SHOULD have matching Subject DN and SAN values.
 
 ### Statement of Possession of a Private Key
 
