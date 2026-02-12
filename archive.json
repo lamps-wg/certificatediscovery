@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-01T02:30:33.888891+00:00",
+  "timestamp": "2026-02-12T02:23:13.594051+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -449,13 +449,23 @@
       "state": "OPEN",
       "author": "danvangeest",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "ounsworth"
+      ],
       "labels": [],
       "body": "```\n3.4.3.  Dual Usage\n\n   This purpose indicates the referenced certificate's purpose is for\n   dual usage; i.e. the related certificates belong to the same entity\n   and one provides a signing-type key while the other provides an\n   encryption-type key.  The two certificates SHOULD have matching\n   identifiers.\n```\n\nWhat does \"matching identifiers\" mean in that paragraph?\n\nIs it that each should have an SIA extension with id-on-relatedCertificateDescriptor, which refer to each other?  This is problematic when using CertDiscoveryMethod.byInclusion.  The secondary certificate obviously can't include the primary certificate, and referencing the primary certificate by URI is pointless because the secondary certificate was just pulled out of the primary one.\n\nWhat is the purpose of having matching identifiers? Are you intending to ensure that both certificates are owned by the same subject?",
       "createdAt": "2026-01-30T13:50:20Z",
-      "updatedAt": "2026-01-30T13:50:20Z",
+      "updatedAt": "2026-02-11T14:35:17Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "ounsworth",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I think by \"matching identifiers\" we meant DN and SANs. IE it would be sorta meaningless for two certs to be \"Dual Usage\" they have completely different subjects.\n\nWe should replace the word \"identifiers\" with something less ambiguous.",
+          "createdAt": "2026-02-11T14:16:30Z",
+          "updatedAt": "2026-02-11T14:16:30Z"
+        }
+      ]
     },
     {
       "number": 30,
@@ -465,13 +475,23 @@
       "state": "OPEN",
       "author": "danvangeest",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "johngray-dev"
+      ],
       "labels": [],
       "body": "DiscoveryPurposeId is OPTIONAL, but I think you should still say what should be done if one comes across an unknown DiscoveryPurposeId.  Just behave as if there was no DiscoveryPurposeId?\n\nIf a DiscoveryPurposeId exists, does this mean that the secondary certificate can only be used in the way specified by the DiscoveryPurposeId?  If so, state that.  And then if the DiscoveryPurposeId is unknown, the secondary certificate MUST NOT be used?",
       "createdAt": "2026-01-30T14:01:34Z",
-      "updatedAt": "2026-01-30T14:01:34Z",
+      "updatedAt": "2026-02-11T15:01:32Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The way we designed the draft, it should be possible to use discovery purposes that are not defined in the draft.  If someone comes up with a use-case for their environment that we didn't think about.  That is why we made it extensible.  \n\nOk, we will make the draft more clear.   To answer the questions:\n\nIf a DiscoveryPurposeId exists, does this mean that the secondary certificate can only be used in the way specified by the DiscoveryPurposeId? \n\nThe purpose is meant as the intended usage, but we can't enforce how an application would use it.  We can add new language around that to make it more clear\n\nWe will look at the language in 5280 for EKU processing language to get inspiration on how to handle this. \nhttps://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.12\n\n\n\n",
+          "createdAt": "2026-02-11T15:01:32Z",
+          "updatedAt": "2026-02-11T15:01:32Z"
+        }
+      ]
     },
     {
       "number": 31,
@@ -481,13 +501,23 @@
       "state": "OPEN",
       "author": "danvangeest",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "CBonnell"
+      ],
       "labels": [],
       "body": "Section 3.5 \"Signature Algorithm and Public Key Algorithm fields\" says:\n\n```\n   The semantics of other id-ad-certDiscovery accessLocation name forms\n   are not defined.\n\n   Note: For a description of uniformResourceIdentifier consult section\n   4.2.2.1 of [!RFC5280].\n```\n\nThis seems like it should in be a separate section from one talking about the algorithm fields.\n\nAlso, if you aren't willing to define the semantics for the other accessLocation forms, why use GeneralName?  Just use IA5String instead.  GeneralName seems pretty disliked: https://mailarchive.ietf.org/arch/msg/spasm/rqZ5Vl8ryCdPvLN_l8uvizpDsA0/\n",
       "createdAt": "2026-01-30T14:10:27Z",
-      "updatedAt": "2026-01-30T14:10:27Z",
+      "updatedAt": "2026-02-11T14:41:53Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "body": "> This seems like it should in be a separate section from one talking about the algorithm fields.\n\nI agree, this language should be in another section.\n\nWe need to use `GeneralName` because that is the type of the `accessLocation` field (it's not ANY). The type of this `accessLocation` value will be the RCD AnotherName. I think we should strengthen the following:\n\n```\nThe semantics of other id-ad-certDiscovery accessLocation name forms\n   are not defined.\n```\n\nTo make it a MUST NOT use any other name form.",
+          "createdAt": "2026-02-11T14:33:43Z",
+          "updatedAt": "2026-02-11T14:41:53Z"
+        }
+      ]
     },
     {
       "number": 32,
@@ -501,9 +531,17 @@
       "labels": [],
       "body": "Section 3.5 \"Signature Algorithm and Public Key Algorithm fields\" says:\n\n```\n   When the validation of the Primary Certificate fails, the software\n   that understands the SIA extension and the certDiscovery access\n   method uses the information to determine whether to fetch the\n   Secondary Certificate.  The software will look at the\n   signatureAlgorithm and publicKeyAlgorithm to determine whether the\n   Secondary Certificate has the signature algorithm and certificate\n   public key algorithm it can process.  If the software understands the\n   signature algorithm and certificate public key algorithm, the\n   software fetches the certificate from the URI specified in the\n   relatedCertificateLocation and attempts another validation.\n   Otherwise, the validation simply fails.\n```\nat a minimum this should probably say (note the MAY):\n```\n   the software\n   that understands the SIA extension and the certDiscovery access\n   method MAY use the information to determine whether to fetch the\n   Secondary Certificate.\n```\nBut really, if the primary certificate validation fails then you can't trust anything in the primary certificate, including any part of the RelatedCertificateDescriptor. As a minimum, the signature on the certificate needs to be valid in order to use the secondary certificate.  There could be other policy reasons why the primary certificate fails validation which would prevent the secondary certificate from being used.  Maybe if the primary certificate is expired or revoked, the secondard certificate could still be trusted if the signature verification succeeds.\n\nThe software may also want to check these algorithm fields when primary certificate validation succeeds, e.g. to avoid unnecessary fetches when it already knows it doesn't understand the algorithms.\n",
       "createdAt": "2026-01-30T14:32:45Z",
-      "updatedAt": "2026-01-30T14:32:45Z",
+      "updatedAt": "2026-02-11T14:37:33Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "ounsworth",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I agree that there's some security issues here. Good point.",
+          "createdAt": "2026-02-11T14:37:33Z",
+          "updatedAt": "2026-02-11T14:37:33Z"
+        }
+      ]
     },
     {
       "number": 33,
@@ -517,7 +555,38 @@
       "labels": [],
       "body": "Is path processing of the secondary certificate just left as an implementation problem?  Where is the verifier supposed to get the issuer of the secondary certificate?  Must it be issued by the same issuer of the primary certificate?  If not, must the issuer of the secondary certificate be sent in the same certificate list as the issuer of the primary certificate?  Aren't there plenty of na\u00efve path builders which assume that the certificate list is an ordered list of certificates from the EE to the root, and would bork on such an unexpected cert in the list?",
       "createdAt": "2026-01-30T14:50:22Z",
-      "updatedAt": "2026-01-30T14:50:22Z",
+      "updatedAt": "2026-02-11T15:36:36Z",
+      "closedAt": null,
+      "comments": [
+        {
+          "author": "ounsworth",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Interesting point.\nI believe you are blurring the line between the Cert Validation layer and the protocol layer -- like, I think \"certificate list\" is a CMS thing or a TLS thing, or a P12 thing, but not strictly an X.509 thing.\n\nBut you raise a good point.\n\nI think we do not want the two certs to have to come from the some issuer.\n\nYou're right that we should put some text about this.\n\n> When the two certificates have different Issuers, the application will need to be provided with both certificate chains; the details of conveying multiple certificate chains will vary by protocol. Implementers SHOULD consider whether their protocols and applications are capable of conveying multiple certificate chains when designing their Related Certificate deployment.\n\nsomething like that?",
+          "createdAt": "2026-02-11T15:01:37Z",
+          "updatedAt": "2026-02-11T15:01:37Z"
+        },
+        {
+          "author": "danvangeest",
+          "authorAssociation": "NONE",
+          "body": "It should also probably say something like certificate path validation for the secondary certificate MUST follow section 6 of RFC 5280.  Although it's probably obvious, it should probably be stated so no one assumes that because it is extracted from a validated certificate that it's automatically validated.",
+          "createdAt": "2026-02-11T15:36:36Z",
+          "updatedAt": "2026-02-11T15:36:36Z"
+        }
+      ]
+    },
+    {
+      "number": 34,
+      "id": "I_kwDOKkGlhc7qDizf",
+      "title": "Link to a single ASN.1 module in all sections to prevent divergence",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/34",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "When ASN.1 is used in multiple places in the draft and the module is at the bottom, it mean any changes need to be update in multiple places.  This is easy to miss which can result in errata down the road (this had happened to other RFC's recently).  To prevent this we should create a separate ASN.1 module and use markdown (or other magic) to pull in that data from a single source.\n",
+      "createdAt": "2026-02-11T14:16:34Z",
+      "updatedAt": "2026-02-11T14:16:34Z",
       "closedAt": null,
       "comments": []
     }
@@ -1019,6 +1088,32 @@
           "updatedAt": "2026-01-24T17:06:45Z"
         }
       ],
+      "reviews": []
+    },
+    {
+      "number": 35,
+      "id": "PR_kwDOKkGlhc7DBd5B",
+      "title": "Adjusted dual usage wording",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/35",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Closes #29 ",
+      "createdAt": "2026-02-11T14:35:04Z",
+      "updatedAt": "2026-02-11T14:35:04Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "78221ec2d5e7867609e2da45340959506e074d1f",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "mikeo/dualusage",
+      "headRefOid": "5d452fd5a94d26e3fce2359d667f9f42c5ef5f75",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
       "reviews": []
     }
   ]
