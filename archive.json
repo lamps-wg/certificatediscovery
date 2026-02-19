@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-12T02:23:13.594051+00:00",
+  "timestamp": "2026-02-19T02:12:35.400634+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -587,6 +587,22 @@
       "body": "When ASN.1 is used in multiple places in the draft and the module is at the bottom, it mean any changes need to be update in multiple places.  This is easy to miss which can result in errata down the road (this had happened to other RFC's recently).  To prevent this we should create a separate ASN.1 module and use markdown (or other magic) to pull in that data from a single source.\n",
       "createdAt": "2026-02-11T14:16:34Z",
       "updatedAt": "2026-02-11T14:16:34Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 36,
+      "id": "I_kwDOKkGlhc7rrqX_",
+      "title": "How are these certificates requested?",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/36",
+      "state": "OPEN",
+      "author": "danvangeest",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "RFC 9763 describes a PKCS#10 CSR attribute which is used to prove ownership of the related certificate before the RelatedCertificate extension can be added to the newly issued certificate.\n\nYour draft is much more complicated than RFC 9763 and so should also address similar issuance problems.\n- how does the requester indicate to the RA that it wants this type of certificate?\n- how is the discovery method and purpose communicated by the requesting party to the RA? Just in a SIA in the CSR?  Say something about this. \n- how does the RA validate this information? What if certificates are cross-referenced by URL?  At least one of the URLs will point to nothing at time of issuance.\n- does the requester have to prove posession of either of the keys?  Either way, say something in the security considerations.\n",
+      "createdAt": "2026-02-17T18:21:55Z",
+      "updatedAt": "2026-02-17T18:21:55Z",
       "closedAt": null,
       "comments": []
     }
