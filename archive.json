@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-02-19T02:12:35.400634+00:00",
+  "timestamp": "2026-03-01T02:26:44.115655+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -602,9 +602,17 @@
       "labels": [],
       "body": "RFC 9763 describes a PKCS#10 CSR attribute which is used to prove ownership of the related certificate before the RelatedCertificate extension can be added to the newly issued certificate.\n\nYour draft is much more complicated than RFC 9763 and so should also address similar issuance problems.\n- how does the requester indicate to the RA that it wants this type of certificate?\n- how is the discovery method and purpose communicated by the requesting party to the RA? Just in a SIA in the CSR?  Say something about this. \n- how does the RA validate this information? What if certificates are cross-referenced by URL?  At least one of the URLs will point to nothing at time of issuance.\n- does the requester have to prove posession of either of the keys?  Either way, say something in the security considerations.\n",
       "createdAt": "2026-02-17T18:21:55Z",
-      "updatedAt": "2026-02-17T18:21:55Z",
+      "updatedAt": "2026-02-27T11:40:35Z",
       "closedAt": null,
-      "comments": []
+      "comments": [
+        {
+          "author": "ralienpp",
+          "authorAssociation": "NONE",
+          "body": "Some thoughts and data points, based on a prototype we built to get a feel of this approach.\n\n> how does the requester indicate to the RA that it wants this type of certificate?\n\nIn our experiment we used HTTP for transport; we have an endpoint, say `/cert-discovery` - it is known in advance that if I send my request here, I'll get back a certificate that contains the discovery extension. Alternatively, one could use some reverse proxy that looks at custom HTTP headers and routes the request based on those. I never put too much thought into it, I assumed that the draft deliberately omitted such a discussion to keep the approach transport-agnostic.\n\n> how is the discovery method and purpose communicated by the requesting party to the RA? Just in a SIA in the CSR?\n\nOur test implementation (a mock CA and a CMP client) do it as you described - by looking for SIA inside `tbsCertificate.extensions`. We prototyped it with PKCS#10 because at the time we already had the needed primitives and it was a low-hanging fruit. But as above, my assumption was that the document does not go into the details, to avoid tying it to a specific format - this can work with CRMF too (in contrast with RFC 9763, which is only meant to be used in conjunction with PKCS#10).\n\n\n> At least one of the URLs will point to nothing at time of issuance.\n\nIt is a possibility, and I see it as a feature. Imagine a spectrum ranging from \"loosely coupled\" to \"tightly coupled\". If I'm in an environment where there is no certainty at the moment when the certificate is issued (e.g., we haven't yet decided which PQ algorithm to use for the referenced certificate), then I put in the URL as a placeholder, knowing that it is not alive yet, but will be soon (\"soon\" can be defined in the policy of the CA).\n\nSuch loose coupling is weaker than having the hash of the other certificate (or embedding the other certificate) - but it is a deliberate business decision, it allows a bias for action - \"release now, think thoroughly a bit later\". Other approaches (like RFC 9763) imply that the other certificate must exist at the time we're issuing `this` certificate, so there is less room for maneuver.\n\n> does the requester have to prove posession of either of the keys? Either way, say something in the security considerations.\n\nMy assumption was that the CA's policy will cover that gap - so the document is deliberately not trying to specify it.\n\n\n------\n\nAs you can see, our implementation is based on some assumptions. I am unaware of other implementations, so there were no interop tests yet, and no way to check if at least one other person on the planet saw the text in the same way. I hope that my feedback will help others get a sense of how this might work in practice.\n\nIn any case, the fact that you raise these questions indicates that interpretations can differ. In my opinion, it would help if the text could explicitly state things like \"we refrain from specifying it in greater detail to allow flexibility, but one way to do it would be X\".\n",
+          "createdAt": "2026-02-27T11:40:35Z",
+          "updatedAt": "2026-02-27T11:40:35Z"
+        }
+      ]
     }
   ],
   "pulls": [
