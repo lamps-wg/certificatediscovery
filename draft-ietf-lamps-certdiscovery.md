@@ -137,7 +137,7 @@ This document defines a new access method `id-ad-certDiscovery` which is an OBJE
 id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
 ~~~
 
-The 'accessLocation' is a GeneralName otherName type as defined in [RFC5280].   Recall that the otherName type is defined as `AnotherName`:
+The 'accessLocation' is a GeneralName otherName type as defined in [RFC5280]. Recall that the otherName type is defined as `AnotherName`:
 
 ~~~
 AnotherName ::= SEQUENCE {
@@ -145,7 +145,7 @@ AnotherName ::= SEQUENCE {
      value      [0] EXPLICIT ANY DEFINED BY type-id }
 ~~~
 
-Which this document defines as:
+This document defines the `RelatedCertificateDescriptor` type and its corresponding identifier as follows:
 
 ~~~
 -- Other Name OID Arc --
@@ -159,8 +159,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    }
 ~~~
 
-Where `id-on-relatedCertificateDescriptor` is the OBJECT IDENTIFIER (type-id) and the value is `RelatedCertificateDescriptor`
-
+When the `accessMethod` has a value of `id-ad-certDiscovery`, then the `accessLocation` MUST contain an `otherName` whose `type-id` is `id-on-relatedCertificateDescriptor` and the `value` is `RelatedCertificateDescriptor`.
 
 `RelatedCertificateDescriptor` is defined as follows:
 
@@ -278,10 +277,6 @@ This intent can be used to bind the subjects of Primary and Secondary Certificat
 The signatureAlgorithm is used to indicate the signature algorithm used in the Secondary Certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.
 
 When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.
-
-The semantics of other id-ad-certDiscovery accessLocation name forms are not defined.
-
-Note:  For a description of uniformResourceIdentifier consult section 4.2.2.1 of [!RFC5280].
 
 # Security Considerations
 
