@@ -271,7 +271,8 @@ Table of Contents
         type-id    OBJECT IDENTIFIER,
         value      [0] EXPLICIT ANY DEFINED BY type-id }
 
-   Which this document defines as:
+   This document defines the RelatedCertificateDescriptor type and its
+   corresponding identifier as follows:
 
 -- Other Name OID Arc --
 id-on OBJECT IDENTIFIER ::= { id-pkix 8 }
@@ -283,8 +284,10 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
       RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
    }
 
-   Where id-on-relatedCertificateDescriptor is the OBJECT IDENTIFIER
-   (type-id) and the value is RelatedCertificateDescriptor
+   When the accessMethod has a value of id-ad-certDiscovery, then the
+   accessLocation MUST contain an otherName whose type-id is id-on-
+   relatedCertificateDescriptor and the value is
+   RelatedCertificateDescriptor.
 
    RelatedCertificateDescriptor is defined as follows:
 
@@ -454,12 +457,6 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    software fetches the certificate from the URI specified in the
    relatedCertificateLocation and attempts another validation.
    Otherwise, the validation simply fails.
-
-   The semantics of other id-ad-certDiscovery accessLocation name forms
-   are not defined.
-
-   Note: For a description of uniformResourceIdentifier consult section
-   4.2.2.1 of [!RFC5280].
 
 4.  Security Considerations
 

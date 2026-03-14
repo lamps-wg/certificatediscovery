@@ -1348,7 +1348,7 @@ subjectInfoAccess extension.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
 id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
 </pre><a href="#section-3-5" class="pilcrow">¶</a>
 </div>
-<p id="section-3-6">The 'accessLocation' is a GeneralName otherName type as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.   Recall that the otherName type is defined as <code>AnotherName</code>:<a href="#section-3-6" class="pilcrow">¶</a></p>
+<p id="section-3-6">The 'accessLocation' is a GeneralName otherName type as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>. Recall that the otherName type is defined as <code>AnotherName</code>:<a href="#section-3-6" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3-7">
 <pre>
 AnotherName ::= SEQUENCE {
@@ -1356,7 +1356,7 @@ AnotherName ::= SEQUENCE {
      value      [0] EXPLICIT ANY DEFINED BY type-id }
 </pre><a href="#section-3-7" class="pilcrow">¶</a>
 </div>
-<p id="section-3-8">Which this document defines as:<a href="#section-3-8" class="pilcrow">¶</a></p>
+<p id="section-3-8">This document defines the <code>RelatedCertificateDescriptor</code> type and its corresponding identifier as follows:<a href="#section-3-8" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3-9">
 <pre>
 -- Other Name OID Arc --
@@ -1370,7 +1370,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    }
 </pre><a href="#section-3-9" class="pilcrow">¶</a>
 </div>
-<p id="section-3-10">Where <code>id-on-relatedCertificateDescriptor</code> is the OBJECT IDENTIFIER (type-id) and the value is <code>RelatedCertificateDescriptor</code><a href="#section-3-10" class="pilcrow">¶</a></p>
+<p id="section-3-10">When the <code>accessMethod</code> has a value of <code>id-ad-certDiscovery</code>, then the <code>accessLocation</code> <span class="bcp14">MUST</span> contain an <code>otherName</code> whose <code>type-id</code> is <code>id-on-relatedCertificateDescriptor</code> and the <code>value</code> is <code>RelatedCertificateDescriptor</code>.<a href="#section-3-10" class="pilcrow">¶</a></p>
 <p id="section-3-11"><code>RelatedCertificateDescriptor</code> is defined as follows:<a href="#section-3-11" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3-12">
 <pre>
@@ -1526,8 +1526,6 @@ id-rcd-self OBJECT IDENTIFIER ::=
         </h3>
 <p id="section-3.5-1">The signatureAlgorithm is used to indicate the signature algorithm used in the Secondary Certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
 <p id="section-3.5-2">When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.<a href="#section-3.5-2" class="pilcrow">¶</a></p>
-<p id="section-3.5-3">The semantics of other id-ad-certDiscovery accessLocation name forms are not defined.<a href="#section-3.5-3" class="pilcrow">¶</a></p>
-<p id="section-3.5-4">Note:  For a description of uniformResourceIdentifier consult section 4.2.2.1 of [!RFC5280].<a href="#section-3.5-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
