@@ -167,7 +167,7 @@ Where `id-on-relatedCertificateDescriptor` is the OBJECT IDENTIFIER (type-id) an
 ~~~
  RelatedCertificateDescriptor ::= SEQUENCE {
    method CertDiscoveryMethod,
-   purpose DiscoveryPurposeId OPTIONAL,
+   intent DiscoveryIntentId OPTIONAL,
    signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
    publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
 }
@@ -224,14 +224,14 @@ CertHash ::= SEQUENCE {
 
 `certHash` is defined as a SEQUENCE containing the OCTET STRING `value` which is the hash of the DER Encoded reference certificate as well as the `hashAlgorithm`, which contains the AlgorithmIdentifier for the chosen Hash value. All implementations MUST support SHA-256 via `id-sha256`, and other hash functions MAY be supported.
 
-## DiscoveryPurposeId
+## DiscoveryIntentId
 
-`DiscoveryPurposeId` provides optional information to describe the purpose of including the discovery information for the related certificate.
+`DiscoveryIntentId` provides optional information to describe the intent of including the discovery information for the related certificate.
 
-Currently, the following purpose identifiers are defined:
+Currently, the following intent identifiers are defined:
 
 ~~~
- -- Purpose OBJECT IDENTIFIER
+ -- Intent OBJECT IDENTIFIER
 id-rcd-agility OBJECT IDENTIFIER ::=
                                {id-rcd 1}
 
@@ -250,28 +250,28 @@ id-rcd-self OBJECT IDENTIFIER ::=
 
 ### Algorithm Agility
 
-This purpose indicates the referenced certificate's purpose is to provide algorithm agility; i.e. the two certificates will use different cryptographic algorithms for the same key operations. The two certificates SHOULD be equivalent except for cryptographic algorithm; i.e. the key usages SHOULD match.
+This intent indicates the referenced certificate's intent is to provide algorithm agility; i.e. the two certificates will use different cryptographic algorithms for the same key operations. The two certificates SHOULD be equivalent except for cryptographic algorithm; i.e. the key usages SHOULD match.
 
 ### Redundancy
 
-This purpose indicates the referenced certificate's purpose is to provide operational redundancy; i.e. the Secondary Certificate could be issued by a different CA or has a different validity period which can be used as a backup if the Primary set of certificates is about to expire.
+This intent indicates the referenced certificate's intent is to provide operational redundancy; i.e. the Secondary Certificate could be issued by a different CA or has a different validity period which can be used as a backup if the Primary set of certificates is about to expire.
 
 
 ### Dual Usage
 
-This purpose indicates the referenced certificate's purpose is for dual usage; i.e. the related certificates belong to the same entity and one provides a signing-type key while the other provides an encryption-type key. The two certificates SHOULD have matching identifiers.
+This intent indicates the referenced certificate's intent is for dual usage; i.e. the related certificates belong to the same entity and one provides a signing-type key while the other provides an encryption-type key. The two certificates SHOULD have matching identifiers.
 
 ### Statement of Possession of a Private Key
 
-This purpose indicates that the Primary Certificate did not not do a full proof-of-possession at enrollment time, but instead it provided a statement of possession as per {{!I-D.ietf-lamps-private-key-stmt-attr}} signed by the Secondary Certificate.
+This intent indicates that the Primary Certificate did not not do a full proof-of-possession at enrollment time, but instead it provided a statement of possession as per {{!I-D.ietf-lamps-private-key-stmt-attr}} signed by the Secondary Certificate.
 
 The reason for carrying a RelatedCertificateDescriptor of this type is to track that the Primary Certificate had a trust dependency on the Secondary Certificate at the time of issuance and that presumably the two private keys are co-located on the same key storage. Therefore if one certificate is revoked, they SHOULD both be revoked.
 
 ### Self reference
 
-This purpose indicates the Uniform Resource Identifier where this certificate is located. Applications which retrieve this certificate can then compare the retrieved certificate with this value to ensure that the correct certificate was retrieved.
+This intent indicates the Uniform Resource Identifier where this certificate is located. Applications which retrieve this certificate can then compare the retrieved certificate with this value to ensure that the correct certificate was retrieved.
 
-This purpose can be used to bind the subjects of Primary and Secondary Certificates. The Primary Certificate contains a self-reference to its location, as well as a reference to the Secondary Certificate. The Secondary Certificate contains a self-reference to its location, and a reference to the Primary Certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.
+This intent can be used to bind the subjects of Primary and Secondary Certificates. The Primary Certificate contains a self-reference to its location, as well as a reference to the Secondary Certificate. The Secondary Certificate contains a self-reference to its location, and a reference to the Primary Certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.
 
 ## Signature Algorithm and Public Key Algorithm fields
 
@@ -287,7 +287,7 @@ Note:  For a description of uniformResourceIdentifier consult section 4.2.2.1 of
 
 Retrieval of the Secondary Certificate is not sufficient to consider the Secondary Certificate trustworthy. The certification path validation algorithm as defined in section 6 of {{RFC5280}} MUST be performed for the Secondary Certificate.
 
-The use of the self-reference purpose can be used to provide a subject binding between the Primary and Secondary Certificates. However, the procedure for validating subject equivalence MUST be defined by policy. As a result, validation of
+The use of the self-reference intent can be used to provide a subject binding between the Primary and Secondary Certificates. However, the procedure for validating subject equivalence MUST be defined by policy. As a result, validation of
 subject equivalence is out of scope of this document.
 
 The Secondary Certificate may also have the certDiscovery access method. In order to avoid cyclic loops or infinite chaining, the validator should be mindful of how many fetching attempts it allows in one validation.
@@ -320,17 +320,17 @@ IANA is requested to add the following entry in the "SMI Security for PKIX Acces
 | ------- | ---------------------------------- | ---------- |
 | TBD3    | id-on-relatedCertificateDescriptor | [this-RFC] |
 
-## Certificate Discovery Purpose Identifiers
+## Certificate Discovery Intent Identifiers
 
-To allocate id-rcd, this document introduces a new PKIX OID arc for certificate discovery purpose identifiers:
+To allocate id-rcd, this document introduces a new PKIX OID arc for certificate discovery intent identifiers:
 
 IANA is requested to add the following entry to "SMI Security for PKIX" registry, defined by [RFC 7299]:
 
 | Decimal | Description | References |
 | ------- | ----------- | ---------- |
-| TBD4    | Certificate Discovery Purpose Identifier | [this-RFC] |
+| TBD4    | Certificate Discovery Intent Identifier | [this-RFC] |
 
-IANA is requested to create the "Certificate Discovery Purpose Identifiers" registry with the following initial values:
+IANA is requested to create the "Certificate Discovery Intent Identifiers" registry with the following initial values:
 
 | Decimal | Description          | References |
 | ------- | -------------------- | ---------- |
@@ -392,20 +392,20 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    id-rcd OBJECT IDENTIFIER ::= { iso(1) identified-organization(3) dod(6) internet(1) security(5)
       mechanisms(5) pkix(7) id-rcd(TBD4) }
 
-   -- Purpose OBJECT IDENTIFIERs
+   -- Intent OBJECT IDENTIFIERs
 
-   DiscoveryPurposeId ::= OBJECT IDENTIFIER
+   DiscoveryIntentId ::= OBJECT IDENTIFIER
 
-   id-rcd-agility DisoveryPurposeId ::= {id-rcd 1}
-   id-rcd-redundency DisoveryPurposeId ::= {id-rcd 2}
-   id-rcd-dual DisoveryPurposeId ::= {id-rcd 3}
-   id-rcd-priv-key-stmt DisoveryPurposeId ::= {id-rcd 4}
-   id-rcd-self DisoveryPurposeId ::= {id-rcd 5}
+   id-rcd-agility DisoveryIntentId ::= {id-rcd 1}
+   id-rcd-redundency DisoveryIntentId ::= {id-rcd 2}
+   id-rcd-dual DisoveryIntentId ::= {id-rcd 3}
+   id-rcd-priv-key-stmt DisoveryIntentId ::= {id-rcd 4}
+   id-rcd-self DisoveryIntentId ::= {id-rcd 5}
 
 
    RelatedCertificateDescriptor ::= SEQUENCE {
      method CertDiscoveryMethod,
-     purpose DiscoveryPurposeId OPTIONAL,
+     intent DiscoveryIntentId OPTIONAL,
      signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
      publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
    }
