@@ -21,11 +21,11 @@ def create_self_signed_sia_cert(output_path="self_signed_sia_cert.der"):
     ])
 
     # Build the SIA extension value using sia_utils
-    # Purpose: Self, URI: http://example.authority/root.der
-    purpose_uri_pairs = [
+    # Intent: Self, URI: http://example.authority/root.der
+    intent_uri_pairs = [
         (rfc_cert_discover.id_rcd_self, "http://example.authority/root.der")
     ]
-    sia_value_asn1 = sia_utils.build_sia_extension_value(purpose_uri_pairs)
+    sia_value_asn1 = sia_utils.build_sia_extension_value(intent_uri_pairs)
     sia_der_bytes = encoder.encode(sia_value_asn1)
 
     # Create the certificate

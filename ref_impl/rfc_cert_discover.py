@@ -26,7 +26,7 @@ from pyasn1_alt_modules import opentypemap
 otherNamesMap = opentypemap.get('otherNamesMap')
 
 
-# Certificate Discovery Purpose Identifiers
+# Certificate Discovery Intent Identifiers
 
 id_pkix = rfc5280.id_pkix
 
@@ -52,7 +52,7 @@ id_rcd_self         = id_rcd + (5,)
 
 # Certificate Discovery Access Method
 
-class DiscoveryPurposeId(univ.ObjectIdentifier):
+class DiscoveryIntentId(univ.ObjectIdentifier):
     pass
 
 
@@ -98,7 +98,7 @@ class RelatedCertificateDescriptor(univ.Sequence):
 
 RelatedCertificateDescriptor.componentType = namedtype.NamedTypes(
     namedtype.NamedType('method', CertDiscoveryMethod()),
-    namedtype.OptionalNamedType('purpose', DiscoveryPurposeId()),
+    namedtype.OptionalNamedType('intent', DiscoveryIntentId()),
     namedtype.OptionalNamedType('signatureAlgorithm',
         rfc5280.AlgorithmIdentifier().subtype(
             implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
