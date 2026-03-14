@@ -3,12 +3,12 @@ from pyasn1.codec.der import encoder
 from pyasn1_alt_modules import rfc5280
 from ref_impl import rfc_cert_discover
 
-def build_related_certificate_descriptor(uri, purpose_id=None):
+def build_related_certificate_descriptor(uri, intent_id=None):
     """
     Builds a RelatedCertificateDescriptor ASN.1 object.
     
     :param uri: The URI for the certificate location (IA5String).
-    :param purpose_id: Optional DiscoveryPurposeId (ObjectIdentifier).
+    :param intent_id: Optional DiscoveryIntentId (ObjectIdentifier).
     :return: RelatedCertificateDescriptor instance.
     """
     cert_location = rfc_cert_discover.CertLocation().subtype(
@@ -20,12 +20,12 @@ def build_related_certificate_descriptor(uri, purpose_id=None):
     
     rcd = rfc_cert_discover.RelatedCertificateDescriptor()
     rcd['method'] = method
-    if purpose_id is not None:
-        rcd['purpose'] = purpose_id
+    if intent_id is not None:
+        rcd['intent'] = intent_id
         
     return rcd
 
-def build_sia_extension_value(purpose_uri_pairs):
+def build_sia_extension_value(intent_uri_pairs):
     """
     Builds the value of a Subject Information Access extension.
     SIA is a SEQUENCE OF AccessDescription.
@@ -34,14 +34,14 @@ def build_sia_extension_value(purpose_uri_pairs):
     - accessMethod: id-ad-certDiscovery
     - accessLocation: GeneralName of type anotherName (RelatedCertificateDescriptor)
     
-    :param purpose_uri_pairs: A list/tuple of (purpose_id, uri) tuples. 
-                              purpose_id can be None.
+    :param intent_uri_pairs: A list/tuple of (intent_id, uri) tuples. 
+                              intent_id can be None.
     :return: SubjectInfoAccessSyntax instance.
     """
     sia = rfc5280.SubjectInfoAccessSyntax()
     
-    for purpose_id, uri in purpose_uri_pairs:
-        rcd = build_related_certificate_descriptor(uri, purpose_id)
+    for intent_id, uri in intent_uri_pairs:
+        rcd = build_related_certificate_descriptor(uri, intent_id)
         
         another_name = rfc5280.AnotherName().subtype(
             implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 0))
@@ -59,15 +59,15 @@ def build_sia_extension_value(purpose_uri_pairs):
         
     return sia
 
-def build_sia_extension(purpose_uri_pairs, critical=False):
+def build_sia_extension(intent_uri_pairs, critical=False):
     """
     Builds an Extension object for Subject Information Access.
     
-    :param purpose_uri_pairs: A list/tuple of (purpose_id, uri) tuples.
+    :param intent_uri_pairs: A list/tuple of (intent_id, uri) tuples.
     :param critical: Boolean indicating if the extension is critical.
     :return: Extension instance.
     """
-    sia_value = build_sia_extension_value(purpose_uri_pairs)
+    sia_value = build_sia_extension_value(intent_uri_pairs)
     
     extension = rfc5280.Extension()
     extension['extnID'] = rfc5280.id_pe_subjectInfoAccess
