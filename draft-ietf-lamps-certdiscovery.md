@@ -258,7 +258,7 @@ This intent indicates the referenced certificate's intent is to provide operatio
 
 ### Dual Usage
 
-This intent indicates the referenced certificate's intent is for dual usage; i.e. the related certificates belong to the same entity and one provides a signing-type key while the other provides an encryption-type key. The two certificates SHOULD have matching identifiers.
+This intent indicates the referenced certificate's intent is for dual usage; i.e. the related certificates belong to the same entity and one provides a signing-type key while the other provides an encryption-type key. The two certificates MUST describe the same entity and therefore SHOULD have matching Subject DN and SAN values.
 
 ### Statement of Possession of a Private Key
 
