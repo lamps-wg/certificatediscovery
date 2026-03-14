@@ -406,8 +406,8 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    This intent indicates the referenced certificate's intent is for dual
    usage; i.e. the related certificates belong to the same entity and
    one provides a signing-type key while the other provides an
-   encryption-type key.  The two certificates SHOULD have matching
-   identifiers.
+   encryption-type key.  The two certificates MUST describe the same
+   entity and therefore SHOULD have matching Subject DN and SAN values.
 
 3.4.4.  Statement of Possession of a Private Key
 
