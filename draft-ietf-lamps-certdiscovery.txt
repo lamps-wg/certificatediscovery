@@ -5,13 +5,13 @@
 Network Working Group                                           T. Okubo
 Internet-Draft                              Penguin Securities Pte. Ltd.
 Intended status: Standards Track                              C. Bonnell
-Expires: 28 July 2026                                     DigiCert, Inc.
+Expires: 15 September 2026                                DigiCert, Inc.
                                                                  J. Gray
                                                             M. Ounsworth
                                                                  Entrust
                                                                J. Mandel
                                                             AKAYLA, Inc.
-                                                         24 January 2026
+                                                           14 March 2026
 
 
               A Mechanism for X.509 Certificate Discovery
@@ -73,7 +73,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 28 July 2026.
+   This Internet-Draft will expire on 15 September 2026.
 
 Copyright Notice
 
@@ -101,7 +101,7 @@ Table of Contents
      3.1.  CertDiscoveryMethod
      3.2.  CertLocation
      3.3.  CertHash
-     3.4.  DiscoveryPurposeId
+     3.4.  DiscoveryIntentId
        3.4.1.  Algorithm Agility
        3.4.2.  Redundancy
        3.4.3.  Dual Usage
@@ -113,7 +113,7 @@ Table of Contents
      5.1.  Module Identifier
      5.2.  Access Descriptor
      5.3.  Other Name Form
-     5.4.  Certificate Discovery Purpose Identifiers
+     5.4.  Certificate Discovery Intent Identifiers
    6.  Normative References
    Acknowledgments
    Appendix A.  ASN.1 Module
@@ -290,7 +290,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 
     RelatedCertificateDescriptor ::= SEQUENCE {
       method CertDiscoveryMethod,
-      purpose DiscoveryPurposeId OPTIONAL,
+      intent DiscoveryIntentId OPTIONAL,
       signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
       publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
    }
@@ -358,15 +358,15 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    chosen Hash value.  All implementations MUST support SHA-256 via id-
    sha256, and other hash functions MAY be supported.
 
-3.4.  DiscoveryPurposeId
+3.4.  DiscoveryIntentId
 
-   DiscoveryPurposeId provides optional information to describe the
-   purpose of including the discovery information for the related
+   DiscoveryIntentId provides optional information to describe the
+   intent of including the discovery information for the related
    certificate.
 
-   Currently, the following purpose identifiers are defined:
+   Currently, the following intent identifiers are defined:
 
-    -- Purpose OBJECT IDENTIFIER
+    -- Intent OBJECT IDENTIFIER
    id-rcd-agility OBJECT IDENTIFIER ::=
                                   {id-rcd 1}
 
@@ -384,7 +384,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 
 3.4.1.  Algorithm Agility
 
-   This purpose indicates the referenced certificate's purpose is to
+   This intent indicates the referenced certificate's intent is to
    provide algorithm agility; i.e. the two certificates will use
    different cryptographic algorithms for the same key operations.  The
    two certificates SHOULD be equivalent except for cryptographic
@@ -392,7 +392,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 
 3.4.2.  Redundancy
 
-   This purpose indicates the referenced certificate's purpose is to
+   This intent indicates the referenced certificate's intent is to
    provide operational redundancy; i.e. the Secondary Certificate could
    be issued by a different CA or has a different validity period which
    can be used as a backup if the Primary set of certificates is about
@@ -400,15 +400,15 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 
 3.4.3.  Dual Usage
 
-   This purpose indicates the referenced certificate's purpose is for
-   dual usage; i.e. the related certificates belong to the same entity
-   and one provides a signing-type key while the other provides an
+   This intent indicates the referenced certificate's intent is for dual
+   usage; i.e. the related certificates belong to the same entity and
+   one provides a signing-type key while the other provides an
    encryption-type key.  The two certificates SHOULD have matching
    identifiers.
 
 3.4.4.  Statement of Possession of a Private Key
 
-   This purpose indicates that the Primary Certificate did not not do a
+   This intent indicates that the Primary Certificate did not not do a
    full proof-of-possession at enrollment time, but instead it provided
    a statement of possession as per
    [I-D.ietf-lamps-private-key-stmt-attr] signed by the Secondary
@@ -422,19 +422,19 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 
 3.4.5.  Self reference
 
-   This purpose indicates the Uniform Resource Identifier where this
+   This intent indicates the Uniform Resource Identifier where this
    certificate is located.  Applications which retrieve this certificate
    can then compare the retrieved certificate with this value to ensure
    that the correct certificate was retrieved.
 
-   This purpose can be used to bind the subjects of Primary and
-   Secondary Certificates.  The Primary Certificate contains a self-
-   reference to its location, as well as a reference to the Secondary
-   Certificate.  The Secondary Certificate contains a self-reference to
-   its location, and a reference to the Primary Certificate.  Provided
-   that policy requires subject equivalence when this mechanism is used,
-   then the consuming application can treat both certificates as
-   certifying the same entity.
+   This intent can be used to bind the subjects of Primary and Secondary
+   Certificates.  The Primary Certificate contains a self-reference to
+   its location, as well as a reference to the Secondary Certificate.
+   The Secondary Certificate contains a self-reference to its location,
+   and a reference to the Primary Certificate.  Provided that policy
+   requires subject equivalence when this mechanism is used, then the
+   consuming application can treat both certificates as certifying the
+   same entity.
 
 3.5.  Signature Algorithm and Public Key Algorithm fields
 
@@ -468,11 +468,11 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    validation algorithm as defined in section 6 of [RFC5280] MUST be
    performed for the Secondary Certificate.
 
-   The use of the self-reference purpose can be used to provide a
-   subject binding between the Primary and Secondary Certificates.
-   However, the procedure for validating subject equivalence MUST be
-   defined by policy.  As a result, validation of subject equivalence is
-   out of scope of this document.
+   The use of the self-reference intent can be used to provide a subject
+   binding between the Primary and Secondary Certificates.  However, the
+   procedure for validating subject equivalence MUST be defined by
+   policy.  As a result, validation of subject equivalence is out of
+   scope of this document.
 
    The Secondary Certificate may also have the certDiscovery access
    method.  In order to avoid cyclic loops or infinite chaining, the
@@ -533,23 +533,23 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 
                                   Table 3
 
-5.4.  Certificate Discovery Purpose Identifiers
+5.4.  Certificate Discovery Intent Identifiers
 
    To allocate id-rcd, this document introduces a new PKIX OID arc for
-   certificate discovery purpose identifiers:
+   certificate discovery intent identifiers:
 
    IANA is requested to add the following entry to "SMI Security for
    PKIX" registry, defined by [RFC 7299]:
 
-    +=========+==========================================+============+
-    | Decimal | Description                              | References |
-    +=========+==========================================+============+
-    | TBD4    | Certificate Discovery Purpose Identifier | [this-RFC] |
-    +---------+------------------------------------------+------------+
+    +=========+=========================================+============+
+    | Decimal | Description                             | References |
+    +=========+=========================================+============+
+    | TBD4    | Certificate Discovery Intent Identifier | [this-RFC] |
+    +---------+-----------------------------------------+------------+
 
-                                  Table 4
+                                 Table 4
 
-   IANA is requested to create the "Certificate Discovery Purpose
+   IANA is requested to create the "Certificate Discovery Intent
    Identifiers" registry with the following initial values:
 
               +=========+======================+============+
@@ -641,20 +641,20 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    id-rcd OBJECT IDENTIFIER ::= { iso(1) identified-organization(3) dod(6) internet(1) security(5)
       mechanisms(5) pkix(7) id-rcd(TBD4) }
 
-   -- Purpose OBJECT IDENTIFIERs
+   -- Intent OBJECT IDENTIFIERs
 
-   DiscoveryPurposeId ::= OBJECT IDENTIFIER
+   DiscoveryIntentId ::= OBJECT IDENTIFIER
 
-   id-rcd-agility DisoveryPurposeId ::= {id-rcd 1}
-   id-rcd-redundency DisoveryPurposeId ::= {id-rcd 2}
-   id-rcd-dual DisoveryPurposeId ::= {id-rcd 3}
-   id-rcd-priv-key-stmt DisoveryPurposeId ::= {id-rcd 4}
-   id-rcd-self DisoveryPurposeId ::= {id-rcd 5}
+   id-rcd-agility DisoveryIntentId ::= {id-rcd 1}
+   id-rcd-redundency DisoveryIntentId ::= {id-rcd 2}
+   id-rcd-dual DisoveryIntentId ::= {id-rcd 3}
+   id-rcd-priv-key-stmt DisoveryIntentId ::= {id-rcd 4}
+   id-rcd-self DisoveryIntentId ::= {id-rcd 5}
 
 
    RelatedCertificateDescriptor ::= SEQUENCE {
      method CertDiscoveryMethod,
-     purpose DiscoveryPurposeId OPTIONAL,
+     intent DiscoveryIntentId OPTIONAL,
      signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
      publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
    }
