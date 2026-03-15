@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-05T02:09:10.549429+00:00",
+  "timestamp": "2026-03-15T02:31:15.035591+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -371,15 +371,17 @@
       "id": "I_kwDOKkGlhc7aHS-d",
       "title": "Address Russ's comments on the new Draft",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/24",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
-      "assignees": [],
+      "assignees": [
+        "CBonnell"
+      ],
       "labels": [],
       "body": "The ASN.1 Module in this draft does not compile. \u00a0There are many syntax problems and several things that need to be IMPORTed (like AlgorithmIdentifier, Certificate, and id-sha256).\n\nI am also concerned about the use of \"Purpose OBJECT IDENTIFIERs\". \u00a0This seems too easy to confuse with EKU, which are also call key purpose identifiers. \u00a0Can we be more descriptive to avoid confusion?\n",
       "createdAt": "2025-11-24T15:14:22Z",
-      "updatedAt": "2026-01-14T14:57:47Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-14T05:00:20Z",
+      "closedAt": "2026-03-14T05:00:20Z",
       "comments": [
         {
           "author": "johngray-dev",
@@ -446,7 +448,7 @@
       "id": "I_kwDOKkGlhc7nBAwf",
       "title": "what does \"matching identifiers\" mean?",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/29",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "danvangeest",
       "authorAssociation": "NONE",
       "assignees": [
@@ -455,8 +457,8 @@
       "labels": [],
       "body": "```\n3.4.3.  Dual Usage\n\n   This purpose indicates the referenced certificate's purpose is for\n   dual usage; i.e. the related certificates belong to the same entity\n   and one provides a signing-type key while the other provides an\n   encryption-type key.  The two certificates SHOULD have matching\n   identifiers.\n```\n\nWhat does \"matching identifiers\" mean in that paragraph?\n\nIs it that each should have an SIA extension with id-on-relatedCertificateDescriptor, which refer to each other?  This is problematic when using CertDiscoveryMethod.byInclusion.  The secondary certificate obviously can't include the primary certificate, and referencing the primary certificate by URI is pointless because the secondary certificate was just pulled out of the primary one.\n\nWhat is the purpose of having matching identifiers? Are you intending to ensure that both certificates are owned by the same subject?",
       "createdAt": "2026-01-30T13:50:20Z",
-      "updatedAt": "2026-02-11T14:35:17Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-14T05:04:40Z",
+      "closedAt": "2026-03-14T05:04:40Z",
       "comments": [
         {
           "author": "ounsworth",
@@ -481,7 +483,7 @@
       "labels": [],
       "body": "DiscoveryPurposeId is OPTIONAL, but I think you should still say what should be done if one comes across an unknown DiscoveryPurposeId.  Just behave as if there was no DiscoveryPurposeId?\n\nIf a DiscoveryPurposeId exists, does this mean that the secondary certificate can only be used in the way specified by the DiscoveryPurposeId?  If so, state that.  And then if the DiscoveryPurposeId is unknown, the secondary certificate MUST NOT be used?",
       "createdAt": "2026-01-30T14:01:34Z",
-      "updatedAt": "2026-02-11T15:01:32Z",
+      "updatedAt": "2026-03-14T05:28:40Z",
       "closedAt": null,
       "comments": [
         {
@@ -490,6 +492,13 @@
           "body": "The way we designed the draft, it should be possible to use discovery purposes that are not defined in the draft.  If someone comes up with a use-case for their environment that we didn't think about.  That is why we made it extensible.  \n\nOk, we will make the draft more clear.   To answer the questions:\n\nIf a DiscoveryPurposeId exists, does this mean that the secondary certificate can only be used in the way specified by the DiscoveryPurposeId? \n\nThe purpose is meant as the intended usage, but we can't enforce how an application would use it.  We can add new language around that to make it more clear\n\nWe will look at the language in 5280 for EKU processing language to get inspiration on how to handle this. \nhttps://datatracker.ietf.org/doc/html/rfc5280#section-4.2.1.12\n\n\n\n",
           "createdAt": "2026-02-11T15:01:32Z",
           "updatedAt": "2026-02-11T15:01:32Z"
+        },
+        {
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "body": "The language in 5280 regardling EKU says:\n\n~~~\n   If the extension is present, then the certificate MUST only be used\n   for one of the purposes indicated.  If multiple purposes are\n   indicated the application need not recognize all purposes indicated,\n   as long as the intended purpose is present.  Certificate using\n   applications MAY require that the extended key usage extension be\n   present and that a particular purpose be indicated in order for the\n   certificate to be acceptable to that application.\n~~~\n\nIt would be consistent to say that if an IntentID is unknown, then the corresponding data in the RCD SHALL NOT be used by the relying party. This avoids us having to come up with language that allows consumption of the RCD data as well as the corresponding issues that may arise due to mismatched Intents.\n\nThoughts?",
+          "createdAt": "2026-03-14T05:28:40Z",
+          "updatedAt": "2026-03-14T05:28:40Z"
         }
       ]
     },
@@ -498,7 +507,7 @@
       "id": "I_kwDOKkGlhc7nBWB5",
       "title": "accessLocation semantics not defined?",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/31",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "danvangeest",
       "authorAssociation": "NONE",
       "assignees": [
@@ -507,8 +516,8 @@
       "labels": [],
       "body": "Section 3.5 \"Signature Algorithm and Public Key Algorithm fields\" says:\n\n```\n   The semantics of other id-ad-certDiscovery accessLocation name forms\n   are not defined.\n\n   Note: For a description of uniformResourceIdentifier consult section\n   4.2.2.1 of [!RFC5280].\n```\n\nThis seems like it should in be a separate section from one talking about the algorithm fields.\n\nAlso, if you aren't willing to define the semantics for the other accessLocation forms, why use GeneralName?  Just use IA5String instead.  GeneralName seems pretty disliked: https://mailarchive.ietf.org/arch/msg/spasm/rqZ5Vl8ryCdPvLN_l8uvizpDsA0/\n",
       "createdAt": "2026-01-30T14:10:27Z",
-      "updatedAt": "2026-02-11T14:41:53Z",
-      "closedAt": null,
+      "updatedAt": "2026-03-14T05:01:04Z",
+      "closedAt": "2026-03-14T05:01:04Z",
       "comments": [
         {
           "author": "CBonnell",
@@ -527,11 +536,13 @@
       "state": "OPEN",
       "author": "danvangeest",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "CBonnell"
+      ],
       "labels": [],
       "body": "Section 3.5 \"Signature Algorithm and Public Key Algorithm fields\" says:\n\n```\n   When the validation of the Primary Certificate fails, the software\n   that understands the SIA extension and the certDiscovery access\n   method uses the information to determine whether to fetch the\n   Secondary Certificate.  The software will look at the\n   signatureAlgorithm and publicKeyAlgorithm to determine whether the\n   Secondary Certificate has the signature algorithm and certificate\n   public key algorithm it can process.  If the software understands the\n   signature algorithm and certificate public key algorithm, the\n   software fetches the certificate from the URI specified in the\n   relatedCertificateLocation and attempts another validation.\n   Otherwise, the validation simply fails.\n```\nat a minimum this should probably say (note the MAY):\n```\n   the software\n   that understands the SIA extension and the certDiscovery access\n   method MAY use the information to determine whether to fetch the\n   Secondary Certificate.\n```\nBut really, if the primary certificate validation fails then you can't trust anything in the primary certificate, including any part of the RelatedCertificateDescriptor. As a minimum, the signature on the certificate needs to be valid in order to use the secondary certificate.  There could be other policy reasons why the primary certificate fails validation which would prevent the secondary certificate from being used.  Maybe if the primary certificate is expired or revoked, the secondard certificate could still be trusted if the signature verification succeeds.\n\nThe software may also want to check these algorithm fields when primary certificate validation succeeds, e.g. to avoid unnecessary fetches when it already knows it doesn't understand the algorithms.\n",
       "createdAt": "2026-01-30T14:32:45Z",
-      "updatedAt": "2026-02-11T14:37:33Z",
+      "updatedAt": "2026-03-14T05:21:26Z",
       "closedAt": null,
       "comments": [
         {
@@ -540,22 +551,31 @@
           "body": "I agree that there's some security issues here. Good point.",
           "createdAt": "2026-02-11T14:37:33Z",
           "updatedAt": "2026-02-11T14:37:33Z"
+        },
+        {
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "body": "If I'm understanding correctly, there's two things that need to be made explicit in the draft:\n\n1. The primary certificate need not be validated to consume the RCD contained within. However, the process to retrieve and validate the Secondary Certificate needs to be done with caution, perhaps referencing the security considerations in 5280 for AIA CA-Issuers.\n2. The signature and key algorithm fields can be used to \"fail fast\" so the relying party doesn't waste bandwidth and processing cycles downloading something it can't use. This is the intent behind the fields, but we should make it explicit.\n\n@danvangeest @ounsworth @tomofumiokubo @mandelj7  @johngray-dev do we agree on the above? If so, I can create a PR.",
+          "createdAt": "2026-03-14T05:21:22Z",
+          "updatedAt": "2026-03-14T05:21:22Z"
         }
       ]
     },
     {
       "number": 33,
       "id": "I_kwDOKkGlhc7nB9WN",
-      "title": "Path processing of secondary vertificate",
+      "title": "Path processing of secondary certificate",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/33",
       "state": "OPEN",
       "author": "danvangeest",
       "authorAssociation": "NONE",
-      "assignees": [],
+      "assignees": [
+        "CBonnell"
+      ],
       "labels": [],
       "body": "Is path processing of the secondary certificate just left as an implementation problem?  Where is the verifier supposed to get the issuer of the secondary certificate?  Must it be issued by the same issuer of the primary certificate?  If not, must the issuer of the secondary certificate be sent in the same certificate list as the issuer of the primary certificate?  Aren't there plenty of na\u00efve path builders which assume that the certificate list is an ordered list of certificates from the EE to the root, and would bork on such an unexpected cert in the list?",
       "createdAt": "2026-01-30T14:50:22Z",
-      "updatedAt": "2026-02-11T15:36:36Z",
+      "updatedAt": "2026-03-14T05:06:50Z",
       "closedAt": null,
       "comments": [
         {
@@ -571,6 +591,20 @@
           "body": "It should also probably say something like certificate path validation for the secondary certificate MUST follow section 6 of RFC 5280.  Although it's probably obvious, it should probably be stated so no one assumes that because it is extracted from a validated certificate that it's automatically validated.",
           "createdAt": "2026-02-11T15:36:36Z",
           "updatedAt": "2026-02-11T15:36:36Z"
+        },
+        {
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Unless I'm missing something, I think we already say this in the draft:\nhttps://github.com/lamps-wg/certificatediscovery/blob/main/draft-ietf-lamps-certdiscovery.md?plain=1#L288.\n\nGiven this, I'm not sure if we need to make further changes.\n",
+          "createdAt": "2026-03-14T04:00:15Z",
+          "updatedAt": "2026-03-14T04:00:15Z"
+        },
+        {
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "body": "@danvangeest do you think the blurb in the Security Considerations is sufficient, or should we clarify this further?",
+          "createdAt": "2026-03-14T05:06:23Z",
+          "updatedAt": "2026-03-14T05:06:23Z"
         }
       ]
     },
@@ -1143,26 +1177,134 @@
       "id": "PR_kwDOKkGlhc7DBd5B",
       "title": "Adjusted dual usage wording",
       "url": "https://github.com/lamps-wg/certificatediscovery/pull/35",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ounsworth",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Closes #29 ",
       "createdAt": "2026-02-11T14:35:04Z",
-      "updatedAt": "2026-02-11T14:35:04Z",
+      "updatedAt": "2026-03-14T05:04:43Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "3d6f13167cf7de40fa849ccde1fe5c979b47084d",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "mikeo/dualusage",
+      "headRefOid": "aae4709cf0ec18da4d74a284fa67b8080d4bfea5",
+      "closedAt": "2026-03-14T05:04:39Z",
+      "mergedAt": "2026-03-14T05:04:39Z",
+      "mergedBy": "CBonnell",
+      "mergeCommit": {
+        "oid": "b0fc7b2e3499bb13f0911a54a9a5dab3c1f2ff98"
+      },
+      "comments": [
+        {
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "body": "LGTM!",
+          "createdAt": "2026-03-14T03:10:24Z",
+          "updatedAt": "2026-03-14T03:10:24Z"
+        }
+      ],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKkGlhc7rU6SE",
+          "commit": {
+            "abbreviatedOid": "5d452fd"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "This clarification makes sense.  ",
+          "createdAt": "2026-03-14T04:55:30Z",
+          "updatedAt": "2026-03-14T04:55:30Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 38,
+      "id": "PR_kwDOKkGlhc7KinD-",
+      "title": "Move encoding requirement to right section",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/38",
+      "state": "MERGED",
+      "author": "CBonnell",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Resolves #31.",
+      "createdAt": "2026-03-14T03:44:49Z",
+      "updatedAt": "2026-03-14T05:01:07Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "78221ec2d5e7867609e2da45340959506e074d1f",
       "headRepository": "lamps-wg/certificatediscovery",
-      "headRefName": "mikeo/dualusage",
-      "headRefOid": "5d452fd5a94d26e3fce2359d667f9f42c5ef5f75",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefName": "allow-only-uri",
+      "headRefOid": "daab61f92a73f6eff4a8ad91164cbdb6454b19c2",
+      "closedAt": "2026-03-14T05:01:03Z",
+      "mergedAt": "2026-03-14T05:01:03Z",
+      "mergedBy": "CBonnell",
+      "mergeCommit": {
+        "oid": "3d6f13167cf7de40fa849ccde1fe5c979b47084d"
+      },
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKkGlhc7rU6K2",
+          "commit": {
+            "abbreviatedOid": "daab61f"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Text is more clear.  Thanks!",
+          "createdAt": "2026-03-14T04:54:35Z",
+          "updatedAt": "2026-03-14T04:54:35Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 39,
+      "id": "PR_kwDOKkGlhc7Kiv53",
+      "title": "Change \"Purpose\" to \"Intent\"",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/39",
+      "state": "MERGED",
+      "author": "CBonnell",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Resolves #24.",
+      "createdAt": "2026-03-14T04:03:39Z",
+      "updatedAt": "2026-03-14T05:00:23Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "78221ec2d5e7867609e2da45340959506e074d1f",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "purpose-to-intent",
+      "headRefOid": "0ce3dfb457727000944f6685573f2039dcea269d",
+      "closedAt": "2026-03-14T05:00:19Z",
+      "mergedAt": "2026-03-14T05:00:19Z",
+      "mergedBy": "CBonnell",
+      "mergeCommit": {
+        "oid": "e4531e123db35eb2304b9609aded356bc19da460"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKkGlhc7rU5tK",
+          "commit": {
+            "abbreviatedOid": "0ce3dfb"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Looks good.... Thanks for changing Corey",
+          "createdAt": "2026-03-14T04:52:06Z",
+          "updatedAt": "2026-03-14T04:52:06Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
