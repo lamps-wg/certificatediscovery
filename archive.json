@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-17T02:10:27.426725+00:00",
+  "timestamp": "2026-03-19T02:23:45.200627+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -497,7 +497,7 @@
       "labels": [],
       "body": "DiscoveryPurposeId is OPTIONAL, but I think you should still say what should be done if one comes across an unknown DiscoveryPurposeId.  Just behave as if there was no DiscoveryPurposeId?\n\nIf a DiscoveryPurposeId exists, does this mean that the secondary certificate can only be used in the way specified by the DiscoveryPurposeId?  If so, state that.  And then if the DiscoveryPurposeId is unknown, the secondary certificate MUST NOT be used?",
       "createdAt": "2026-01-30T14:01:34Z",
-      "updatedAt": "2026-03-17T01:32:05Z",
+      "updatedAt": "2026-03-17T02:32:11Z",
       "closedAt": null,
       "comments": [
         {
@@ -548,6 +548,13 @@
           "body": "The intent (pun not \"intended\") was that multiple RCDs are allowed in the SIA. I thought this was already explicit, but as you pointed out in the issue you created (thanks!) this should be clarified in the text.\n\nAs for bikeshed color: we renamed Purpose to Intent after someone said the name as too similar to KeyPurpose and several of the authors agreed. I personally liked Purpose and didn't see how it could be confused with KeyPurpose, but I was in the rough.",
           "createdAt": "2026-03-17T01:32:05Z",
           "updatedAt": "2026-03-17T01:32:05Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "I liked PurposeID as well, but I think it was Russ that thought it might be confused with other IETF drafts around EKU.  See this issue:  https://github.com/lamps-wg/certificatediscovery/issues/24\n\nMe can always put it back to PurposeID if the working group likes it better.    ",
+          "createdAt": "2026-03-17T02:32:11Z",
+          "updatedAt": "2026-03-17T02:32:11Z"
         }
       ]
     },
@@ -591,7 +598,7 @@
       "labels": [],
       "body": "Section 3.5 \"Signature Algorithm and Public Key Algorithm fields\" says:\n\n```\n   When the validation of the Primary Certificate fails, the software\n   that understands the SIA extension and the certDiscovery access\n   method uses the information to determine whether to fetch the\n   Secondary Certificate.  The software will look at the\n   signatureAlgorithm and publicKeyAlgorithm to determine whether the\n   Secondary Certificate has the signature algorithm and certificate\n   public key algorithm it can process.  If the software understands the\n   signature algorithm and certificate public key algorithm, the\n   software fetches the certificate from the URI specified in the\n   relatedCertificateLocation and attempts another validation.\n   Otherwise, the validation simply fails.\n```\nat a minimum this should probably say (note the MAY):\n```\n   the software\n   that understands the SIA extension and the certDiscovery access\n   method MAY use the information to determine whether to fetch the\n   Secondary Certificate.\n```\nBut really, if the primary certificate validation fails then you can't trust anything in the primary certificate, including any part of the RelatedCertificateDescriptor. As a minimum, the signature on the certificate needs to be valid in order to use the secondary certificate.  There could be other policy reasons why the primary certificate fails validation which would prevent the secondary certificate from being used.  Maybe if the primary certificate is expired or revoked, the secondard certificate could still be trusted if the signature verification succeeds.\n\nThe software may also want to check these algorithm fields when primary certificate validation succeeds, e.g. to avoid unnecessary fetches when it already knows it doesn't understand the algorithms.\n",
       "createdAt": "2026-01-30T14:32:45Z",
-      "updatedAt": "2026-03-15T23:26:36Z",
+      "updatedAt": "2026-03-18T07:32:23Z",
       "closedAt": null,
       "comments": [
         {
@@ -621,6 +628,13 @@
           "body": "> Unless we have a compelling reason to allow you to follow un-validated RCD's, then I would not make an exception for them.\n\nHow do you expect the redundancy intent to work?",
           "createdAt": "2026-03-15T23:26:36Z",
           "updatedAt": "2026-03-15T23:26:36Z"
+        },
+        {
+          "author": "falko-strenzke",
+          "authorAssociation": "NONE",
+          "body": "> This feels like a swamp full of alligators. \"I couldn't establish trust in this cert, but it's cool cause it pointed me to that other cert claiming that it's equivalent\".\n\nHow can it be that here we are talking about \"equivalence\" of certificates? This is something completely different than discovery. To \"disover\" someting means \"finding\" it. No more. Please make sure that this draft is clear in its title, abstract, and introduction regarding the intended purpose. If you want to realise more than mere certificate discovery, I see the need to change the title.",
+          "createdAt": "2026-03-18T07:31:57Z",
+          "updatedAt": "2026-03-18T07:32:23Z"
         }
       ]
     },
@@ -638,7 +652,7 @@
       "labels": [],
       "body": "Is path processing of the secondary certificate just left as an implementation problem?  Where is the verifier supposed to get the issuer of the secondary certificate?  Must it be issued by the same issuer of the primary certificate?  If not, must the issuer of the secondary certificate be sent in the same certificate list as the issuer of the primary certificate?  Aren't there plenty of na\u00efve path builders which assume that the certificate list is an ordered list of certificates from the EE to the root, and would bork on such an unexpected cert in the list?",
       "createdAt": "2026-01-30T14:50:22Z",
-      "updatedAt": "2026-03-16T11:41:23Z",
+      "updatedAt": "2026-03-18T07:27:15Z",
       "closedAt": null,
       "comments": [
         {
@@ -689,6 +703,13 @@
           "body": "Mike's suggested text:\n\n> When the two certificates have different Issuers, the application will need to be provided with both certificate chains; the details of conveying multiple certificate chains will vary by protocol. Implementers SHOULD consider whether their protocols and applications are capable of conveying multiple certificate chains when designing their Related Certificate deployment.\n\nI guess it's not just implementers which need to consider these things.  Protocol designers who integrate Certificate discovery into their protocols will need to consider it as well.  In particular they'll need to consider whether they need to extend their protocol to send a second certificate chain vs sending a single list, and if they send a single list they should consider the existence of na\u00efve path builders.\n\nRFC 8446 says:\n\n> The sender's certificate MUST come in the first\n   CertificateEntry in the list.  Each following certificate SHOULD\n   directly certify the one immediately preceding it.\n\nSo this is evidence that sending a single list of certificates will not fit well into some protocols.",
           "createdAt": "2026-03-16T11:41:23Z",
           "updatedAt": "2026-03-16T11:41:23Z"
+        },
+        {
+          "author": "falko-strenzke",
+          "authorAssociation": "NONE",
+          "body": "> RFC 8446 says:\n> \n> > The sender's certificate MUST come in the first\n> > CertificateEntry in the list.  Each following certificate SHOULD\n> > directly certify the one immediately preceding it.\n> \n> So this is evidence that sending a single list of certificates will not fit well into some protocols.\n\nThis is exactly the point that I tried to raise in the session yesterday. In my view, the draft does not draw a clear line between mere certificate discovery and the modification of protocols to use alternate chains. The latter is clearly not covered by the \"certificate discovery\" function. The discovery aspect, in my understanding, is clearly limited to making known another certificate. That means very concretely that, if the peer already knows the given alternative certificate, the certificate discovery extension conveys no information to him at all. But from the discussion here I understand that the intend of the authors is indeed to cross over into the protocoll domain, i.e., provide the possibility for protocols to use the extension for use of alternative certificates in a single protocol run. If that is really the case, then the draft should explain the intended possible modification of protocols for this purpose in detail. The interaction with RFC 5280 then needs to be elaborated precisely. The title and abstract would also have to be modified.",
+          "createdAt": "2026-03-18T07:27:15Z",
+          "updatedAt": "2026-03-18T07:27:15Z"
         }
       ]
     },
@@ -840,7 +861,7 @@
       "labels": [],
       "body": "The Self Reference intent says:\n\n> This intent can be used to bind the subjects of Primary and Secondary Certificates. The Primary Certificate contains a self-reference to its location, as well as a reference to the Secondary Certificate. The Secondary Certificate contains a self-reference to its location, and a reference to the Primary Certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.\n\nI don't understand how the self-reference is helping with this binding.  Isn't the Primary->Secondary and Secondary->Primary cross-referencing achieving this?\n\nAlso for the cross-reference part when binding the subjects, is the Self Reference intent supposed to be used for this?  If so, that contradicts the previous paragraph:\n\n> This intent indicates the Uniform Resource Identifier where this certificate is located. Applications which retrieve this certificate can then compare the retrieved certificate with this value to ensure that the correct certificate was retrieved.\n\nassuming \"this certificate\" is the certificate containing the reference to its actual self.",
       "createdAt": "2026-03-16T13:21:45Z",
-      "updatedAt": "2026-03-17T01:38:11Z",
+      "updatedAt": "2026-03-18T10:50:41Z",
       "closedAt": null,
       "comments": [
         {
@@ -849,6 +870,13 @@
           "body": "> I don't understand how the self-reference is helping with this binding. Isn't the Primary->Secondary and Secondary->Primary cross-referencing achieving this?\n\nThe Self Reference Intent allows for a stronger binding. Generally, certificates will be retrieved using plaintext protocols (HTTP mainly) so it is possible that an on-path attacker could substitute the certificate. However, with the Self-reference, if the Primary and Secondary certificates are both trusted, then it is possible to ensure that the correct certificate was retrieved by comparing the requested URL with the Self Reference URL. This same mechanism is used with scoped CRLs and the names/URLs included in the CRL IDP and certificate's CRLDP to ensure the certificate is within the scope of the scoped CRL.\n\nIt's not as strong of a binding as a hash, but it allows for a two-way binding that the RP can use to ensure the correct certificate was retrieved.",
           "createdAt": "2026-03-17T01:38:11Z",
           "updatedAt": "2026-03-17T01:38:11Z"
+        },
+        {
+          "author": "danvangeest",
+          "authorAssociation": "NONE",
+          "body": "Is the mechanism for scoped CRLs described in an RFC somewhere?\n\nPerhaps this Self Reference mechanism should be fleshed out more in this document instead of assuming people will know how to do it or will already be familiar with the scoped CRLs mechanism.",
+          "createdAt": "2026-03-18T10:50:40Z",
+          "updatedAt": "2026-03-18T10:50:40Z"
         }
       ]
     }
