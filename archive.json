@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-03-19T02:23:45.200627+00:00",
+  "timestamp": "2026-03-26T02:28:24.060140+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -861,7 +861,7 @@
       "labels": [],
       "body": "The Self Reference intent says:\n\n> This intent can be used to bind the subjects of Primary and Secondary Certificates. The Primary Certificate contains a self-reference to its location, as well as a reference to the Secondary Certificate. The Secondary Certificate contains a self-reference to its location, and a reference to the Primary Certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.\n\nI don't understand how the self-reference is helping with this binding.  Isn't the Primary->Secondary and Secondary->Primary cross-referencing achieving this?\n\nAlso for the cross-reference part when binding the subjects, is the Self Reference intent supposed to be used for this?  If so, that contradicts the previous paragraph:\n\n> This intent indicates the Uniform Resource Identifier where this certificate is located. Applications which retrieve this certificate can then compare the retrieved certificate with this value to ensure that the correct certificate was retrieved.\n\nassuming \"this certificate\" is the certificate containing the reference to its actual self.",
       "createdAt": "2026-03-16T13:21:45Z",
-      "updatedAt": "2026-03-18T10:50:41Z",
+      "updatedAt": "2026-03-25T13:17:25Z",
       "closedAt": null,
       "comments": [
         {
@@ -877,6 +877,13 @@
           "body": "Is the mechanism for scoped CRLs described in an RFC somewhere?\n\nPerhaps this Self Reference mechanism should be fleshed out more in this document instead of assuming people will know how to do it or will already be familiar with the scoped CRLs mechanism.",
           "createdAt": "2026-03-18T10:50:40Z",
           "updatedAt": "2026-03-18T10:50:40Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We could look at the text for CRL scoping and see if it offers clarity.",
+          "createdAt": "2026-03-25T13:17:25Z",
+          "updatedAt": "2026-03-25T13:17:25Z"
         }
       ]
     }
