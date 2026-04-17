@@ -168,11 +168,12 @@ When the `accessMethod` has a value of `id-ad-certDiscovery`, then the `accessLo
    method CertDiscoveryMethod,
    intent DiscoveryIntentId OPTIONAL,
    signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
-   publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
+   publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL,
+   spkiBinding [2] IMPLICIT SPKIBinding OPTIONAL
 }
 ~~~
 
-`RelatedCertificateDescriptor` is composed of 4 components which are defined below.
+`RelatedCertificateDescriptor` is composed of 5 components which are defined below.
 
 ## CertDiscoveryMethod
 
@@ -209,7 +210,7 @@ The certificate is referenced by an IA5String that contains the URI of the Secon
 
 `CertLocation` MAY include an optional `certHash` value which can be used to include a cryptographic hash of the DER Encoded Secondary Certificate. The syntax of `CertHash` is described below.
 
-## CertHash
+## CertHash {#certhash}
 
 `CertHash` is defined by the following:
 
@@ -245,6 +246,9 @@ id-rcd-priv-key-stmt OBJECT IDENTIFIER ::=
 
 id-rcd-self OBJECT IDENTIFIER ::=
                                {id-rcd 5}
+
+id-rcd-mandatory OBJECT IDENTIFIER ::=
+                               {id-rcd 6}
 ~~~
 
 ### Algorithm Agility
@@ -272,11 +276,59 @@ This intent indicates the Uniform Resource Identifier where this certificate is 
 
 This intent can be used to bind the subjects of Primary and Secondary Certificates. The Primary Certificate contains a self-reference to its location, as well as a reference to the Secondary Certificate. The Secondary Certificate contains a self-reference to its location, and a reference to the Primary Certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.
 
+### Mandatory Binding
+
+This intent indicates that the `RelatedCertificateDescriptor` carries a mandatory binding constraint. When the `intent` is `id-rcd-mandatory`, the consuming application MUST verify the `spkiBinding` field as described in {{spki-binding}}. If the `spkiBinding` field is absent, or if its verification fails, the consuming application MUST reject the `RelatedCertificateDescriptor` and MUST NOT use the Secondary Certificate.
+
+This intent is designed for high-assurance environments such as secure boot, code signing, and IoT device identity, where the secondary certificate is a security requirement rather than a discovery convenience. In these environments, the descriptor acts as a mandatory constraint: if the verifier's policy requires a secondary key and the binding is absent or invalid, the entire certificate chain MUST be rejected.
+
+~~~
+id-rcd-mandatory OBJECT IDENTIFIER ::=
+                               {id-rcd 6}
+~~~
+
 ## Signature Algorithm and Public Key Algorithm fields
 
 The signatureAlgorithm is used to indicate the signature algorithm used in the Secondary Certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.
 
 When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.
+
+## SPKI Binding {#spki-binding}
+
+The `spkiBinding` field provides an OPTIONAL cryptographic binding between the Primary and Secondary Certificates using hashes of their `subjectPublicKeyInfo` (SPKI) fields. This binding serves two purposes: it prevents descriptor transplantation (where a `RelatedCertificateDescriptor` is moved from one certificate to another) and it enables bidirectional binding between certificate pairs.
+
+Since both public keys are known before either certificate is signed, binding by SPKI hash avoids the circular dependency that would arise from binding by full certificate hash. Both H(Primary.SPKI) and H(Secondary.SPKI) can be computed and embedded in both certificates' descriptors before either TBS is assembled.
+
+`SPKIBinding` is defined as follows:
+
+~~~
+SPKIBinding ::= SEQUENCE {
+    hostSPKIHash CertHash,
+    relatedSPKIHash CertHash OPTIONAL
+}
+~~~
+
+The `SPKIBinding` type contains two components:
+
+1. `hostSPKIHash`: A `CertHash` containing the hash of the DER-encoded `subjectPublicKeyInfo` field of the certificate that contains this `RelatedCertificateDescriptor`. This field is REQUIRED when `spkiBinding` is present. It prevents descriptor transplantation: if the descriptor is moved to a different certificate, the `hostSPKIHash` will not match the hosting certificate's SPKI and the verifier MUST reject the descriptor.
+
+2. `relatedSPKIHash`: An OPTIONAL `CertHash` containing the hash of the DER-encoded `subjectPublicKeyInfo` field of the related (Secondary) certificate. When present, this field identifies the specific Secondary Certificate. When both certificates include descriptors with both `hostSPKIHash` and `relatedSPKIHash` pointing to each other, the binding is bidirectional.
+
+The `CertHash` type, defined in {{certhash}}, is reused for both components. All implementations MUST support SHA-256 (`id-sha256`) for SPKI hash computation.
+
+### Verification Procedure {#spki-verification}
+
+When a verifier processes a `RelatedCertificateDescriptor` that contains an `spkiBinding`, the verifier MUST perform the following steps:
+
+1. Compute the hash of the DER-encoded `subjectPublicKeyInfo` of the certificate containing the descriptor (the Primary Certificate), using the hash algorithm specified in `hostSPKIHash.hashAlgorithm`.
+
+2. Compare the computed hash with `hostSPKIHash.value`. If the values do not match, the verifier MUST reject the `RelatedCertificateDescriptor`. A mismatch indicates that the descriptor has been transplanted from another certificate.
+
+3. If `relatedSPKIHash` is present and the Secondary Certificate has been obtained, the verifier MUST compute the hash of the DER-encoded `subjectPublicKeyInfo` of the Secondary Certificate using the hash algorithm specified in `relatedSPKIHash.hashAlgorithm`, and compare the result with `relatedSPKIHash.value`. If the values do not match, the verifier MUST reject the Secondary Certificate.
+
+For bidirectional binding, both the Primary and Secondary Certificates contain `RelatedCertificateDescriptor`s pointing to each other, each with `hostSPKIHash` and `relatedSPKIHash`. The verifier performs the above procedure on both descriptors independently.
+
+If the verifier does not support the hash algorithm specified in `hostSPKIHash.hashAlgorithm` or `relatedSPKIHash.hashAlgorithm`, the verifier MUST treat the binding as unverifiable. If the verifier's local policy requires binding verification (or the `intent` is `id-rcd-mandatory`), the verifier MUST reject the descriptor.
 
 # Security Considerations
 
@@ -288,6 +340,38 @@ subject equivalence is out of scope of this document.
 The Secondary Certificate may also have the certDiscovery access method. In order to avoid cyclic loops or infinite chaining, the validator should be mindful of how many fetching attempts it allows in one validation.
 
 The same security considerations for `caIssuers` access method outlined in {{RFC5280}} applies to the certDiscovery access method. In order to avoid recursive certificate validations which involve online revocation checking, untrusted transport protocols (such as plaintext HTTP) are commonly used for serving certificate files. While the use of such protocols avoids issues with recursive certification path validations and associated online revocation checking, it also enables an attacker to tamper with data and perform substitution attacks. Clients fetching certificates using the mechanism specified in this document MUST treat downloaded certificate data as untrusted and perform requisite checks to ensure that the downloaded data is not malicious.
+
+## Descriptor Transplantation
+
+Without `hostSPKIHash`, an attacker who possesses two valid certificates from the same CA — CertA and CertB (with different keys) — could transplant CertA's `RelatedCertificateDescriptor` onto CertB by obtaining a re-issued CertB that contains CertA's descriptor. A verifier would then associate the secondary identity with CertB's key, which the attacker may control.
+
+The `hostSPKIHash` field in `SPKIBinding` prevents this attack. The descriptor contains a hash of CertA's `subjectPublicKeyInfo`. When the descriptor is transplanted to CertB, the verifier computes the hash of CertB's `subjectPublicKeyInfo`, detects the mismatch, and rejects the descriptor. The binding is non-fungible — it cannot be moved between certificates without detection.
+
+## Descriptor Stripping
+
+An attacker who controls the certificate delivery channel (e.g., a TLS middlebox or a compromised firmware delivery pipeline) could strip the `subjectInfoAccess` extension entirely, forcing the verifier to accept only the Primary Certificate.
+
+For standard PKI use cases, this is acceptable — the Primary Certificate remains independently valid. For high-assurance profiles where the secondary key is a security requirement (e.g., post-quantum algorithm adoption in secure boot, threshold signing for firmware verification), stripping constitutes a downgrade attack.
+
+The `id-rcd-mandatory` intent identifier addresses this: when a verifier's local policy requires a secondary key and the descriptor is absent, the verifier MUST reject the certificate chain. This converts stripping from an invisible downgrade into a detectable failure.
+
+## SPKI Binding and Circular Dependencies
+
+A natural alternative to SPKI binding is full certificate binding: include H(Secondary Certificate) in the Primary and H(Primary Certificate) in the Secondary. This creates a circular dependency — the hash of CertA depends on the contents of CertA, which includes the hash of CertB, which depends on the contents of CertB, which includes the hash of CertA. Neither certificate can be signed first.
+
+The existing `certHash` in `CertLocation` avoids this by being unidirectional: only the Primary includes H(Secondary). This is sufficient for discovery verification after fetching, but does not provide bidirectional binding.
+
+SPKI binding resolves the circularity because `subjectPublicKeyInfo` is determined before signing. Both public keys are generated before either certificate's TBSCertificate is assembled. Therefore H(Primary.SPKI) and H(Secondary.SPKI) can be computed and embedded in both certificates' descriptors without creating a dependency cycle.
+
+## SPKI Binding Hash Algorithm Agility
+
+The `CertHash` type used for SPKI binding includes a `hashAlgorithm` field, providing algorithm agility. All implementations MUST support SHA-256 (`id-sha256`). For environments requiring post-quantum hash resilience, SHA-3 (`id-sha3-256`) or SHAKE256 MAY be used. The hash algorithm for SPKI binding is independent of the certificate's signature algorithm — a certificate signed with ML-DSA can use SHA-256 for its SPKI binding.
+
+## Multi-Hop Chains with SPKI Binding
+
+In a certificate chain with multiple levels carrying descriptors (e.g., Root, Intermediate, and Leaf certificates each carrying a `RelatedCertificateDescriptor`), each descriptor's `spkiBinding` is verified independently at its own level. The binding at level N does not depend on the binding at level N-1. This ensures that compromise or removal of a descriptor at one level does not affect binding integrity at other levels.
+
+Verifiers processing multi-hop chains SHOULD verify all descriptors in the chain before accepting the secondary trust path. This ensures the security policy is enforced from the leaf back to the root.
 
 # IANA Considerations
 
@@ -334,6 +418,7 @@ IANA is requested to create the "Certificate Discovery Intent Identifiers" regis
 | 3       | id-rcd-dual          | [this-RFC] |
 | 3       | id-rcd-priv-key-stmt | [this-RFC] |
 | 5       | id-rcd-self          | [this-RFC] |
+| 6       | id-rcd-mandatory     | [this-RFC] |
 
 Updates to this table are to be made according to the Specification Required policy as defined in [RFC8126].
 
@@ -396,13 +481,20 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    id-rcd-dual DisoveryIntentId ::= {id-rcd 3}
    id-rcd-priv-key-stmt DisoveryIntentId ::= {id-rcd 4}
    id-rcd-self DisoveryIntentId ::= {id-rcd 5}
+   id-rcd-mandatory DisoveryIntentId ::= {id-rcd 6}
 
 
    RelatedCertificateDescriptor ::= SEQUENCE {
      method CertDiscoveryMethod,
      intent DiscoveryIntentId OPTIONAL,
      signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
-     publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
+     publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL,
+     spkiBinding [2] IMPLICIT SPKIBinding OPTIONAL
+   }
+
+   SPKIBinding ::= SEQUENCE {
+     hostSPKIHash CertHash,
+     relatedSPKIHash CertHash OPTIONAL
    }
 
    CertDiscoveryMethod ::= CHOICE {
