@@ -48,6 +48,7 @@ id_rcd_redundency   = id_rcd + (2,)
 id_rcd_dual         = id_rcd + (3,)
 id_rcd_priv_key_stmt= id_rcd + (4,)
 id_rcd_self         = id_rcd + (5,)
+id_rcd_mandatory    = id_rcd + (6,)
 
 
 # Certificate Discovery Access Method
@@ -66,6 +67,16 @@ _defaultHashAlgorithm['algorithm'] = rfc4055.id_sha256
 CertHash.componentType = namedtype.NamedTypes(
     namedtype.NamedType('value', univ.OctetString()),
     namedtype.DefaultedNamedType('hashAlgorithm', _defaultHashAlgorithm)
+)
+
+
+class SPKIBinding(univ.Sequence):
+    pass
+
+
+SPKIBinding.componentType = namedtype.NamedTypes(
+    namedtype.NamedType('hostSPKIHash', CertHash()),
+    namedtype.OptionalNamedType('relatedSPKIHash', CertHash())
 )
 
 
@@ -104,7 +115,10 @@ RelatedCertificateDescriptor.componentType = namedtype.NamedTypes(
             implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 0))),
     namedtype.OptionalNamedType('publicKeyAlgorithm',
         rfc5280.AlgorithmIdentifier().subtype(
-            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1)))
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatSimple, 1))),
+    namedtype.OptionalNamedType('spkiBinding',
+        SPKIBinding().subtype(
+            implicitTag=tag.Tag(tag.tagClassContext, tag.tagFormatConstructed, 2)))
 )
 
 
