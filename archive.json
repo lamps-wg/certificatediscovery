@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-04-16T02:44:16.615020+00:00",
+  "timestamp": "2026-04-19T02:45:46.202965+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -786,7 +786,7 @@
       "labels": [],
       "body": "Sarat G is suggesting the following:\n\nAfter working through some high-assurance use cases in the\nembedded/hardware security space, I'd like to advocate for two\nadditions to Certificate Discovery:\n\n1. A delta encoding option for byInclusion (size efficiency)\n2. A mandatory binding attribute (SPKI hash) for high-assurance\n   profiles\n\nThese are independent \u2014 the draft could adopt either without the\nother.\n\n\nUSE CASE: IMMUTABLE HARDWARE ROOTS OF TRUST\n\nIn secure boot, a public key (or its hash) is burned into OTP fuses\nat manufacturing. These devices have 15-20 year deployed lifetimes\n(automotive ECUs, industrial controllers, HSMs). I've encountered a\ncritical need to graft modern cryptographic properties onto these\nlegacy anchors \u2014 specifically:\n\n- Post-quantum algorithm adoption (ML-DSA, LMS) on hardware whose\n  OTP root is ECDSA or RSA\n- Threshold/MPC signing (e.g., FROST over Ed25519) on hardware whose\n  OTP key type doesn't support efficient threshold protocols\n- Key compromise recovery without hardware replacement\n\nFor these devices:\n- byUri is not viable: no network stack during early-stage boot.\n- byInclusion with a full certificate is often too large: early\n  bootloaders operate under tight flash and MTU constraints. A delta\n  encoding (carrying only the fields that differ) is significantly\n  more compact.\n\n\nUSE CASE: ENDPOINT-DRIVEN POLICY ENFORCEMENT\n\nIn the scenarios above, the related certificate isn't just a\n\"discovery\" convenience \u2014 it's a security requirement. The boot\nchain must enforce that the paired descriptor is present and that its\nsecondary key satisfies the endpoint's policy (e.g., \"firmware must\nbe signed under the threshold key, not just the legacy OTP key\").\n\nIf the descriptor can be stripped or transplanted to a different\nbase certificate, an attacker can force a downgrade to the legacy\nkey alone. This is where binding matters.\n\nIn these high-assurance environments, the discovery mechanism must\nact as a mandatory constraint: if the verifier's policy requires a\nsecondary key and it is missing or the binding is invalid, the\nentire chain must be rejected.\n\n\nSPKI BINDING (SOLVING THE CIRCULAR DEPENDENCY)\n\nYour suggestion of considering SPKI binding in both directions is\nexactly what I've been exploring. Since both public keys are\navailable before the signing ceremony:\n\n- The related certificate (or descriptor) includes\n  H(base.subjectPublicKeyInfo)\n- The base certificate includes H(delta.subjectPublicKeyInfo)\n\nThis avoids the circular dependency (no certificate-level hash\nneeded) while cryptographically tying the two certificates together.\nA verifier that sees a base certificate without the expected\ndescriptor, or with a descriptor whose binding doesn't match,\nrejects the chain.\n\nFor standard PKI/TLS use, the binding could remain optional. For\nhigh-assurance profiles (secure boot, code signing, IoT device\nidentity), it would be mandatory.\n\n\nNEXT STEPS\n\nI can draft a short text contribution with the ASN.1 for the binding\nattribute if that would be useful. Happy to discuss further.\n",
       "createdAt": "2026-03-04T20:43:50Z",
-      "updatedAt": "2026-04-15T13:23:32Z",
+      "updatedAt": "2026-04-17T03:32:58Z",
       "closedAt": null,
       "comments": [
         {
@@ -816,6 +816,13 @@
           "body": "Thanks Sarat, our authors group met today.   Please submit a PR for your SPKI proposal, and we will take a look!   Thanks so much for your help!",
           "createdAt": "2026-04-15T13:23:32Z",
           "updatedAt": "2026-04-15T13:23:32Z"
+        },
+        {
+          "author": "sg777",
+          "authorAssociation": "NONE",
+          "body": "Thanks John. PR submitted: https://github.com/lamps-wg/certificatediscovery/pull/45\n\nSPKI binding only, as discussed. byDelta will be a separate follow-up. Happy to address any feedback.",
+          "createdAt": "2026-04-17T03:32:58Z",
+          "updatedAt": "2026-04-17T03:32:58Z"
         }
       ]
     },
@@ -1568,6 +1575,32 @@
       "headRepository": "lamps-wg/certificatediscovery",
       "headRefName": "more-ref-impl",
       "headRefOid": "7308c79c50545ef4b402e44ed8da8073a8f9cffe",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
+    },
+    {
+      "number": 45,
+      "id": "PR_kwDOKkGlhc7TLWSU",
+      "title": "Add SPKI Binding mechanism for RelatedCertificateDescriptor",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/45",
+      "state": "OPEN",
+      "author": "sg777",
+      "authorAssociation": "NONE",
+      "assignees": [],
+      "labels": [],
+      "body": "Summary\r\nAdds cryptographic SPKI binding to RelatedCertificateDescriptor, as discussed in #37. This PR covers the SPKI binding mechanism only; byDelta will be a separate follow-up.\r\n\r\nChanges\r\nASN.1 additions:\r\n- SPKIBinding type with hostSPKIHash (required) and relatedSPKIHash (optional), reusing the existing CertHash type\r\n- spkiBinding [2] IMPLICIT SPKIBinding OPTIONAL added to RelatedCertificateDescriptor\r\n- id-rcd-mandatory intent identifier ({id-rcd 6}) for high-assurance profiles\r\n\r\nDraft text additions:\r\n- Section 3.4.6: Mandatory Binding intent semantics\r\n- Section 3.6: SPKIBinding type definition and verification procedure\r\n- Security considerations: descriptor transplantation, descriptor stripping, circular dependency avoidance, hash algorithm agility, \r\n\r\nmulti-hop chains\r\n- IANA registry update for id-rcd-mandatory\r\n\r\nReference implementation:\r\n- Updated ref_impl/rfc_cert_discover.py with pyasn1 types for SPKIBinding and id-rcd-mandatory\r\n\r\nDesign decisions\r\n- SPKI over full certificate hash: Avoids circular dependency for bidirectional binding since both public keys are known before signing\r\n- hostSPKIHash as anti-transplantation: Binds the descriptor to the hosting certificate's public key \u2014 non-fungible across certificates\r\n- id-rcd-mandatory as enforcement signal: Allows the certificate itself to express that binding verification is required, complementing verifier local policy\r\n- Tag [2] IMPLICIT: Sequential after existing [0] (signatureAlgorithm) and [1] (publicKeyAlgorithm)\r\n\r\nAddresses #37.\r\n\r\n",
+      "createdAt": "2026-04-17T03:31:01Z",
+      "updatedAt": "2026-04-17T03:31:01Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "b0fc7b2e3499bb13f0911a54a9a5dab3c1f2ff98",
+      "headRepository": "sg777/certificatediscovery",
+      "headRefName": "spki-binding",
+      "headRefOid": "6031216994cab95349c874d52972f37d7ee69a92",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
