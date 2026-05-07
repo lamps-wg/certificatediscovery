@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-03T03:20:23.061452+00:00",
+  "timestamp": "2026-05-07T02:54:54.028735+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -921,6 +921,24 @@
           "updatedAt": "2026-03-25T13:17:25Z"
         }
       ]
+    },
+    {
+      "number": 46,
+      "id": "I_kwDOKkGlhc8AAAABBcWOmg",
+      "title": "Remove certHash",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/46",
+      "state": "OPEN",
+      "author": "CBonnell",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [
+        "CBonnell"
+      ],
+      "labels": [],
+      "body": "To simplify the document, we will remove the certHash functionality and instead direct readers to RFC 9763.",
+      "createdAt": "2026-05-06T13:39:37Z",
+      "updatedAt": "2026-05-06T13:40:08Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -1594,7 +1612,7 @@
       "labels": [],
       "body": "Summary\r\nAdds cryptographic SPKI binding to RelatedCertificateDescriptor, as discussed in #37. This PR covers the SPKI binding mechanism only; byDelta will be a separate follow-up.\r\n\r\nChanges\r\nASN.1 additions:\r\n- SPKIBinding type with hostSPKIHash (required) and relatedSPKIHash (optional), reusing the existing CertHash type\r\n- spkiBinding [2] IMPLICIT SPKIBinding OPTIONAL added to RelatedCertificateDescriptor\r\n- id-rcd-mandatory intent identifier ({id-rcd 6}) for high-assurance profiles\r\n\r\nDraft text additions:\r\n- Section 3.4.6: Mandatory Binding intent semantics\r\n- Section 3.6: SPKIBinding type definition and verification procedure\r\n- Security considerations: descriptor transplantation, descriptor stripping, circular dependency avoidance, hash algorithm agility, \r\n\r\nmulti-hop chains\r\n- IANA registry update for id-rcd-mandatory\r\n\r\nReference implementation:\r\n- Updated ref_impl/rfc_cert_discover.py with pyasn1 types for SPKIBinding and id-rcd-mandatory\r\n\r\nDesign decisions\r\n- SPKI over full certificate hash: Avoids circular dependency for bidirectional binding since both public keys are known before signing\r\n- hostSPKIHash as anti-transplantation: Binds the descriptor to the hosting certificate's public key \u2014 non-fungible across certificates\r\n- id-rcd-mandatory as enforcement signal: Allows the certificate itself to express that binding verification is required, complementing verifier local policy\r\n- Tag [2] IMPLICIT: Sequential after existing [0] (signatureAlgorithm) and [1] (publicKeyAlgorithm)\r\n\r\nAddresses #37.\r\n\r\n",
       "createdAt": "2026-04-17T03:31:01Z",
-      "updatedAt": "2026-05-02T12:31:58Z",
+      "updatedAt": "2026-05-06T13:40:22Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "b0fc7b2e3499bb13f0911a54a9a5dab3c1f2ff98",
@@ -1612,6 +1630,13 @@
           "body": "Hi @johngray-dev,\r\nDo you got a chance to review this PR, if any changes needed to it please let me know.",
           "createdAt": "2026-05-02T12:31:58Z",
           "updatedAt": "2026-05-02T12:31:58Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Hi Sarat,\r\n\r\nOur author group looked at your pull request.  Thanks for all the work you have done!  At our most recent meeting, we have been working towards simplifying our draft, and realized that RFC 8649 - Hash of Root Key, may meet the requirements you are looking for in regards to SPKI binding.   Do you have use-cases in mind where end-entities would use SPKI binding?",
+          "createdAt": "2026-05-06T13:40:22Z",
+          "updatedAt": "2026-05-06T13:40:22Z"
         }
       ],
       "reviews": []
