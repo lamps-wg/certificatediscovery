@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-07T02:54:54.028735+00:00",
+  "timestamp": "2026-05-12T03:23:04.116132+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -1612,7 +1612,7 @@
       "labels": [],
       "body": "Summary\r\nAdds cryptographic SPKI binding to RelatedCertificateDescriptor, as discussed in #37. This PR covers the SPKI binding mechanism only; byDelta will be a separate follow-up.\r\n\r\nChanges\r\nASN.1 additions:\r\n- SPKIBinding type with hostSPKIHash (required) and relatedSPKIHash (optional), reusing the existing CertHash type\r\n- spkiBinding [2] IMPLICIT SPKIBinding OPTIONAL added to RelatedCertificateDescriptor\r\n- id-rcd-mandatory intent identifier ({id-rcd 6}) for high-assurance profiles\r\n\r\nDraft text additions:\r\n- Section 3.4.6: Mandatory Binding intent semantics\r\n- Section 3.6: SPKIBinding type definition and verification procedure\r\n- Security considerations: descriptor transplantation, descriptor stripping, circular dependency avoidance, hash algorithm agility, \r\n\r\nmulti-hop chains\r\n- IANA registry update for id-rcd-mandatory\r\n\r\nReference implementation:\r\n- Updated ref_impl/rfc_cert_discover.py with pyasn1 types for SPKIBinding and id-rcd-mandatory\r\n\r\nDesign decisions\r\n- SPKI over full certificate hash: Avoids circular dependency for bidirectional binding since both public keys are known before signing\r\n- hostSPKIHash as anti-transplantation: Binds the descriptor to the hosting certificate's public key \u2014 non-fungible across certificates\r\n- id-rcd-mandatory as enforcement signal: Allows the certificate itself to express that binding verification is required, complementing verifier local policy\r\n- Tag [2] IMPLICIT: Sequential after existing [0] (signatureAlgorithm) and [1] (publicKeyAlgorithm)\r\n\r\nAddresses #37.\r\n\r\n",
       "createdAt": "2026-04-17T03:31:01Z",
-      "updatedAt": "2026-05-06T13:40:22Z",
+      "updatedAt": "2026-05-10T05:22:18Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "b0fc7b2e3499bb13f0911a54a9a5dab3c1f2ff98",
@@ -1637,6 +1637,13 @@
           "body": "Hi Sarat,\r\n\r\nOur author group looked at your pull request.  Thanks for all the work you have done!  At our most recent meeting, we have been working towards simplifying our draft, and realized that RFC 8649 - Hash of Root Key, may meet the requirements you are looking for in regards to SPKI binding.   Do you have use-cases in mind where end-entities would use SPKI binding?",
           "createdAt": "2026-05-06T13:40:22Z",
           "updatedAt": "2026-05-06T13:40:22Z"
+        },
+        {
+          "author": "sg777",
+          "authorAssociation": "NONE",
+          "body": "Hi John,\r\n\r\nThanks for the pointer to RFC 8649. I'm familiar with it \u2014 it's a good mechanism for root CA key rollover, but it addresses a different problem space from what SPKI binding targets. The key differences:\r\n\r\n**RFC 8649 is root-only and temporal.** It publishes H(next root SPKI) in the current root's self-signed certificate. It handles sequential replacement (root generation N \u2192 generation N+1). It does not apply to end-entity or intermediate CA certificates, and it does not handle two certificates coexisting in parallel with different algorithm types.\r\n\r\n**SPKI binding targets end-entities.** The primary use cases are all at the end-entity level:\r\n\r\n1. **Firmware signing certificates** \u2014 A device manufacturer's firmware signing cert (end-entity, ECDSA) needs a bound ML-DSA secondary cert. The device bootloader validates the chain down to the leaf and needs assurance that both the classical and PQC signatures come from the same signing identity. If the descriptor can be transplanted to a different signing cert, an attacker can associate a PQC identity with a key they control.\r\n\r\n2. **IoT device identity certificates** \u2014 Each device is issued an end-entity identity cert. For PQC migration, each device also needs a secondary cert with a PQC key. The binding ensures both identity certs are tied to the same device \u2014 critical when device attestation policies require both classical and PQC verification.\r\n\r\n3. **TLS server certificates** \u2014 During PQC transition, servers present both ECDSA and ML-DSA end-entity certs. SPKI binding prevents a middlebox from stripping the PQC cert or transplanting a descriptor from one server's cert to another.\r\n\r\n4. **Code signing certificates** \u2014 End-entity certs where package managers verify both classical and PQC signatures. The binding ensures both keys belong to the same signer.\r\n\r\nIn all of these, RFC 8649 does not apply \u2014 it is explicitly scoped to self-signed root CA certificates and provides no anti-transplantation or anti-stripping protection.\r\n\r\nAdditionally, SPKI binding is bidirectional (both certificates bind to each other), which RFC 8649 does not support \u2014 it only points forward from the current root to the next.\r\n\r\nHappy to discuss further or adjust the PR based on the group's feedback.\r\n\r\n",
+          "createdAt": "2026-05-10T05:22:18Z",
+          "updatedAt": "2026-05-10T05:22:18Z"
         }
       ],
       "reviews": []
