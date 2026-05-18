@@ -199,29 +199,10 @@ There are three methods:
 `CertLocation` is defined by the following:
 
 ~~~
-CertLocation ::= SEQUENCE {
-   uri IA5String,
-   certHash [0] IMPLICIT CertHash OPTIONAL
-}
+CertLocation ::= IA5String
 ~~~
 
 The certificate is referenced by an IA5String that contains the URI of the Secondary Certificate. The DER encoding of the Secondary Certificate MUST be available at the specified location.
-
-`CertLocation` MAY include an optional `certHash` value which can be used to include a cryptographic hash of the DER Encoded Secondary Certificate. The syntax of `CertHash` is described below.
-
-## CertHash
-
-`CertHash` is defined by the following:
-
-~~~~
-CertHash ::= SEQUENCE {
-   value OCTET STRING,
-   -- TODO Add IssuerAndSerialNumber?
-   hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}
-}
-~~~~
-
-`certHash` is defined as a SEQUENCE containing the OCTET STRING `value` which is the hash of the DER Encoded reference certificate as well as the `hashAlgorithm`, which contains the AlgorithmIdentifier for the chosen Hash value. All implementations MUST support SHA-256 via `id-sha256`, and other hash functions MAY be supported.
 
 ## DiscoveryIntentId
 
@@ -411,16 +392,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
      byLocalPolicy NULL
    }
 
-   CertLocation ::= SEQUENCE {
-      uri IA5String,
-      certHash [0] IMPLICIT CertHash OPTIONAL
-   }
-
-   CertHash ::= SEQUENCE {
-      value OCTET STRING,
-      hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}
-   }
+   CertLocation ::= IA5String
 
    END
 ~~~
-
