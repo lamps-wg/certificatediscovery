@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-12T03:23:04.116132+00:00",
+  "timestamp": "2026-05-19T03:37:39.505376+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -207,7 +207,7 @@
       "labels": [],
       "body": "It would be great if we could create a reference implementation of certificate discovery in python that could be used as a reference. \n\nThis would be a great hackathon project.\n\n- Output of a couple of examples showing encoded certificates\n  - one example with at least 2 SIA extensions showing different purposes",
       "createdAt": "2025-05-27T13:32:32Z",
-      "updatedAt": "2026-03-15T05:55:44Z",
+      "updatedAt": "2026-05-18T12:52:23Z",
       "closedAt": null,
       "comments": [
         {
@@ -230,6 +230,13 @@
           "body": "[CertDiscoveryRSACert.zip](https://github.com/user-attachments/files/26001949/CertDiscoveryRSACert.zip)",
           "createdAt": "2026-03-15T05:10:26Z",
           "updatedAt": "2026-03-15T05:55:44Z"
+        },
+        {
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "body": "We need to revisit the list of the examples, because we're removing certHash (#46).",
+          "createdAt": "2026-05-18T12:52:23Z",
+          "updatedAt": "2026-05-18T12:52:23Z"
         }
       ]
     },
@@ -1646,6 +1653,32 @@
           "updatedAt": "2026-05-10T05:22:18Z"
         }
       ],
+      "reviews": []
+    },
+    {
+      "number": 47,
+      "id": "PR_kwDOKkGlhc7cp6HJ",
+      "title": "Remove CertHash",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/47",
+      "state": "OPEN",
+      "author": "CBonnell",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Resolves #46 ",
+      "createdAt": "2026-05-18T12:49:51Z",
+      "updatedAt": "2026-05-18T12:50:22Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "b0fc7b2e3499bb13f0911a54a9a5dab3c1f2ff98",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "nuke-certhash",
+      "headRefOid": "1ba9e70d92f76fc3d9e905e799b2b27e235da170",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
       "reviews": []
     }
   ]
