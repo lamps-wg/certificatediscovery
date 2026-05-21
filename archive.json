@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-19T03:37:39.505376+00:00",
+  "timestamp": "2026-05-21T03:49:18.793753+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -1667,7 +1667,7 @@
       "labels": [],
       "body": "Resolves #46 ",
       "createdAt": "2026-05-18T12:49:51Z",
-      "updatedAt": "2026-05-18T12:50:22Z",
+      "updatedAt": "2026-05-20T21:15:26Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "b0fc7b2e3499bb13f0911a54a9a5dab3c1f2ff98",
@@ -1679,7 +1679,21 @@
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABAjm2MQ",
+          "commit": {
+            "abbreviatedOid": "1ba9e70"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Should we mention that if stronger binding via a certificate Hash is required, it is recommended to use RFC 9763?   I agree that if there is already an RFC that uses that construct, that can be used instead.",
+          "createdAt": "2026-05-20T21:15:26Z",
+          "updatedAt": "2026-05-20T21:15:26Z",
+          "comments": []
+        }
+      ]
     }
   ]
 }
