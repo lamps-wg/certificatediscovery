@@ -44,7 +44,7 @@ id_on_relatedCertificateDescriptor = id_on + (9993, )
 id_rcd = id_pkix + (9994,)
 
 id_rcd_agility      = id_rcd + (1,)
-id_rcd_redundency   = id_rcd + (2,)
+id_rcd_redundancy   = id_rcd + (2,)
 id_rcd_dual         = id_rcd + (3,)
 id_rcd_priv_key_stmt= id_rcd + (4,)
 id_rcd_self         = id_rcd + (5,)
