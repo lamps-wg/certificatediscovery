@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-21T03:49:18.793753+00:00",
+  "timestamp": "2026-05-24T03:39:45.883280+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -934,7 +934,7 @@
       "id": "I_kwDOKkGlhc8AAAABBcWOmg",
       "title": "Remove certHash",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/46",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "CBonnell",
       "authorAssociation": "COLLABORATOR",
       "assignees": [
@@ -943,8 +943,8 @@
       "labels": [],
       "body": "To simplify the document, we will remove the certHash functionality and instead direct readers to RFC 9763.",
       "createdAt": "2026-05-06T13:39:37Z",
-      "updatedAt": "2026-05-06T13:40:08Z",
-      "closedAt": null,
+      "updatedAt": "2026-05-21T15:37:35Z",
+      "closedAt": "2026-05-21T15:37:35Z",
       "comments": []
     }
   ],
@@ -1660,24 +1660,26 @@
       "id": "PR_kwDOKkGlhc7cp6HJ",
       "title": "Remove CertHash",
       "url": "https://github.com/lamps-wg/certificatediscovery/pull/47",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "CBonnell",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Resolves #46 ",
       "createdAt": "2026-05-18T12:49:51Z",
-      "updatedAt": "2026-05-20T21:15:26Z",
+      "updatedAt": "2026-05-21T15:37:38Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "b0fc7b2e3499bb13f0911a54a9a5dab3c1f2ff98",
       "headRepository": "lamps-wg/certificatediscovery",
       "headRefName": "nuke-certhash",
       "headRefOid": "1ba9e70d92f76fc3d9e905e799b2b27e235da170",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-05-21T15:37:33Z",
+      "mergedAt": "2026-05-21T15:37:33Z",
+      "mergedBy": "CBonnell",
+      "mergeCommit": {
+        "oid": "9470991aefe20d2faf2141c45a9bd7bc117fb8c0"
+      },
       "comments": [],
       "reviews": [
         {
@@ -1691,6 +1693,19 @@
           "body": "Should we mention that if stronger binding via a certificate Hash is required, it is recommended to use RFC 9763?   I agree that if there is already an RFC that uses that construct, that can be used instead.",
           "createdAt": "2026-05-20T21:15:26Z",
           "updatedAt": "2026-05-20T21:15:26Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABApD7Dg",
+          "commit": {
+            "abbreviatedOid": "1ba9e70"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-05-21T14:55:17Z",
+          "updatedAt": "2026-05-21T14:55:17Z",
           "comments": []
         }
       ]
