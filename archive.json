@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-05-24T03:39:45.883280+00:00",
+  "timestamp": "2026-07-05T03:28:00.968285+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -141,7 +141,7 @@
       "labels": [],
       "body": "\nNotes for April 22nd Authors meeting:\n\nAction Joe:  Send chairs e-mail about linking drafts in dataTracker:\nhttps://datatracker.ietf.org/doc/draft-lamps-okubo-certdiscovery/\nhttps://datatracker.ietf.org/doc/draft-ietf-lamps-certdiscovery/\n\nAction Tomofumi:  will transfer the repository ownership to lamps_wg\n\nDiscussed:  Cleaning up the text for operational redundancy\n\nPurposes we have in Mind:\n\nSolid purpose ideas:\n1.  Discovery - Discover another certificate (with our without Hash)\n\u2002\u2002\u2002\u2002\u2002\u2002- Algorithm update (RSA -> ML-DSA for example)  -> URL\n        - Strong downgrade (ML-DSA -> RSA) - strong cryptographic chaining?  ->URL\n        - Full certificate -> Full Encoded Cert\n        - Use a CHOICE (SEQUENCE { URI, OptionalPurpose, OptionalHash} or FullCert }\n2.  Operational Redundancy? \n3.  Dual Usage  \n\nNeed more thinking:\n3.  Statement of Possession?\n\n5.  Others?\n\n\nPossible updated ASN.1\n- Taking into account adding extensible purpose idea,\n- Alex Raliens inclusion of the full certificate\n- Added the Optional Hash for stronger 1-way binding\n\nTested via ASN.1 playground https://asn1.io/asn1playground/\n\nCertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)\n   security(5) mechanisms(5) pkix(7) id-mod(0) id-mod-CertDiscovery(TBD) }\n\n   DEFINITIONS EXPLICIT TAGS ::=\n\n   BEGIN\n\n   -- EXPORTS ALL --\n\n   IMPORTS\n    OTHER-NAME\n    FROM PKIX1Implicit-2009\n      { iso(1) identified-organization(3) dod(6) internet(1) security(5)\n      mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-implicit-02(59) }\n\n    id-pkix, id-ad, Certificate\n    FROM PKIX1Explicit-2009\n      { iso(1) identified-organization(3) dod(6) internet(1) security(5)\n      mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-explicit-02(51) } ;\n\n   -- Access descriptor OID --\n\n   id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }\n\n   -- Other Name OID Arc --\n\n   id-on OBJECT IDENTIFIER ::= { id-pkix 8 }\n\n   -- Certificate Discovery Access Descriptor --\n\n   id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }\n\n   on-RelatedCertificateDescriptor OTHER-NAME ::= {\n        RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor\n    }\n\n   -- Purpose OJBECT IDENTIFIER  \n   id-rcd-agility OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 1}\n   id-rcd-redundency OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 2}\n   id-rcd-dual OBJECT IDENTIFIER ::= {id-on-relatedCertificateDescriptor 3}\n   \n   DiscoveryPurposeId ::= OBJECT IDENTIFIER\n\n   RelatedCertificateDescriptor ::= SEQUENCE {\n       certref CertReference,  \n       purpose DiscoveryPurposeId,\n       signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,\n       publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL\n   }\n\n   CertReference ::= CHOICE {\n     direct Certificate,\n     indirect SEQUENCE {\n       uniformResourceIdentifier IA5String,\n       certHash [0] IMPLICIT CertHash OPTIONAL\n     }\n   }\n\n   CertHash ::= SEQUENCE {\n      value OCTET STRING,\n      -TODO Add IssuerAndSerialNumber?\n      hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}\n   }\n\n   END\n",
       "createdAt": "2025-04-22T16:45:43Z",
-      "updatedAt": "2025-09-23T13:46:55Z",
+      "updatedAt": "2026-07-02T15:11:17Z",
       "closedAt": null,
       "comments": [
         {
@@ -192,6 +192,13 @@
           "body": "September 23rd\n- Joe and John met and looked a Corey's pull request - both agree to Merge.  \n- Merged pull request\n- Suggest doing a top to bottom read for next week and see if we are ready to push a new version and possibly ask for WGLC?",
           "createdAt": "2025-09-23T13:28:01Z",
           "updatedAt": "2025-09-23T13:46:55Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "July 2nd, 2026 Meeting Summary\n- Question:  What needs to be done to get to working group last call:\n  - We need samples for the draft (this will be worked on at the PQ Hackathon) - July 18 - 19\n  - We need to answer the outstanding questions on the mailing list.  Group spend time looking at the two questions from Iyan Veiga.   Mike Ounworth will respond on the list.\n  - We need to work on the 12 open issues (8 from Dan van Geest).\n  - We are generally working on simplifying the draft (removed certhash, reference 9763 if stronger binding is needed)\n  - For the update to LAMPS, John will present. ",
+          "createdAt": "2026-07-02T15:11:17Z",
+          "updatedAt": "2026-07-02T15:11:17Z"
         }
       ]
     },
@@ -504,7 +511,7 @@
       "labels": [],
       "body": "DiscoveryPurposeId is OPTIONAL, but I think you should still say what should be done if one comes across an unknown DiscoveryPurposeId.  Just behave as if there was no DiscoveryPurposeId?\n\nIf a DiscoveryPurposeId exists, does this mean that the secondary certificate can only be used in the way specified by the DiscoveryPurposeId?  If so, state that.  And then if the DiscoveryPurposeId is unknown, the secondary certificate MUST NOT be used?",
       "createdAt": "2026-01-30T14:01:34Z",
-      "updatedAt": "2026-03-17T02:32:11Z",
+      "updatedAt": "2026-07-02T13:43:09Z",
       "closedAt": null,
       "comments": [
         {
@@ -559,9 +566,9 @@
         {
           "author": "johngray-dev",
           "authorAssociation": "COLLABORATOR",
-          "body": "I liked PurposeID as well, but I think it was Russ that thought it might be confused with other IETF drafts around EKU.  See this issue:  https://github.com/lamps-wg/certificatediscovery/issues/24\n\nMe can always put it back to PurposeID if the working group likes it better.    ",
+          "body": "I liked PurposeID as well, but I think it was Russ that thought it might be confused with other IETF drafts around EKU.  See this issue:  https://github.com/lamps-wg/certificatediscovery/issues/24\n\nWe can always put it back to PurposeID if the working group likes it better.    ",
           "createdAt": "2026-03-17T02:32:11Z",
-          "updatedAt": "2026-03-17T02:32:11Z"
+          "updatedAt": "2026-07-02T13:43:09Z"
         }
       ]
     },
@@ -666,7 +673,7 @@
       "labels": [],
       "body": "Is path processing of the secondary certificate just left as an implementation problem?  Where is the verifier supposed to get the issuer of the secondary certificate?  Must it be issued by the same issuer of the primary certificate?  If not, must the issuer of the secondary certificate be sent in the same certificate list as the issuer of the primary certificate?  Aren't there plenty of na\u00efve path builders which assume that the certificate list is an ordered list of certificates from the EE to the root, and would bork on such an unexpected cert in the list?",
       "createdAt": "2026-01-30T14:50:22Z",
-      "updatedAt": "2026-03-18T07:27:15Z",
+      "updatedAt": "2026-07-02T13:59:43Z",
       "closedAt": null,
       "comments": [
         {
@@ -724,6 +731,13 @@
           "body": "> RFC 8446 says:\n> \n> > The sender's certificate MUST come in the first\n> > CertificateEntry in the list.  Each following certificate SHOULD\n> > directly certify the one immediately preceding it.\n> \n> So this is evidence that sending a single list of certificates will not fit well into some protocols.\n\nThis is exactly the point that I tried to raise in the session yesterday. In my view, the draft does not draw a clear line between mere certificate discovery and the modification of protocols to use alternate chains. The latter is clearly not covered by the \"certificate discovery\" function. The discovery aspect, in my understanding, is clearly limited to making known another certificate. That means very concretely that, if the peer already knows the given alternative certificate, the certificate discovery extension conveys no information to him at all. But from the discussion here I understand that the intend of the authors is indeed to cross over into the protocoll domain, i.e., provide the possibility for protocols to use the extension for use of alternative certificates in a single protocol run. If that is really the case, then the draft should explain the intended possible modification of protocols for this purpose in detail. The interaction with RFC 5280 then needs to be elaborated precisely. The title and abstract would also have to be modified.",
           "createdAt": "2026-03-18T07:27:15Z",
           "updatedAt": "2026-03-18T07:27:15Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "In regards to path building on the secondary certificate, it should just follow the AIA id-ca-Issuers, that is pretty standard for path building.   Since we already say that, is there really anything to do to solve this issue?   Maybe we just need to make it more clear?",
+          "createdAt": "2026-07-02T13:59:43Z",
+          "updatedAt": "2026-07-02T13:59:43Z"
         }
       ]
     },
@@ -1612,21 +1626,21 @@
       "id": "PR_kwDOKkGlhc7TLWSU",
       "title": "Add SPKI Binding mechanism for RelatedCertificateDescriptor",
       "url": "https://github.com/lamps-wg/certificatediscovery/pull/45",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "sg777",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "Summary\r\nAdds cryptographic SPKI binding to RelatedCertificateDescriptor, as discussed in #37. This PR covers the SPKI binding mechanism only; byDelta will be a separate follow-up.\r\n\r\nChanges\r\nASN.1 additions:\r\n- SPKIBinding type with hostSPKIHash (required) and relatedSPKIHash (optional), reusing the existing CertHash type\r\n- spkiBinding [2] IMPLICIT SPKIBinding OPTIONAL added to RelatedCertificateDescriptor\r\n- id-rcd-mandatory intent identifier ({id-rcd 6}) for high-assurance profiles\r\n\r\nDraft text additions:\r\n- Section 3.4.6: Mandatory Binding intent semantics\r\n- Section 3.6: SPKIBinding type definition and verification procedure\r\n- Security considerations: descriptor transplantation, descriptor stripping, circular dependency avoidance, hash algorithm agility, \r\n\r\nmulti-hop chains\r\n- IANA registry update for id-rcd-mandatory\r\n\r\nReference implementation:\r\n- Updated ref_impl/rfc_cert_discover.py with pyasn1 types for SPKIBinding and id-rcd-mandatory\r\n\r\nDesign decisions\r\n- SPKI over full certificate hash: Avoids circular dependency for bidirectional binding since both public keys are known before signing\r\n- hostSPKIHash as anti-transplantation: Binds the descriptor to the hosting certificate's public key \u2014 non-fungible across certificates\r\n- id-rcd-mandatory as enforcement signal: Allows the certificate itself to express that binding verification is required, complementing verifier local policy\r\n- Tag [2] IMPLICIT: Sequential after existing [0] (signatureAlgorithm) and [1] (publicKeyAlgorithm)\r\n\r\nAddresses #37.\r\n\r\n",
       "createdAt": "2026-04-17T03:31:01Z",
-      "updatedAt": "2026-05-10T05:22:18Z",
+      "updatedAt": "2026-07-04T04:02:26Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "b0fc7b2e3499bb13f0911a54a9a5dab3c1f2ff98",
-      "headRepository": "sg777/certificatediscovery",
+      "headRepository": null,
       "headRefName": "spki-binding",
       "headRefOid": "6031216994cab95349c874d52972f37d7ee69a92",
-      "closedAt": null,
+      "closedAt": "2026-07-04T04:02:26Z",
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
