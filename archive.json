@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-07-05T03:28:00.968285+00:00",
+  "timestamp": "2026-08-02T02:48:14.997612+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -957,9 +957,17 @@
       "labels": [],
       "body": "To simplify the document, we will remove the certHash functionality and instead direct readers to RFC 9763.",
       "createdAt": "2026-05-06T13:39:37Z",
-      "updatedAt": "2026-05-21T15:37:35Z",
+      "updatedAt": "2026-07-31T15:15:11Z",
       "closedAt": "2026-05-21T15:37:35Z",
-      "comments": []
+      "comments": [
+        {
+          "author": "ralienpp",
+          "authorAssociation": "NONE",
+          "body": "I missed the discussion about this topic. I am not sure I agree with the rationale of simplicity, and I believe the certHash is a good feature, even if RFC 9763 already exists.\n\nCertDiscovery covers a wide spectrum of certificate separability: loose (just a URI), strong (certHash - physically separated, but cryptographically bound), embedded (physically together).\n\nIt is like having \"paper, scissors and rock\" in one. Stick to this single RFC, settle on an implementation and use it within your ecosystem. You could go with a loose form of coupling for some products, a tighter form for other products, etc. There's just one RFC to read and understand, explain to colleagues, and test.\n\nWithout certHash we have a gap, which can be covered with RFC 9763 - but then, there's more interop testing to do, more documentation to read, etc.\n\nI think that the _optional_ certHash was not a burden of complexity at all.\n\n@CBonnell",
+          "createdAt": "2026-07-31T15:15:11Z",
+          "updatedAt": "2026-07-31T15:15:11Z"
+        }
+      ]
     }
   ],
   "pulls": [
