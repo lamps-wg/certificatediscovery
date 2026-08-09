@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-08-02T02:48:14.997612+00:00",
+  "timestamp": "2026-08-09T01:45:01.931928+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -968,6 +968,22 @@
           "updatedAt": "2026-07-31T15:15:11Z"
         }
       ]
+    },
+    {
+      "number": 48,
+      "id": "I_kwDOKkGlhc8AAAABLuhAkA",
+      "title": "Add support for Turducken using byDelta Encoding",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/48",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "In Issue #37 there is a request to add the Chameleon certificate Delta encoding.   This is a good idea for 2 main reasons:\n - Using shared components like public key or subject name forces reconstruction by using those components, offering a cheap checking mechanism.\n - Saves bandwidth.\n\nIf we add a byDelta encoding type and allow reuse of the public key, then I think the \"Turducken\" proposal by David Benjamen proposed at SAAG can be realized.    \n\nAdding a \"byDelta\" encoding would also help address issue #37 ",
+      "createdAt": "2026-08-06T14:01:18Z",
+      "updatedAt": "2026-08-06T14:01:18Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
