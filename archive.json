@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-08-16T01:18:12.315948+00:00",
+  "timestamp": "2026-09-13T03:33:24.848630+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -999,6 +999,22 @@
           "updatedAt": "2026-08-14T04:12:45Z"
         }
       ]
+    },
+    {
+      "number": 49,
+      "id": "I_kwDOKkGlhc8AAAABQqYuTg",
+      "title": "Use case Description",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/49",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "A high-level use-case description\n\nUse Case: Migration to Post-Quantum Authentication with Downgrade Protection\n \nAn issuer operates two PKI branches during migration to a new digital signature scheme:\nA traditional PKI branch used to maintain interoperability with legacy relying parties.\nA second PKI branch using a newer digital signature scheme, such as a post-quantum algorithm.\n \nCharacteristics:\nBoth PKI branches issue independent certificates and certification paths.\nLegacy relying parties validate only the traditional certificate chain.\nUpdated relying parties validate both certificate chains.\nThe same approach may be used for migration between any two digital signature schemes, including migration from one post-quantum algorithm to another.\n \nCertificate discovery is used to:\nLink corresponding certificates in the two PKI branches.\nAllow a relying party to discover the related certificate in the alternate branch.\nProvide evidence that an alternative certification path exists.\nCommunicate that multiple certificate chains are expected for the same issuer.  Although additional out-of-band mechanisms might also facilitate this.\n \nBenefits:\nSupports cryptographic agility by enabling gradual migration to new digital signature schemes.\nMaintains interoperability with deployed relying parties during the migration period.\nMitigates downgrade attacks in which an attacker attempts to conceal the existence of the stronger certificate chain and present only a weaker chain to the relying party.\nEnables an upgraded relying party to determine that an additional certificate is expected and detect when the certificate set is incomplete.\nProvides weak non-separability between the traditional and post-quantum certificate chains by embedding evidence of the corresponding certificate in the alternate PKI branch.\n \nThis mechanism allows issuers to deploy post-quantum cryptography incrementally while enabling upgraded relying parties to detect the presence, absence, or removal of related certificates that form part of the expected cryptographic migration strategy. ",
+      "createdAt": "2026-09-10T14:01:04Z",
+      "updatedAt": "2026-09-10T14:01:04Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
