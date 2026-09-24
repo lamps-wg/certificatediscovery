@@ -390,7 +390,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
      byUri CertLocation,
      byInclusion Certificate,
      byLocalPolicy NULL,
-     byOther [3] INSTANCE OF OTHER-DISCOVERY-METHOD
+     byOther [0] INSTANCE OF OTHER-DISCOVERY-METHOD
    }
 
    CertLocation ::= IA5String
