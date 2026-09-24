@@ -338,7 +338,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
 
    BEGIN
 
--- EXPORTS ALL --
+   -- EXPORTS ALL --
 
    IMPORTS
     OTHER-NAME, AlgorithmIdentifier, Certificate
@@ -349,7 +349,13 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
     id-pkix, id-ad
     FROM PKIX1Explicit-2009
       { iso(1) identified-organization(3) dod(6) internet(1) security(5)
-      mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-explicit-02(51) } ;
+      mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-explicit-02(51) }
+
+    RelatedCertificate
+    FROM RelatedCertificate
+      { iso(1) identified-organization(3) dod(6)
+       internet(1) security(5) mechanisms(5) pkix(7) id-mod(0)
+     id-mod-related-cert-2023(115)} ;
 
    id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD2 }
 
@@ -361,38 +367,35 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
 
    id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD3 }
 
+   -- Always encode as a GeneralName uniform resource identifier (URI)
+   id-ad-relatedCertificateSelfLocation OBJECT IDENTIFIER ::= { id-ad TBD4 }
+
    on-RelatedCertificateDescriptor OTHER-NAME ::= {
       RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
    }
 
    id-rcd OBJECT IDENTIFIER ::= { iso(1) identified-organization(3) dod(6) internet(1) security(5)
-      mechanisms(5) pkix(7) id-rcd(TBD4) }
-
-   -- Intent OBJECT IDENTIFIERs
-
-   DiscoveryIntentId ::= OBJECT IDENTIFIER
-
-   id-rcd-agility DisoveryIntentId ::= {id-rcd 1}
-   id-rcd-redundency DisoveryIntentId ::= {id-rcd 2}
-   id-rcd-dual DisoveryIntentId ::= {id-rcd 3}
-   id-rcd-priv-key-stmt DisoveryIntentId ::= {id-rcd 4}
-   id-rcd-self DisoveryIntentId ::= {id-rcd 5}
-
+      mechanisms(5) pkix(7) id-rcd(60) }
 
    RelatedCertificateDescriptor ::= SEQUENCE {
      method CertDiscoveryMethod,
-     intent DiscoveryIntentId OPTIONAL,
-     signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
-     publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
+     signatureAlgorithm [0] AlgorithmIdentifier OPTIONAL,
+     publicKeyAlgorithm [1] AlgorithmIdentifier OPTIONAL,
+     certHash [2] RelatedCertificate OPTIONAL
    }
 
+   -- RelatedCertificate is defined in RFC 9763
+
    CertDiscoveryMethod ::= CHOICE {
-     byUri [0] IMPLICIT CertLocation,
+     byUri CertLocation,
      byInclusion Certificate,
-     byLocalPolicy NULL
+     byLocalPolicy NULL,
+     byOther [0] INSTANCE OF OTHER-DISCOVERY-METHOD
    }
 
    CertLocation ::= IA5String
+
+   OTHER-DISCOVERY-METHOD ::= TYPE-IDENTIFIER
 
    END
 ~~~
