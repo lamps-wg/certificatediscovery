@@ -389,7 +389,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    CertDiscoveryMethod ::= CHOICE {
      byUri CertLocation,
      byInclusion [1] Certificate,
-     byLocalPolicy [2] NULL,
+     byLocalPolicy NULL,
      byOther [3] INSTANCE OF OTHER-DISCOVERY-METHOD
    }
 
