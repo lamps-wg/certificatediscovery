@@ -1749,8 +1749,8 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
 
    RelatedCertificateDescriptor ::= SEQUENCE {
      method CertDiscoveryMethod,
-     signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
-     publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL,
+     signatureAlgorithm [0] AlgorithmIdentifier OPTIONAL,
+     publicKeyAlgorithm [1] AlgorithmIdentifier OPTIONAL,
      certHash [2] RelatedCertificate OPTIONAL
    }
 
