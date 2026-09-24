@@ -15,24 +15,25 @@
        The primary motivation for this method is to address the limitations of traditional certificate management approaches, which often lack flexibility, scalability, and seamless update capabilities. By leveraging this mechanism, subscribers can achieve cryptographic agility by facilitating the transition between different algorithms or X.509 certificate types. Operational redundancy is enhanced by enabling the use of backup certificates and minimizing the impact of Primary Certificate expiration or CA infrastructure failures. 
        The approach ensures backward compatibility with existing systems and leverages established mechanisms, such as the subjectInfoAccess extension, to enable seamless integration. 
     " name="description">
-<meta content="xml2rfc 3.31.0" name="generator">
+<meta content="xml2rfc 3.34.1" name="generator">
 <meta content="Algorithm Agility" name="keyword">
 <meta content="Operational Redundancy" name="keyword">
 <meta content="Dual Use" name="keyword">
 <meta content="draft-ietf-lamps-certdiscovery-latest" name="ietf.draft">
 <!-- Generator version information:
-  xml2rfc 3.31.0
-    Python 3.12.12
-    ConfigArgParse 1.7
+  xml2rfc 3.34.1
+    Python 3.14.7
+    ConfigArgParse 1.7.7
     google-i18n-address 3.1.1
-    intervaltree 3.1.0
+    intervaltree 3.2.1
     Jinja2 3.1.6
-    lxml 5.3.1
-    platformdirs 4.5.0
+    lxml 6.1.1
+    natsort 8.4.0
+    platformdirs 4.11.10
     pycountry 24.6.1
-    PyYAML 6.0.2
-    requests 2.32.5
-    wcwidth 0.2.14
+    PyYAML 6.0.3
+    requests 2.33.1
+    wcwidth 0.8.4
 -->
 <link href="draft-ietf-lamps-certdiscovery.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -68,7 +69,6 @@
   src: local('Lora Italic'), local('Lora-Italic'), url('https://martinthomson.github.io/rfc-css/fonts/lora-italic-latin-ext.woff2') format('woff2');
   unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
-
 @font-face {
   font-family: 'Lora';
   font-style: italic;
@@ -117,7 +117,6 @@
   src: local('Lora Regular'), local('Lora-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/lora-regular-latin.woff2') format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-
 @font-face {
   font-family: 'Lora';
   font-style: normal;
@@ -173,7 +172,7 @@
   font-weight: 400;
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin-ext.woff2') format('woff2');
-  unicode-range: U+0100-024F, U+0259, U+1E00-1EFF, U+2020, U+20A0-20AB, U+20AD-20CF, U+2113, U+2C60-2C7F, U+A720-A7FF;
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
 }
 @font-face {
   font-family: 'Oxygen Mono';
@@ -181,7 +180,7 @@
   font-weight: 400;
   font-display: swap;
   src: local('Oxygen Mono'), local('OxygenMono-Regular'), url('https://martinthomson.github.io/rfc-css/fonts/oxygenmono-regular-latin.woff2') format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+2000-206F, U+2074, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
 
 @font-face {
@@ -298,16 +297,19 @@ h1, h2, h3, h4, h5, h6 {
   font-size-adjust: 0.5;
   color: var(--title-color);
 }
-h1#title {
-  font-size: 32px;
-  line-height: 40px;
-  clear: both;
-}
-h1#title, h1#rfcnum {
-  margin: 1.5em 0 0.2em;
-}
-h1#rfcnum + h1#title {
-  margin: 0.2em 0;
+h1 {
+  &#title {
+    font-size: 32px;
+    line-height: 40px;
+    clear: both;
+    margin: 1.5em 0 0.2em;
+  }
+  &#rfcnum {
+    margin: 1.5em 0 0.2em;
+    & + h1#title {
+      margin: 0.2em 0;
+    }
+  }
 }
 
 h1, h2, h3 {
@@ -327,10 +329,10 @@ h4, h5, h6 {
 #abstract+p {
   font-size: 18px;
   line-height: 24px;
-}
-#abstract+p code, #abstract+p samp, #abstract+p tt {
-  font-size: 16px;
-  line-height: 0;
+  & code, & samp, & tt {
+    font-size: 16px;
+    line-height: 0;
+  }
 }
 
 p {
@@ -341,59 +343,59 @@ p {
 div {
   margin: 0;
 }
-.alignRight.art-text {
-  background-color: var(--highlight-color);
-  border: 1px solid var(--line-color);
-  border-radius: 3px;
-  padding: 0.5em 1em 0;
-  margin-bottom: 0.5em;
-}
-.alignRight.art-text pre {
-  padding: 0;
-  width: auto;
-}
 .alignRight {
   margin: 1em 0;
-}
-.alignRight > *:first-child {
-  border: none;
-  margin: 0;
-  float: right;
-  clear: both;
-}
-.alignRight > *:nth-child(2) {
-  clear: both;
-  display: block;
-  border: none;
+  &.art-text {
+    background-color: var(--highlight-color);
+    border: 1px solid var(--line-color);
+    border-radius: 3px;
+    padding: 0.5em 1em 0;
+    margin-bottom: 0.5em;
+    & pre {
+      padding: 0;
+      width: auto;
+    }
+  }
+  & > *:first-child {
+    border: none;
+    margin: 0;
+    float: right;
+    clear: both;
+  }
+  & > *:nth-child(2) {
+    clear: both;
+    display: block;
+    border: none;
+  }
 }
 svg {
   display: block;
-}
-/* font-family isn't space-separated, but =~ will have to do */
-svg[font-family~="monospace" i], svg [font-family~="monospace" i] {
-  font-family: var(--font-mono);
-}
-.alignCenter.art-text {
-  background-color: var(--highlight-color);
-  border: 1px solid var(--line-color);
-  border-radius: 3px;
-  padding: 0.5em 1em 0;
-  margin-bottom: 0.5em;
-}
-.alignCenter.art-text pre {
-  padding: 0;
-  width: auto;
+  /* font-family isn't space-separated, but =~ will have to do */
+  &[font-family~="monospace" i], & [font-family~="monospace" i] {
+    font-family: var(--font-mono);
+  }
 }
 .alignCenter {
   margin: 1em 0;
-}
-.alignCenter > *:first-child {
-  border: none;
-  /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
-     support flexbox yet.
-  */
-  display: table;
-  margin: 0 auto;
+  &.art-text {
+    background-color: var(--highlight-color);
+    border: 1px solid var(--line-color);
+    border-radius: 3px;
+    padding: 0.5em 1em 0;
+    margin-bottom: 0.5em;
+    & pre {
+      padding: 0;
+      width: auto;
+    }
+  }
+  & > *:first-child {
+    border: none;
+    /* this isn't optimal, but it's an existence proof.  PrinceXML doesn't
+       support flexbox yet.
+    */
+    display: table;
+    margin: 0 auto;
+  }
 }
 
 /* lists */
@@ -431,26 +433,25 @@ dl {
     --indent: 5ch;
     & > dt {
       min-width: calc(var(--indent) - 2ch);
+      float: none;
     }
-  }
-  &.olPercent > dt {
-    float: none;
   }
 
   dl > dd > & {
     margin-top: 0.5em;
     margin-bottom: 0;
   }
-}
-dl:not(.dlNewline) > dt {
-  float: left;
-  margin-right: 2ch;
-  min-width: 8ch;
-}
-dl > dd {
-  margin-bottom: .8em;
-  margin-left: var(--indent) !important; /* stupid element overrides */
-  min-height: 2ex;
+
+  &:not(.dlNewline) > dt {
+    float: left;
+    margin-right: 2ch;
+    min-width: 8ch;
+  }
+  & > dd {
+    margin-bottom: .8em;
+    margin-left: var(--indent) !important; /* stupid element overrides */
+    min-height: 2ex;
+  }
 }
 :is(dl.compact, .dlCompact) > dd {
   margin-bottom: 0;
@@ -466,20 +467,22 @@ dl > dd {
 }
 
 /* links */
-a, a[href].selfRef:hover {
+a {
   text-decoration: none;
+  &[href] {
+    color: var(--link-color);
+    &:hover { text-decoration: underline; }
+    &.selfRef {
+      color: var(--text-color);
+      &:hover {
+        text-decoration: none;
+        background-color: var(--highlight-color);
+      }
+    }
+  }
 }
-a[href] {
-  color: var(--link-color);
-}
-a[href].selfRef, .iref + a[href].internal {
+.iref + a[href].internal {
   color: var(--text-color);
-}
-a[href]:hover {
-  text-decoration: underline;
-}
-a[href].selfRef:hover {
-  background-color: var(--highlight-color);
 }
 a.xref:is(.cite, .auto), :is(#status-of-memo, #copyright) a {
   white-space: nowrap;
@@ -515,9 +518,9 @@ img {
 figure {
   margin: 0.5em 0;
   padding: 0;
-}
-figure blockquote {
-  margin: 0.8em 0.4em 0.4em;
+  & blockquote {
+    margin: 0.8em 0.4em 0.4em;
+  }
 }
 figcaption, caption {
   font-style: italic;
@@ -527,17 +530,19 @@ figcaption, caption {
 }
 @media screen {
   /* Auto-collapse boilerplate. */
-  :is(#status-of-memo, #copyright) p {
-    margin: -2px 0;
-    max-height: 0;
-    transition: max-height 2s ease, margin 0.5s ease 0.5s;
-    overflow: hidden;
-  }
-  :is(#status-of-memo, #copyright):hover p,
-  :is(#status-of-memo, #copyright) h2:target ~ p {
-    margin: 0.5em 0;
-    max-height: 500px;
-    overflow: auto;
+  :is(#status-of-memo, #copyright) {
+    & p {
+      margin: -2px 0;
+      max-height: 0;
+      transition: max-height 2s ease, margin 0.5s ease 0.5s;
+      overflow: hidden;
+    }
+    &:hover p,
+    & h2:target ~ p {
+      margin: 0.5em 0;
+      max-height: 500px;
+      overflow: auto;
+    }
   }
   pre, svg {
     display: inline-block;
@@ -573,6 +578,7 @@ aside, blockquote {
 }
 blockquote {
   margin: 1em 0;
+  border-left: 2px var(--pilcrow-strong) solid;
 }
 cite {
   display: block;
@@ -586,25 +592,17 @@ table {
   max-width: 100%;
   margin: 0 0 1em;
   border-collapse: collapse;
-}
-table.right {
-  margin-left: auto;
-}
-table.center {
-  margin-left: auto;
-  margin-right: auto;
-}
-table.left {
-  margin-right: auto;
-}
-table .text-left {
-  text-align: left;
-}
-table .text-center {
-  text-align: center;
-}
-table .text-right {
-  text-align: right;
+  &.right { margin-left: auto; }
+  &.center { margin-left: auto; margin-right: auto; }
+  &.left { margin-right: auto; }
+  & .text-left { text-align: left; }
+  & .text-center { text-align: center; }
+  & .text-right { text-align: right; }
+  & caption {
+    margin: 0;
+    padding: 3px 0 3px 1em;
+  }
+  & p { margin: 0; }
 }
 
 thead, tbody {
@@ -624,13 +622,6 @@ th {
 :is(tr:nth-child(2n+1), thead+tbody > tr:nth-child(2n)) > td {
   background-color: var(--highlight-color);
 }
-table caption {
-  margin: 0;
-  padding: 3px 0 3px 1em;
-}
-table p {
-  margin: 0;
-}
 
 /* pilcrow */
 a.pilcrow {
@@ -641,18 +632,16 @@ a.pilcrow {
     color: var(--pilcrow-weak);
     &:hover { text-decoration: none; }
   }
-}
-@media not print {
-  :hover > a.pilcrow {
-    opacity: 1;
+  @media not print {
+    :hover > &, &:focus {
+      opacity: 1;
+    }
+    &[href]:hover {
+      color: var(--pilcrow-strong);
+      background-color: transparent;
+    }
   }
-  a.pilcrow[href]:hover {
-    color: var(--pilcrow-strong);
-    background-color: transparent;
-  }
-}
-@media print {
-  a.pilcrow {
+  @media print {
     display: none;
   }
 }
@@ -711,9 +700,9 @@ sub, sup {
   font-size: 0.9em;
   font-style: italic;
   margin-top: 2em;
-}
-.docInfo .prepared {
-  float: right;
+  & .prepared {
+    float: right;
+  }
 }
 
 /* table of contents */
@@ -803,23 +792,27 @@ hr.addr {
   max-width: calc(100% - 16px);
 }
 @media (min-width: 500px) {
-  #authors-addresses > section {
-    column-count: 2;
-    column-gap: 20px;
-  }
-  #authors-addresses > section > h2 {
-    column-span: all;
-  }
-  /* hack for break-inside: avoid-column */
-  #authors-addresses address {
-    display: inline-block;
-    break-inside: avoid-column;
+  #authors-addresses {
+    & > section {
+      column-count: 2;
+      column-gap: 20px;
+    }
+    & > section > h2 {
+      column-span: all;
+    }
+    /* hack for break-inside: avoid-column */
+    & address {
+      display: inline-block;
+      break-inside: avoid-column;
+    }
   }
 }
 
 /* Comments */
-.rfcEditorRemove p:first-of-type {
-  font-style: italic;
+.rfcEditorRemove {
+  & p:first-of-type {
+    font-style: italic;
+  }
 }
 .cref {
   background-color: rgba(249, 232, 105, 0.3);
@@ -830,19 +823,21 @@ hr.addr {
 }
 
 @media screen {
-  #toc nav {
-    font-family: var(--font-title);
-    font-weight: 360;
-    & > ul { margin-bottom: 2em; }
-    & ul {
-      margin: 0 0 0 4px;
-      & :is(p, li) {
-        margin: 2px 0;
+  #toc {
+    & nav {
+      font-family: var(--font-title);
+      font-weight: 360;
+      & > ul { margin-bottom: 2em; }
+      & ul {
+        margin: 0 0 0 4px;
+        & :is(p, li) {
+          margin: 2px 0;
+        }
       }
     }
-  }
-  #toc a.toplink {
-    float: right;
+    & a.toplink {
+      float: right;
+    }
   }
 }
 @media not screen {
@@ -863,54 +858,54 @@ hr.addr {
     margin: 0;
     border-bottom: 1px solid #ccc;
     opacity: 0.6;
-  }
-  #toc h2 {
-    margin: 0;
-    padding: 2px 0 2px 6px;
-    padding-right: 1em;
-    font-size: 18px;
-    line-height: 24px;
-    min-width: 190px;
-    text-align: right;
-    background-color: #444;
-    color: white;
-    cursor: pointer;
-    &::before { /* css hamburger */
-      float: right;
-      position: relative;
-      width: 1em;
-      height: 1px;
-      left: -164px;
-      margin: 8px 0 0 0;
-      background: white none repeat scroll 0 0;
-      box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
-      content: "";
+    & h2 {
+      margin: 0;
+      padding: 2px 0 2px 6px;
+      padding-right: 1em;
+      font-size: 18px;
+      line-height: 24px;
+      min-width: 190px;
+      text-align: right;
+      background-color: #444;
+      color: white;
+      cursor: pointer;
+      &::before { /* css hamburger */
+        float: right;
+        position: relative;
+        width: 1em;
+        height: 1px;
+        left: -164px;
+        margin: 8px 0 0 0;
+        background: white none repeat scroll 0 0;
+        box-shadow: 0 4px 0 0 white, 0 8px 0 0 white;
+        content: "";
+      }
     }
-  }
-  #toc nav {
-    display: none;
-    background-color: var(--background-color);
-    padding: 0.5em 1em 1em;
-    overflow: auto;
-    overscroll-behavior: contain;
-    height: calc(100vh - 48px);
-    border-left: 1px solid #ddd;
-  }
-  #toc.active {
-    opacity: 1;
-    & nav { display: block; }
-  }
-  /* Make the collapsed ToC header render white on gray also when it's a link */
-  #toc h2 a,
-  #toc h2 a:is(:link, :focus, :hover),
-  #toc a.toplink,
-  #toc a.toplink:hover {
-    color: white;
-    background-color: #444;
-    text-decoration: none;
-  }
-  #toc a.toplink {
-    margin: 2px 0.5em 0;
+    & nav {
+      display: none;
+      background-color: var(--background-color);
+      padding: 0.5em 1em 1em;
+      overflow: auto;
+      overscroll-behavior: contain;
+      height: calc(100vh - 48px);
+      border-left: 1px solid #ddd;
+    }
+    &.active {
+      opacity: 1;
+      & nav { display: block; }
+    }
+    /* Make the collapsed ToC header render white on gray also when it's a link */
+    & h2 a,
+    & h2 a:is(:link, :focus, :hover),
+    & a.toplink,
+    & a.toplink:hover {
+      color: white;
+      background-color: #444;
+      text-decoration: none;
+    }
+    & a.toplink {
+      margin: 2px 0.5em 0;
+    }
   }
 }
 
@@ -929,26 +924,26 @@ hr.addr {
     margin: 0;
     padding: 0;
     z-index: 1;
-  }
-  #toc h2 {
-    margin: 0;
-    padding: 0.25em 1em 1em 0;
-  }
-  #toc nav {
-    display: block;
-    height: calc(90vh - 84px);
-    bottom: 0;
-    padding: 0.5em 0 2em;
-    overflow: auto;
-    overscroll-behavior: contain;
-    scrollbar-width: thin;
+    & h2 {
+      margin: 0;
+      padding: 0.25em 1em 1em 0;
+    }
+    & nav {
+      display: block;
+      height: calc(90vh - 84px);
+      bottom: 0;
+      padding: 0.5em 0 2em;
+      overflow: auto;
+      overscroll-behavior: contain;
+      scrollbar-width: thin;
+    }
+    & a.toplink {
+      margin: 8px 0.5em 0;
+    }
   }
   img { /* future proofing */
     max-width: 100%;
     height: auto;
-  }
-  #toc a.toplink {
-    margin: 8px 0.5em 0;
   }
 }
 
@@ -964,12 +959,13 @@ hr.addr {
   #n-copyright-notice {
     border-bottom: none;
   }
-  #toc, #n-introduction {
-    page-break-before: always;
-  }
   #toc {
+    page-break-before: always;
     border-top: none;
     padding-top: 0;
+  }
+  #n-introduction {
+    page-break-before: always;
   }
   figure, pre, .vcard {
     page-break-inside: avoid;
@@ -1031,17 +1027,19 @@ hr.addr {
 }
 
 /* SVG Trick: a prefix match works because only black and white are allowed */
-svg :is([stroke="black"], [stroke^="#000"]) {
-  stroke: var(--text-color);
-}
-svg :is([stroke="white"], [stroke^="#fff"]) {
-  stroke: var(--background-color);
-}
-svg :is([fill="black"], [fill^="#000"], :not([fill])) {
-  fill: var(--text-color);
-}
-svg :is([fill="white"], [fill^="#fff"]) {
-  fill: var(--background-color);
+svg {
+  & :is([stroke="black"], [stroke^="#000"]) {
+    stroke: var(--text-color);
+  }
+  & :is([stroke="white"], [stroke^="#fff"]) {
+    stroke: var(--background-color);
+  }
+  & :is([fill="black"], [fill^="#000"], :not([fill])) {
+    fill: var(--text-color);
+  }
+  & :is([fill="white"], [fill^="#fff"]) {
+    fill: var(--background-color);
+  }
 }
 </style>
 
@@ -1051,11 +1049,11 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">TODO - Abbreviation</td>
-<td class="right">December 2025</td>
+<td class="right">September 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Okubo, et al.</td>
-<td class="center">Expires 20 June 2026</td>
+<td class="center">Expires 28 March 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1068,12 +1066,12 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <dd class="internet-draft">draft-ietf-lamps-certdiscovery-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2025-12-17" class="published">17 December 2025</time>
+<time datetime="2026-09-24" class="published">24 September 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2026-06-20">20 June 2026</time></dd>
+<dd class="expires"><time datetime="2027-03-28">28 March 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1136,7 +1134,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 20 June 2026.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 28 March 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1145,7 +1143,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
 <a href="#name-copyright-notice" class="section-name selfRef">Copyright Notice</a>
         </h2>
 <p id="section-boilerplate.2-1">
-            Copyright (c) 2025 IETF Trust and the persons identified as the
+            Copyright (c) 2026 IETF Trust and the persons identified as the
             document authors. All rights reserved.<a href="#section-boilerplate.2-1" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.2-2">
             This document is subject to BCP 78 and the IETF Trust's Legal
@@ -1197,30 +1195,27 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.3.2.2.1"><a href="#section-3.2" class="auto internal xref">3.2</a>.  <a href="#name-certlocation" class="internal xref">CertLocation</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3">
-                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-certhash" class="internal xref">CertHash</a></p>
-</li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
-                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-discoverypurposeid" class="internal xref">DiscoveryPurposeId</a></p>
+                <p id="section-toc.1-1.3.2.3.1"><a href="#section-3.3" class="auto internal xref">3.3</a>.  <a href="#name-discoveryintentid" class="internal xref">DiscoveryIntentId</a></p>
 <ul class="compact toc ulBare ulEmpty">
-<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4.2.1">
-                    <p id="section-toc.1-1.3.2.4.2.1.1"><a href="#section-3.4.1" class="auto internal xref">3.4.1</a>.  <a href="#name-algorithm-agility" class="internal xref">Algorithm Agility</a></p>
+<li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3.2.1">
+                    <p id="section-toc.1-1.3.2.3.2.1.1"><a href="#section-3.3.1" class="auto internal xref">3.3.1</a>.  <a href="#name-algorithm-agility" class="internal xref">Algorithm Agility</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4.2.2">
-                    <p id="section-toc.1-1.3.2.4.2.2.1"><a href="#section-3.4.2" class="auto internal xref">3.4.2</a>.  <a href="#name-redundancy" class="internal xref">Redundancy</a></p>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3.2.2">
+                    <p id="section-toc.1-1.3.2.3.2.2.1"><a href="#section-3.3.2" class="auto internal xref">3.3.2</a>.  <a href="#name-redundancy" class="internal xref">Redundancy</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4.2.3">
-                    <p id="section-toc.1-1.3.2.4.2.3.1"><a href="#section-3.4.3" class="auto internal xref">3.4.3</a>.  <a href="#name-dual-usage" class="internal xref">Dual Usage</a></p>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3.2.3">
+                    <p id="section-toc.1-1.3.2.3.2.3.1"><a href="#section-3.3.3" class="auto internal xref">3.3.3</a>.  <a href="#name-dual-usage" class="internal xref">Dual Usage</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4.2.4">
-                    <p id="section-toc.1-1.3.2.4.2.4.1"><a href="#section-3.4.4" class="auto internal xref">3.4.4</a>.  <a href="#name-statement-of-possession-of-" class="internal xref">Statement of Possession of a Private Key</a></p>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3.2.4">
+                    <p id="section-toc.1-1.3.2.3.2.4.1"><a href="#section-3.3.4" class="auto internal xref">3.3.4</a>.  <a href="#name-statement-of-possession-of-" class="internal xref">Statement of Possession of a Private Key</a></p>
 </li>
-                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4.2.5">
-                    <p id="section-toc.1-1.3.2.4.2.5.1"><a href="#section-3.4.5" class="auto internal xref">3.4.5</a>.  <a href="#name-self-reference" class="internal xref">Self reference</a></p>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.3.2.5">
+                    <p id="section-toc.1-1.3.2.3.2.5.1"><a href="#section-3.3.5" class="auto internal xref">3.3.5</a>.  <a href="#name-self-reference" class="internal xref">Self reference</a></p>
 </li>
                 </ul>
 </li>
-              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.5">
-                <p id="section-toc.1-1.3.2.5.1"><a href="#section-3.5" class="auto internal xref">3.5</a>.  <a href="#name-signature-algorithm-and-pub" class="internal xref">Signature Algorithm and Public Key Algorithm fields</a></p>
+              <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.4">
+                <p id="section-toc.1-1.3.2.4.1"><a href="#section-3.4" class="auto internal xref">3.4</a>.  <a href="#name-signature-algorithm-and-pub" class="internal xref">Signature Algorithm and Public Key Algorithm fields</a></p>
 </li>
             </ul>
 </li>
@@ -1240,7 +1235,7 @@ svg :is([fill="white"], [fill^="#fff"]) {
                 <p id="section-toc.1-1.5.2.3.1"><a href="#section-5.3" class="auto internal xref">5.3</a>.  <a href="#name-other-name-form" class="internal xref">Other Name Form</a></p>
 </li>
               <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.5.2.4">
-                <p id="section-toc.1-1.5.2.4.1"><a href="#section-5.4" class="auto internal xref">5.4</a>.  <a href="#name-certificate-discovery-purpo" class="internal xref">Certificate Discovery Purpose Identifiers</a></p>
+                <p id="section-toc.1-1.5.2.4.1"><a href="#section-5.4" class="auto internal xref">5.4</a>.  <a href="#name-certificate-discovery-inten" class="internal xref">Certificate Discovery Intent Identifiers</a></p>
 </li>
             </ul>
 </li>
@@ -1346,7 +1341,7 @@ subjectInfoAccess extension.<a href="#section-2.1-3" class="pilcrow">¶</a></p>
 id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
 </pre><a href="#section-3-5" class="pilcrow">¶</a>
 </div>
-<p id="section-3-6">The 'accessLocation' is a GeneralName otherName type as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>.   Recall that the otherName type is defined as <code>AnotherName</code>:<a href="#section-3-6" class="pilcrow">¶</a></p>
+<p id="section-3-6">The 'accessLocation' is a GeneralName otherName type as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>. Recall that the otherName type is defined as <code>AnotherName</code>:<a href="#section-3-6" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3-7">
 <pre>
 AnotherName ::= SEQUENCE {
@@ -1354,7 +1349,7 @@ AnotherName ::= SEQUENCE {
      value      [0] EXPLICIT ANY DEFINED BY type-id }
 </pre><a href="#section-3-7" class="pilcrow">¶</a>
 </div>
-<p id="section-3-8">Which this document defines as:<a href="#section-3-8" class="pilcrow">¶</a></p>
+<p id="section-3-8">This document defines the <code>RelatedCertificateDescriptor</code> type and its corresponding identifier as follows:<a href="#section-3-8" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3-9">
 <pre>
 -- Other Name OID Arc --
@@ -1368,13 +1363,13 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    }
 </pre><a href="#section-3-9" class="pilcrow">¶</a>
 </div>
-<p id="section-3-10">Where <code>id-on-relatedCertificateDescriptor</code> is the OBJECT IDENTIFIER (type-id) and the value is <code>RelatedCertificateDescriptor</code><a href="#section-3-10" class="pilcrow">¶</a></p>
+<p id="section-3-10">When the <code>accessMethod</code> has a value of <code>id-ad-certDiscovery</code>, then the <code>accessLocation</code> <span class="bcp14">MUST</span> contain an <code>otherName</code> whose <code>type-id</code> is <code>id-on-relatedCertificateDescriptor</code> and the <code>value</code> is <code>RelatedCertificateDescriptor</code>.<a href="#section-3-10" class="pilcrow">¶</a></p>
 <p id="section-3-11"><code>RelatedCertificateDescriptor</code> is defined as follows:<a href="#section-3-11" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3-12">
 <pre>
  RelatedCertificateDescriptor ::= SEQUENCE {
    method CertDiscoveryMethod,
-   purpose DiscoveryPurposeId OPTIONAL,
+   intent DiscoveryIntentId OPTIONAL,
    signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
    publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
 }
@@ -1419,44 +1414,22 @@ CertDiscoveryMethod ::= CHOICE {
 <p id="section-3.2-1"><code>CertLocation</code> is defined by the following:<a href="#section-3.2-1" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3.2-2">
 <pre>
-CertLocation ::= SEQUENCE {
-   uri IA5String,
-   certHash [0] IMPLICIT CertHash OPTIONAL
-}
+CertLocation ::= IA5String
 </pre><a href="#section-3.2-2" class="pilcrow">¶</a>
 </div>
 <p id="section-3.2-3">The certificate is referenced by an IA5String that contains the URI of the Secondary Certificate. The DER encoding of the Secondary Certificate <span class="bcp14">MUST</span> be available at the specified location.<a href="#section-3.2-3" class="pilcrow">¶</a></p>
-<p id="section-3.2-4"><code>CertLocation</code> <span class="bcp14">MAY</span> include an optional <code>certHash</code> value which can be used to include a cryptographic hash of the DER Encoded Secondary Certificate. The syntax of <code>CertHash</code> is described below.<a href="#section-3.2-4" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="certhash">
+<div id="discoveryintentid">
 <section id="section-3.3">
-        <h3 id="name-certhash">
-<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-certhash" class="section-name selfRef">CertHash</a>
+        <h3 id="name-discoveryintentid">
+<a href="#section-3.3" class="section-number selfRef">3.3. </a><a href="#name-discoveryintentid" class="section-name selfRef">DiscoveryIntentId</a>
         </h3>
-<p id="section-3.3-1"><code>CertHash</code> is defined by the following:<a href="#section-3.3-1" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.3-2">
+<p id="section-3.3-1"><code>DiscoveryIntentId</code> provides optional information to describe the intent of including the discovery information for the related certificate.<a href="#section-3.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3-2">Currently, the following intent identifiers are defined:<a href="#section-3.3-2" class="pilcrow">¶</a></p>
+<div class="alignLeft art-text artwork" id="section-3.3-3">
 <pre>
-CertHash ::= SEQUENCE {
-   value OCTET STRING,
-   -- TODO Add IssuerAndSerialNumber?
-   hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}
-}
-</pre><a href="#section-3.3-2" class="pilcrow">¶</a>
-</div>
-<p id="section-3.3-3"><code>certHash</code> is defined as a SEQUENCE containing the OCTET STRING <code>value</code> which is the hash of the DER Encoded reference certificate as well as the <code>hashAlgorithm</code>, which contains the AlgorithmIdentifier for the chosen Hash value. All implementations <span class="bcp14">MUST</span> support SHA-256 via <code>id-sha256</code>, and other hash functions <span class="bcp14">MAY</span> be supported.<a href="#section-3.3-3" class="pilcrow">¶</a></p>
-</section>
-</div>
-<div id="discoverypurposeid">
-<section id="section-3.4">
-        <h3 id="name-discoverypurposeid">
-<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-discoverypurposeid" class="section-name selfRef">DiscoveryPurposeId</a>
-        </h3>
-<p id="section-3.4-1"><code>DiscoveryPurposeId</code> provides optional information to describe the purpose of including the discovery information for the related certificate.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
-<p id="section-3.4-2">Currently, the following purpose identifiers are defined:<a href="#section-3.4-2" class="pilcrow">¶</a></p>
-<div class="alignLeft art-text artwork" id="section-3.4-3">
-<pre>
- -- Purpose OBJECT IDENTIFIER
+ -- Intent OBJECT IDENTIFIER
 id-rcd-agility OBJECT IDENTIFIER ::=
                                {id-rcd 1}
 
@@ -1471,61 +1444,59 @@ id-rcd-priv-key-stmt OBJECT IDENTIFIER ::=
 
 id-rcd-self OBJECT IDENTIFIER ::=
                                {id-rcd 5}
-</pre><a href="#section-3.4-3" class="pilcrow">¶</a>
+</pre><a href="#section-3.3-3" class="pilcrow">¶</a>
 </div>
 <div id="algorithm-agility">
-<section id="section-3.4.1">
+<section id="section-3.3.1">
           <h4 id="name-algorithm-agility">
-<a href="#section-3.4.1" class="section-number selfRef">3.4.1. </a><a href="#name-algorithm-agility" class="section-name selfRef">Algorithm Agility</a>
+<a href="#section-3.3.1" class="section-number selfRef">3.3.1. </a><a href="#name-algorithm-agility" class="section-name selfRef">Algorithm Agility</a>
           </h4>
-<p id="section-3.4.1-1">This purpose indicates the referenced certificate's purpose is to provide algorithm agility; i.e. the two certificates will use different cryptographic algorithms for the same key operations. The two certificates <span class="bcp14">SHOULD</span> be equivalent except for cryptographic algorithm; i.e. the key usages <span class="bcp14">SHOULD</span> match.<a href="#section-3.4.1-1" class="pilcrow">¶</a></p>
+<p id="section-3.3.1-1">This intent indicates the referenced certificate's intent is to provide algorithm agility; i.e. the two certificates will use different cryptographic algorithms for the same key operations. The two certificates <span class="bcp14">SHOULD</span> be equivalent except for cryptographic algorithm; i.e. the key usages <span class="bcp14">SHOULD</span> match.<a href="#section-3.3.1-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="redundancy">
-<section id="section-3.4.2">
+<section id="section-3.3.2">
           <h4 id="name-redundancy">
-<a href="#section-3.4.2" class="section-number selfRef">3.4.2. </a><a href="#name-redundancy" class="section-name selfRef">Redundancy</a>
+<a href="#section-3.3.2" class="section-number selfRef">3.3.2. </a><a href="#name-redundancy" class="section-name selfRef">Redundancy</a>
           </h4>
-<p id="section-3.4.2-1">This purpose indicates the referenced certificate's purpose is to provide operational redundancy; i.e. the Secondary Certificate could be issued by a different CA or has a different validity period which can be used as a backup if the Primary set of certificates is about to expire.<a href="#section-3.4.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.3.2-1">This intent indicates the referenced certificate's intent is to provide operational redundancy; i.e. the Secondary Certificate could be issued by a different CA or has a different validity period which can be used as a backup if the Primary set of certificates is about to expire.<a href="#section-3.3.2-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="dual-usage">
-<section id="section-3.4.3">
+<section id="section-3.3.3">
           <h4 id="name-dual-usage">
-<a href="#section-3.4.3" class="section-number selfRef">3.4.3. </a><a href="#name-dual-usage" class="section-name selfRef">Dual Usage</a>
+<a href="#section-3.3.3" class="section-number selfRef">3.3.3. </a><a href="#name-dual-usage" class="section-name selfRef">Dual Usage</a>
           </h4>
-<p id="section-3.4.3-1">This purpose indicates the referenced certificate's purpose is for dual usage; i.e. the related certificates belong to the same entity and one provides a signing-type key while the other provides an encryption-type key. The two certificates <span class="bcp14">SHOULD</span> have matching identifiers.<a href="#section-3.4.3-1" class="pilcrow">¶</a></p>
+<p id="section-3.3.3-1">This intent indicates the referenced certificate's intent is for dual usage; i.e. the related certificates belong to the same entity and one provides a signing-type key while the other provides an encryption-type key. The two certificates <span class="bcp14">MUST</span> describe the same entity and therefore <span class="bcp14">SHOULD</span> have matching Subject DN and SAN values.<a href="#section-3.3.3-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="statement-of-possession-of-a-private-key">
-<section id="section-3.4.4">
+<section id="section-3.3.4">
           <h4 id="name-statement-of-possession-of-">
-<a href="#section-3.4.4" class="section-number selfRef">3.4.4. </a><a href="#name-statement-of-possession-of-" class="section-name selfRef">Statement of Possession of a Private Key</a>
+<a href="#section-3.3.4" class="section-number selfRef">3.3.4. </a><a href="#name-statement-of-possession-of-" class="section-name selfRef">Statement of Possession of a Private Key</a>
           </h4>
-<p id="section-3.4.4-1">This purpose indicates that the Primary Certificate did not not do a full proof-of-possession at enrollment time, but instead it provided a statement of possession as per <span>[<a href="#I-D.ietf-lamps-private-key-stmt-attr" class="cite xref">I-D.ietf-lamps-private-key-stmt-attr</a>]</span> signed by the Secondary Certificate.<a href="#section-3.4.4-1" class="pilcrow">¶</a></p>
-<p id="section-3.4.4-2">The reason for carrying a RelatedCertificateDescriptor of this type is to track that the Primary Certificate had a trust dependency on the Secondary Certificate at the time of issuance and that presumably the two private keys are co-located on the same key storage. Therefore if one certificate is revoked, they <span class="bcp14">SHOULD</span> both be revoked.<a href="#section-3.4.4-2" class="pilcrow">¶</a></p>
+<p id="section-3.3.4-1">This intent indicates that the Primary Certificate did not not do a full proof-of-possession at enrollment time, but instead it provided a statement of possession as per <span>[<a href="#I-D.ietf-lamps-private-key-stmt-attr" class="cite xref">I-D.ietf-lamps-private-key-stmt-attr</a>]</span> signed by the Secondary Certificate.<a href="#section-3.3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.3.4-2">The reason for carrying a RelatedCertificateDescriptor of this type is to track that the Primary Certificate had a trust dependency on the Secondary Certificate at the time of issuance and that presumably the two private keys are co-located on the same key storage. Therefore if one certificate is revoked, they <span class="bcp14">SHOULD</span> both be revoked.<a href="#section-3.3.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="self-reference">
-<section id="section-3.4.5">
+<section id="section-3.3.5">
           <h4 id="name-self-reference">
-<a href="#section-3.4.5" class="section-number selfRef">3.4.5. </a><a href="#name-self-reference" class="section-name selfRef">Self reference</a>
+<a href="#section-3.3.5" class="section-number selfRef">3.3.5. </a><a href="#name-self-reference" class="section-name selfRef">Self reference</a>
           </h4>
-<p id="section-3.4.5-1">This purpose indicates the Uniform Resource Identifier where this certificate is located. Applications which retrieve this certificate can then compare the retrieved certificate with this value to ensure that the correct certificate was retrieved.<a href="#section-3.4.5-1" class="pilcrow">¶</a></p>
-<p id="section-3.4.5-2">This purpose can be used to bind the subjects of Primary and Secondary Certificates. The Primary Certificate contains a self-reference to its location, as well as a reference to the Secondary Certificate. The Secondary Certificate contains a self-reference to its location, and a reference to the Primary Certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.<a href="#section-3.4.5-2" class="pilcrow">¶</a></p>
+<p id="section-3.3.5-1">This intent indicates the Uniform Resource Identifier where this certificate is located. Applications which retrieve this certificate can then compare the retrieved certificate with this value to ensure that the correct certificate was retrieved.<a href="#section-3.3.5-1" class="pilcrow">¶</a></p>
+<p id="section-3.3.5-2">This intent can be used to bind the subjects of Primary and Secondary Certificates. The Primary Certificate contains a self-reference to its location, as well as a reference to the Secondary Certificate. The Secondary Certificate contains a self-reference to its location, and a reference to the Primary Certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.<a href="#section-3.3.5-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
 </div>
 <div id="signature-algorithm-and-public-key-algorithm-fields">
-<section id="section-3.5">
+<section id="section-3.4">
         <h3 id="name-signature-algorithm-and-pub">
-<a href="#section-3.5" class="section-number selfRef">3.5. </a><a href="#name-signature-algorithm-and-pub" class="section-name selfRef">Signature Algorithm and Public Key Algorithm fields</a>
+<a href="#section-3.4" class="section-number selfRef">3.4. </a><a href="#name-signature-algorithm-and-pub" class="section-name selfRef">Signature Algorithm and Public Key Algorithm fields</a>
         </h3>
-<p id="section-3.5-1">The signatureAlgorithm is used to indicate the signature algorithm used in the Secondary Certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.<a href="#section-3.5-1" class="pilcrow">¶</a></p>
-<p id="section-3.5-2">When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.<a href="#section-3.5-2" class="pilcrow">¶</a></p>
-<p id="section-3.5-3">The semantics of other id-ad-certDiscovery accessLocation name forms are not defined.<a href="#section-3.5-3" class="pilcrow">¶</a></p>
-<p id="section-3.5-4">Note:  For a description of uniformResourceIdentifier consult section 4.2.2.1 of [!RFC5280].<a href="#section-3.5-4" class="pilcrow">¶</a></p>
+<p id="section-3.4-1">The signatureAlgorithm is used to indicate the signature algorithm used in the Secondary Certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.<a href="#section-3.4-1" class="pilcrow">¶</a></p>
+<p id="section-3.4-2">When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.<a href="#section-3.4-2" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1536,7 +1507,7 @@ id-rcd-self OBJECT IDENTIFIER ::=
 <a href="#section-4" class="section-number selfRef">4. </a><a href="#name-security-considerations" class="section-name selfRef">Security Considerations</a>
       </h2>
 <p id="section-4-1">Retrieval of the Secondary Certificate is not sufficient to consider the Secondary Certificate trustworthy. The certification path validation algorithm as defined in section 6 of <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> <span class="bcp14">MUST</span> be performed for the Secondary Certificate.<a href="#section-4-1" class="pilcrow">¶</a></p>
-<p id="section-4-2">The use of the self-reference purpose can be used to provide a subject binding between the Primary and Secondary Certificates. However, the procedure for validating subject equivalence <span class="bcp14">MUST</span> be defined by policy. As a result, validation of
+<p id="section-4-2">The use of the self-reference intent can be used to provide a subject binding between the Primary and Secondary Certificates. However, the procedure for validating subject equivalence <span class="bcp14">MUST</span> be defined by policy. As a result, validation of
 subject equivalence is out of scope of this document.<a href="#section-4-2" class="pilcrow">¶</a></p>
 <p id="section-4-3">The Secondary Certificate may also have the certDiscovery access method. In order to avoid cyclic loops or infinite chaining, the validator should be mindful of how many fetching attempts it allows in one validation.<a href="#section-4-3" class="pilcrow">¶</a></p>
 <p id="section-4-4">The same security considerations for <code>caIssuers</code> access method outlined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> applies to the certDiscovery access method. In order to avoid recursive certificate validations which involve online revocation checking, untrusted transport protocols (such as plaintext HTTP) are commonly used for serving certificate files. While the use of such protocols avoids issues with recursive certification path validations and associated online revocation checking, it also enables an attacker to tamper with data and perform substitution attacks. Clients fetching certificates using the mechanism specified in this document <span class="bcp14">MUST</span> treat downloaded certificate data as untrusted and perform requisite checks to ensure that the downloaded data is not malicious.<a href="#section-4-4" class="pilcrow">¶</a></p>
@@ -1622,12 +1593,12 @@ subject equivalence is out of scope of this document.<a href="#section-4-2" clas
         </table>
 </section>
 </div>
-<div id="certificate-discovery-purpose-identifiers">
+<div id="certificate-discovery-intent-identifiers">
 <section id="section-5.4">
-        <h3 id="name-certificate-discovery-purpo">
-<a href="#section-5.4" class="section-number selfRef">5.4. </a><a href="#name-certificate-discovery-purpo" class="section-name selfRef">Certificate Discovery Purpose Identifiers</a>
+        <h3 id="name-certificate-discovery-inten">
+<a href="#section-5.4" class="section-number selfRef">5.4. </a><a href="#name-certificate-discovery-inten" class="section-name selfRef">Certificate Discovery Intent Identifiers</a>
         </h3>
-<p id="section-5.4-1">To allocate id-rcd, this document introduces a new PKIX OID arc for certificate discovery purpose identifiers:<a href="#section-5.4-1" class="pilcrow">¶</a></p>
+<p id="section-5.4-1">To allocate id-rcd, this document introduces a new PKIX OID arc for certificate discovery intent identifiers:<a href="#section-5.4-1" class="pilcrow">¶</a></p>
 <p id="section-5.4-2">IANA is requested to add the following entry to "SMI Security for PKIX" registry, defined by [RFC 7299]:<a href="#section-5.4-2" class="pilcrow">¶</a></p>
 <table class="center" id="table-4">
           <caption><a href="#table-4" class="selfRef">Table 4</a></caption>
@@ -1641,12 +1612,12 @@ subject equivalence is out of scope of this document.<a href="#section-4-2" clas
           <tbody>
             <tr>
               <td class="text-left" rowspan="1" colspan="1">TBD4</td>
-              <td class="text-left" rowspan="1" colspan="1">Certificate Discovery Purpose Identifier</td>
+              <td class="text-left" rowspan="1" colspan="1">Certificate Discovery Intent Identifier</td>
               <td class="text-left" rowspan="1" colspan="1">[this-RFC]</td>
             </tr>
           </tbody>
         </table>
-<p id="section-5.4-4">IANA is requested to create the "Certificate Discovery Purpose Identifiers" registry with the following initial values:<a href="#section-5.4-4" class="pilcrow">¶</a></p>
+<p id="section-5.4-4">IANA is requested to create the "Certificate Discovery Intent Identifiers" registry with the following initial values:<a href="#section-5.4-4" class="pilcrow">¶</a></p>
 <table class="center" id="table-5">
           <caption><a href="#table-5" class="selfRef">Table 5</a></caption>
 <thead>
@@ -1737,7 +1708,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
 
    BEGIN
 
--- EXPORTS ALL --
+   -- EXPORTS ALL --
 
    IMPORTS
     OTHER-NAME, AlgorithmIdentifier, Certificate
@@ -1748,7 +1719,13 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
     id-pkix, id-ad
     FROM PKIX1Explicit-2009
       { iso(1) identified-organization(3) dod(6) internet(1) security(5)
-      mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-explicit-02(51) } ;
+      mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-explicit-02(51) }
+
+    RelatedCertificate
+    FROM RelatedCertificate
+      { iso(1) identified-organization(3) dod(6)
+       internet(1) security(5) mechanisms(5) pkix(7) id-mod(0)
+     id-mod-related-cert-2023(115)} ;
 
    id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD2 }
 
@@ -1760,46 +1737,35 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
 
    id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD3 }
 
+   -- Always encode as a GeneralName uniform resource identifier (URI)
+   id-ad-relatedCertificateSelfDescriptor OBJECT IDENTIFIER ::= { id-ad TBD4 }
+
    on-RelatedCertificateDescriptor OTHER-NAME ::= {
       RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
    }
 
    id-rcd OBJECT IDENTIFIER ::= { iso(1) identified-organization(3) dod(6) internet(1) security(5)
-      mechanisms(5) pkix(7) id-rcd(TBD4) }
-
-   -- Purpose OBJECT IDENTIFIERs
-
-   DiscoveryPurposeId ::= OBJECT IDENTIFIER
-
-   id-rcd-agility DisoveryPurposeId ::= {id-rcd 1}
-   id-rcd-redundency DisoveryPurposeId ::= {id-rcd 2}
-   id-rcd-dual DisoveryPurposeId ::= {id-rcd 3}
-   id-rcd-priv-key-stmt DisoveryPurposeId ::= {id-rcd 4}
-   id-rcd-self DisoveryPurposeId ::= {id-rcd 5}
-
+      mechanisms(5) pkix(7) id-rcd(60) }
 
    RelatedCertificateDescriptor ::= SEQUENCE {
      method CertDiscoveryMethod,
-     purpose DiscoveryPurposeId OPTIONAL,
      signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
-     publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
+     publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL,
+     certHash [2] RelatedCertificate OPTIONAL
    }
+
+   -- RelatedCertificate is defined in RFC 9763
 
    CertDiscoveryMethod ::= CHOICE {
      byUri [0] IMPLICIT CertLocation,
-     byInclusion Certificate,
-     byLocalPolicy NULL
+     byInclusion [1] Certificate,
+     byLocalPolicy [2] NULL,
+     byOther [3] INSTANCE OF OTHER-DISCOVERY-METHOD
    }
 
-   CertLocation ::= SEQUENCE {
-      uri IA5String,
-      certHash [0] IMPLICIT CertHash OPTIONAL
-   }
+   CertLocation ::= IA5String
 
-   CertHash ::= SEQUENCE {
-      value OCTET STRING,
-      hashAlgorithm AlgorithmIdentifier DEFAULT {algorithm sha-256}
-   }
+   OTHER-DISCOVERY-METHOD ::= TYPE-IDENTIFIER
 
    END
 </pre><a href="#appendix-B-2" class="pilcrow">¶</a>
