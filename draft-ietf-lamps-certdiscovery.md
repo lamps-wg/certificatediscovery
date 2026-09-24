@@ -385,7 +385,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    }
 
    -- RelatedCertificate is defined in RFC 9763
- 
+
    CertDiscoveryMethod ::= CHOICE {
      byUri [0] IMPLICIT CertLocation,
      byInclusion [1] Certificate,
@@ -398,5 +398,4 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    OTHER-DISCOVERY-METHOD ::= TYPE-IDENTIFIER
 
    END
-
 ~~~
