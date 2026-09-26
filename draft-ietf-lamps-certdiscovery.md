@@ -61,47 +61,23 @@ informative:
 
 --- abstract
 
-This document specifies a method to discover a secondary X.509 certificate associated with an X.509 certificate to enable efficient multi-certificate handling in protocols. The objective is threefold: to enhance cryptographic agility, improve operational availability, and accommodate multi-key/certificate usage. The proposed method aims to maximize compatibility with existing systems and is designed to be legacy-friendly, making it suitable for environments with a mix of legacy and new implementations. It includes mechanisms to provide information about the target certificate's signature algorithm, public key algorithm and the location of the secondary X.509 certificate, empowering relying parties to make informed decisions on whether to fetch the Secondary Certificate.
-
-The primary motivation for this method is to address the limitations of traditional certificate management approaches, which often lack flexibility, scalability, and seamless update capabilities. By leveraging this mechanism, subscribers can achieve cryptographic agility by facilitating the transition between different algorithms or X.509 certificate types. Operational redundancy is enhanced by enabling the use of backup certificates and minimizing the impact of Primary Certificate expiration or CA infrastructure failures.
-
-The approach ensures backward compatibility with existing systems and leverages established mechanisms, such as the subjectInfoAccess extension, to enable seamless integration.
+This document specifies a method to discover a referenced X.509 certificate associated with the current X.509 certificate. This enables efficient multi-certificate or fallback certificate handling in protocols. The objective is threefold: to enhance cryptographic agility, improve operational availability, and accommodate multi-key/certificate usage. The proposed method aims to maximize compatibility with existing systems and is designed to be legacy-friendly, making it suitable for environments with a mix of legacy and new implementations. It includes mechanisms to provide a URI from which the referenced X.509 certificate can be retrieved as well as information about the target certificate's signature and public key algorithm, empowering relying parties to make informed decisions on whether to retrieve the Referenced Certificate, and a certificate hash to ensure that the correct certificate was retrieved.
 
 --- middle
 
 # Introduction
 
-The efficient discovery of X.509 certificates play a critical role in modern cryptographic systems. Traditional certificate management approaches often face challenges in terms of flexibility, scalability, and seamless updates. To address these limitations, this document proposes a novel approach to certificate discovery utilizing the Subject Information Access extension within X.509 certificates.
+Cryptographic agility and fallback often feature prominently in cryptographic migrations, whether it's migrating algorithms, infrastructures, keys, or some other aspect. Discovery is a key aspect of agility -- in this case meaning that an application holding an X.509 certificate for a peer can easily learn about and retrieve alternative versions of the certificate they are holding, a space that is under-served by existing X.509 extensions. To address these limitations, this document proposes a novel approach to certificate discovery utilizing the Subject Information Access extension within X.509 certificates.
 
 The primary objective of this approach is to enable efficient multi-certificate handling in protocols, offering several key benefits. First, it enhances cryptographic agility by facilitating smooth transitions between different algorithms or X.509 certificate types. This is particularly valuable in scenarios where subscribers need to upgrade their cryptographic algorithms or adopt new certificate types while maintaining backward compatibility with existing systems.
 
-Second, the proposed method improves operational availability by introducing redundancy in certificate usage. It enables the use of secondary certificates that can serve as backups, ensuring seamless continuity of services even in the event of Primary Certificate expiration or disruptions in the CA infrastructure.
+Second, the proposed method improves operational availability by introducing redundancy in certificate usage. It enables the automatic discovery and use of Referenced Certificates that can serve as fallbacks, ensuring seamless continuity of services even in the event of expiration or revocation of the Current Certificate, or disruptions in the Certification Authority (CA) infrastructure.
 
-Finally, the approach accommodates multi-key/certificate usage, allowing for a relying party to obtain certificates to perform cryptographic operations that are not certified by a single certificate.
+Finally, the approach accommodates multi-key/certificate usage, allowing for a CA to indicate that two (or more) certificates are to be used together.
+
+relying party to obtain certificates to perform cryptographic operations that are not certified by a single certificate.
 
 The proposed method is designed to maximize compatibility with existing systems, including legacy implementations. It leverages the subjectInfoAccess extension, which is already established in X.509 certificates, and does not require modifications to the referring certificates. This ensures ease of adoption and avoids disruptions to current certificate management practices.
-
-The following sections outline the details of the proposed approach, including the structure of the SIA extension, the modes of operation, and the considerations for secure implementation and deployment.
-
-By leveraging the capabilities of the SIA extension for certificate discovery, organizations can enhance cryptographic agility, improve operational availability, and accommodate complex multi-key/certificate scenarios, leading to more secure and resilient cryptographic systems.
-
-## Use Case 1: Algorithm Agility
-
-The first use case is improving algorithm agility. For example, the Primary Certificate uses a widely adopted cryptographic algorithm while the Secondary Certificate uses the algorithm that is new and not widely adopted yet. The relying party will be presented with the opportunity to try the new algorithms and certificate types. This will be particularly useful when transitioning from one algorithm to another or to a new certificate/credential type.
-
-In addition, the server may look at the logs to determine how ready the client side is to shift to completely rollover to the new algorithm. This allows the subscriber to gather the metrics necessary to make an informed decision on the best timing to do an algorithm rollover without relying on third parties or security researchers. This is particularly useful for PKIs that have a wide array of client software and requires careful consideration.
-
-## Use Case 2: Operational Redundancy
-
-The second use case is where the Primary and Secondary Certificate adopts the same cryptographic algorithms but for instance, uses certificates issued by two different CAs or two certificates that have different validity periods. The Secondary Certificate may be used as a backup certificate in case the Primary Certificate validity is about to expire.
-
-A common issue is when the intermediate CA certificate expires, and the subscriber forgets to update the intermediate CA configured on the server. Similar to when some software collects the parent certificate through authorityInfoAccess CA Issuer access method when the intermediate certificate is absent, the peer certificate can be obtained.
-
-Due to increased adoption of the ACME protocol, the burden of maintaining the availability of a service is shifted to the CA issuance infrastructure and the availability would be dependent on the CA infrastructure. To increase the operational redundancy, this mechanism can be used to point to another set of certificates that are independent from the Primary Certificate to minimize the chance of a failed transaction.
-
-## Use Case 3: Dual Use
-
-The third use case is where one certificate is used by the named subject for a particular cryptographic operation and a relying party wishes to obtain the public key of the named subject for a different cryptographic operation. For example, the recipient of an email message which was signed using a key that is certified by a single use signing S/MIME certificate may wish to send an encrypted email to the sender. In this case, the recipient will need the sender's public key used for encryption. A pointer to the named subject's encryption certificate will permit the recipient to send an encrypted reply.
 
 # Conventions and Definitions
 
@@ -111,10 +87,9 @@ The third use case is where one certificate is used by the named subject for a p
 
 For conciseness, this section defines several terms that are frequently used throughout this specification.
 
-Primary Certificate: The X.509 certificate that has the subjectInfoAccess extension with the certDiscovery accessMethod pointing to a Secondary Certificate.
+Current Certificate: the X.509 certificate currently being validated, which contains an subjectInfoAccess extension with the certDiscovery accessMethod pointing to a Referenced Certificate, and may also contain a certDiscoverySelfLocation URI referencing itself.
 
-Secondary Certificate: The X.509 certificate that is referenced by the Primary Certificate in the subjectInfoAccess extension certDiscovery accessMethod. This certificate may also have a reference to the Primary Certificate in the
-subjectInfoAccess extension.
+Referenced Certificate: The X.509 certificate that is referenced by the Current Certificate in the subjectInfoAccess extension certDiscovery accessMethod.
 
 # Certificate Discovery Access Method
 
@@ -123,15 +98,15 @@ This document specifies the new certDiscovery access method for X.509 Subject In
 The syntax of subject information access extension syntax is repeated here for convenience:
 
 ~~~
-   SubjectInfoAccessSyntax  ::=
-           SEQUENCE SIZE (1..MAX) OF AccessDescription
+SubjectInfoAccessSyntax  ::=
+         SEQUENCE SIZE (1..MAX) OF AccessDescription
 
-   AccessDescription  ::=  SEQUENCE {
-           accessMethod          OBJECT IDENTIFIER,
-           accessLocation        GeneralName  }
+AccessDescription  ::=  SEQUENCE {
+         accessMethod          OBJECT IDENTIFIER,
+         accessLocation        GeneralName  }
 ~~~
 
-This document defines a new access method `id-ad-certDiscovery` which is an OBJECT IDENTIFIER that indicates the `accessMethod` is for certificate discovery.
+This document defines a new `SubjectInfoAccessSyntax` access method `id-ad-certDiscovery` which is an OBJECT IDENTIFIER that indicates the `accessMethod` is for carrying a certificate discovery description of a Referenced Certificate.
 
 ~~~
 id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
@@ -164,111 +139,135 @@ When the `accessMethod` has a value of `id-ad-certDiscovery`, then the `accessLo
 `RelatedCertificateDescriptor` is defined as follows:
 
 ~~~
- RelatedCertificateDescriptor ::= SEQUENCE {
+RelatedCertificateDescriptor ::= SEQUENCE {
    method CertDiscoveryMethod,
-   intent DiscoveryIntentId OPTIONAL,
-   signatureAlgorithm [0] IMPLICIT AlgorithmIdentifier OPTIONAL,
-   publicKeyAlgorithm [1] IMPLICIT AlgorithmIdentifier OPTIONAL
+   signatureAlgorithm [0] AlgorithmIdentifier OPTIONAL,
+   publicKeyAlgorithm [1] AlgorithmIdentifier OPTIONAL,
+   certHash [2] RelatedCertificate OPTIONAL
 }
 ~~~
 
-`RelatedCertificateDescriptor` is composed of 4 components which are defined below.
+A certificate MAY have any number of `RelatedCertificateDescriptor` SIA `AccessDescriptions`.
+
+Each component of the `RelatedCertificateDescriptor` is defined below.
 
 ## CertDiscoveryMethod
+
+`CertDiscoveryMethod` describes the method by which the Referenced Certificate
+can be retrieved. 
 
 `CertDiscoveryMethod` is defined by the following:
 
 ~~~
 CertDiscoveryMethod ::= CHOICE {
-  byUri [0] IMPLICIT CertLocation
-  byInclusion Certificate,
-  byLocalPolicy NULL
+   byUri IA5String,
+   byInclusion Certificate,
+   byLocalPolicy NULL,
+   byOther [0] INSTANCE OF OTHER-DISCOVERY-METHOD
 }
 ~~~
 
-`CertDiscoveryMethod` is the only required field of `RelatedCertificateDescriptor`. It describes how the related certificate can be retrieved.
+Depending on the method used, the other optional elements of `RelatedCertificateDescriptor`
+can become either mandatory, recommended, or forbidden.
 
-There are three methods:
+### byUri
 
-1. The `byUri` method provides a location where the related certificate can be retrieved. The syntax of `CertLocation` is described below.
-2. The `byInclusion` method encodes the DER encoding of the related certificate directly.
-3. The `byLocalPolicy` method signals that the related certificate is available in a repository that is usable by the application consuming the certificate.
+The `byUri` method MUST provide a URI formatted according to [!RFC3986] from which the Referenced Certificate can be retrieved.
 
-## CertLocation
+When the `CertDiscoveryMethod` is `byUri`, the fields `signatureAlgorithm`, `publicKeyAlgorithm`, and `certHash` SHOULD be populated as described below so that an application can decide if the Referenced Certificate is likely to be useful before performing the retrieval. After performing the retrieval, the application MUST check that the populated `signatureAlgorithm`, `publicKeyAlgorithm`, and `certHash` match the retrieved certificate; if any do not match then the retrieval MUST be considered to have failed.
 
-`CertLocation` is defined by the following:
+Note that two (or more) certificates can reference each other in cases where the URIs are pre-allocated prior to certificate issuance, and the certificates to be issued as a batch.
 
-~~~
-CertLocation ::= IA5String
-~~~
+To enhance security, the URI SHOULD be cryptographically random and is RECOMMENDED to contain the certificate serial number, although care needs to be taken when publishing the related certificates asynchronously since publication of a first certificate containing the serial number of a not-yet-issued certificate could expose the second certificate to forgery attacks.
 
-The certificate is referenced by an IA5String that contains the URI of the Secondary Certificate. The DER encoding of the Secondary Certificate MUST be available at the specified location.
+### byInclusion
 
-## DiscoveryIntentId
+The `byInclusion` method encodes the DER encoding of the Referenced Certificate directly into the Current Certificate. The Referenced Certificate MAY be extract and used directly as a standalone certificate.
 
-`DiscoveryIntentId` provides optional information to describe the intent of including the discovery information for the related certificate.
+When the `CertDiscoveryMethod` is `byInclusion`, the fields `signatureAlgorithm`, `publicKeyAlgorithm`, and `certHash` MUST NOT be populated since the content is already present and would be redundant.
 
-Currently, the following intent identifiers are defined:
+### byLocalPolicy
 
-~~~
- -- Intent OBJECT IDENTIFIER
-id-rcd-agility OBJECT IDENTIFIER ::=
-                               {id-rcd 1}
+The `byLocalPolicy` method signals that the related certificate is available in a repository that is available to the application according to its local policy. The details of this method are deliberately left out-of-scope.
 
-id-rcd-redundancy OBJECT IDENTIFIER ::=
-                               {id-rcd 2}
+When the `CertDiscoveryMethod` is `byLocalPolicy`, at least one of the fields `signatureAlgorithm`, `publicKeyAlgorithm`, or `certHash` MUST be populated.
+The application MUST check that the populated `signatureAlgorithm`, `publicKeyAlgorithm`, and `certHash` match the retrieved certificate; if any do not match then the retrieval MUST be considered to have failed.
 
-id-rcd-dual OBJECT IDENTIFIER ::=
-                               {id-rcd 3}
+### byOther
 
-id-rcd-priv-key-stmt OBJECT IDENTIFIER ::=
-                               {id-rcd 4}
-
-id-rcd-self OBJECT IDENTIFIER ::=
-                               {id-rcd 5}
-~~~
-
-### Algorithm Agility
-
-This intent indicates the referenced certificate's intent is to provide algorithm agility; i.e. the two certificates will use different cryptographic algorithms for the same key operations. The two certificates SHOULD be equivalent except for cryptographic algorithm; i.e. the key usages SHOULD match.
-
-### Redundancy
-
-This intent indicates the referenced certificate's intent is to provide operational redundancy; i.e. the Secondary Certificate could be issued by a different CA or has a different validity period which can be used as a backup if the Primary set of certificates is about to expire.
-
-
-### Dual Usage
-
-This intent indicates the referenced certificate's intent is for dual usage; i.e. the related certificates belong to the same entity and one provides a signing-type key while the other provides an encryption-type key. The two certificates MUST describe the same entity and therefore SHOULD have matching Subject DN and SAN values.
-
-### Statement of Possession of a Private Key
-
-This intent indicates that the Primary Certificate did not not do a full proof-of-possession at enrollment time, but instead it provided a statement of possession as per {{!I-D.ietf-lamps-private-key-stmt-attr}} signed by the Secondary Certificate.
-
-The reason for carrying a RelatedCertificateDescriptor of this type is to track that the Primary Certificate had a trust dependency on the Secondary Certificate at the time of issuance and that presumably the two private keys are co-located on the same key storage. Therefore if one certificate is revoked, they SHOULD both be revoked.
-
-### Self reference
-
-This intent indicates the Uniform Resource Identifier where this certificate is located. Applications which retrieve this certificate can then compare the retrieved certificate with this value to ensure that the correct certificate was retrieved.
-
-This intent can be used to bind the subjects of Primary and Secondary Certificates. The Primary Certificate contains a self-reference to its location, as well as a reference to the Secondary Certificate. The Secondary Certificate contains a self-reference to its location, and a reference to the Primary Certificate. Provided that policy requires subject equivalence when this mechanism is used, then the consuming application can treat both certificates as certifying the same entity.
+The `byOther` method acts as an extensibility point for adding additional methods in the future.
+A new `byOther` method MUST by accompanied by a specification of its wire format and interaction 
+with the `signatureAlgorithm`, `publicKeyAlgorithm`, and `certHash` fields of `RelatedCertificateDescriptor`.
 
 ## Signature Algorithm and Public Key Algorithm fields
 
-The signatureAlgorithm is used to indicate the signature algorithm used in the Secondary Certificate and is an optional field. The publicKeyAlgorithm indicates the public key algorithm used in the Secondary Certificate and is an optional field.
+The `signatureAlgorithm` and `publicKeyAlgorithm` is to allow an application that has rejected the Current Certificate because either the signature or public key algorithm is unrecognized or violates its policy to instead retrieve an acceptable Referenced Certificate.
 
-When the validation of the Primary Certificate fails, the software that understands the SIA extension and the certDiscovery access method uses the information to determine whether to fetch the Secondary Certificate. The software will look at the signatureAlgorithm and publicKeyAlgorithm to determine whether the Secondary Certificate has the signature algorithm and certificate public key algorithm it can process. If the software understands the signature algorithm and certificate public key algorithm, the software fetches the certificate from the URI specified in the relatedCertificateLocation and attempts another validation. Otherwise, the validation simply fails.
+If present, the `signatureAlgorithm` MUST match the `signatureAlgorithm` field in the Referenced Certificate.
+
+If present, the `publicKeyAlgorithm` MUST match the `subjectPublicKeyInfo.algorithm` field in the Referenced Certificate.
+
+
+## certHash
+
+The `certHash` field is intended primarily as a lookup value for finding the referenced certificate in a repository indexed by certificate hash. When present, it SHOULD also be used to confirm that the correct certificate was retrieved by hashing the retrieved certificate and comparing the hash value. However, it SHOULD NOT be considered a security mechanism because, by itself, it does not convey any intention about why or for what purpose the two certificates are related.
+
+The `certHash` field uses the `RelatedCertificate` structure, which is defined in [!RFC9763] and simply contains the hash of a certificate.
+Recall its definition:
+
+~~~
+RelatedCertificate ::= SEQUENCE {
+  hashAlgorithm DigestAlgorithmIdentifier,
+  hashValue     OCTET STRING }
+~~~
+
+Its semantics mirror those specified in [!RFC9763], repeated here for convenience.
+
+The `hashAlgorithm` field identifies the hash algorithm used to compute hashValue, which is the digest value obtained from hashing the entire Referenced Certificate.
+If there is a hash algorithm explicitly indicated by the related certificate's signature OID (e.g., ecdsa-with-SHA512), that hash algorithm SHOULD also be used here.
+
+Note that, unlike the `byUri` method, it is not possible to bi-directionally link two (or more) certificates via the `certHash` field.
+
+
+# Certificate Discovery Self Location Access Method
+
+This document defines a new `SubjectInfoAccessSyntax` access method `id-ad-certDiscoverySelfLocation` which is an OBJECT IDENTIFIER that indicates the `accessMethod` is for carrying a certificate discovery self-reference.
+In other words, a certificate MAY carry its own URI as a way to further enhance discoverability and validate that the correct certificate was retrieved.
+
+~~~
+id-ad-certDiscoverySelfLocation OBJECT IDENTIFIER ::= { id-ad TBD4 }
+~~~
+
+The SubjectInfoAccessSyntax AccessDescription accessLocation MUST carry a GeneralName uniformResourceIdentifier.
+
+This access method indicates the URI [!RFC3986] where the Current Certificate is located. Applications which have retrieved this certificate using a `byUri` method SHOULD extract this value from the retrieved certificate confirm that the correct certificate was retrieved.
+
+A certificate MAY have any number of `certDiscoverySelfLocation` SIA `AccessDescriptions`.
+
+# Expired, Revoked, or Untrusted Current Certificate
+
+In the case that the Current Certificate is unusable, for example because it is expired, revoked, does not chain to a trusted root, or for any other reason, the application MAY still follow the `RelatedCertificateDescriptor` to see if this yields a valid and usable certificate.
+
+This provides great flexibility in error-recovery scenarios. In addition, this will allow for more pro-active migration to new infrastructures, knowing that applications will be able to follow `RelatedCertificateDescriptor`s to their preferred version of the certificate.
+
+Since this is merely a mechanism for discovering the existence of the Referenced Certificate, doing so from an untrusted certificate does not pose security issues.
+
 
 # Security Considerations
 
-Retrieval of the Secondary Certificate is not sufficient to consider the Secondary Certificate trustworthy. The certification path validation algorithm as defined in section 6 of {{RFC5280}} MUST be performed for the Secondary Certificate.
+Retrieval of the Referenced Certificate is not sufficient to consider the Referenced Certificate trustworthy. The certification path validation algorithm as defined in section 6 of {{RFC5280}} MUST be performed for the Referenced Certificate. A reference from a `RelatedCertificateDescriptor`, even in the presence of a `certHash` does not imply any form of endorsement or hierarchical relationship between the two certificates unless the mechanism in this draft is augmented with additional X.509v3 extensions or policies that specify those semantics.
 
-The use of the self-reference intent can be used to provide a subject binding between the Primary and Secondary Certificates. However, the procedure for validating subject equivalence MUST be defined by policy. As a result, validation of
-subject equivalence is out of scope of this document.
+The use of the self-reference can be used to provide a subject binding between the Current and Referenced Certificates even if their other data such as subject name or public key do not match. However, the procedure for validating subject equivalence MUST be defined by policy and be consistent with the policies of the issuing CA. As a result, validation of subject equivalence is out of scope of this document.
 
-The Secondary Certificate may also have the certDiscovery access method. In order to avoid cyclic loops or infinite chaining, the validator should be mindful of how many fetching attempts it allows in one validation.
+The Referenced Certificate may also have a certDiscovery access method. In order to avoid cyclic loops or infinite chaining, leading to denial-of-service scenarios, the validator SHOULD employ a maximum depth or cycle-detection algorithm.
 
-The same security considerations for `caIssuers` access method outlined in {{RFC5280}} applies to the certDiscovery access method. In order to avoid recursive certificate validations which involve online revocation checking, untrusted transport protocols (such as plaintext HTTP) are commonly used for serving certificate files. While the use of such protocols avoids issues with recursive certification path validations and associated online revocation checking, it also enables an attacker to tamper with data and perform substitution attacks. Clients fetching certificates using the mechanism specified in this document MUST treat downloaded certificate data as untrusted and perform requisite checks to ensure that the downloaded data is not malicious.
+The same security considerations for `caIssuers` access method outlined in {{RFC5280}} applies to the certDiscovery access method. In order to avoid recursive certificate validations which involve online revocation checking, untrusted transport protocols (such as plaintext HTTP) are commonly used for serving certificate files. While the use of such protocols avoids issues with recursive certification path validations and associated online revocation checking, it also enables an attacker to tamper with data and perform substitution attacks. Applications retrieving certificates using the mechanism specified in this document MUST treat downloaded certificate data as untrusted and perform requisite checks to ensure that the downloaded data is not malicious.
+
+Typically, it is unsafe to use any content from a certificate that is expired, revoked, or whose signature cannot be validated. The `RelatedCertificateDescriptor` extension is an exception to this rule since it is intended to bridge across these exact types of failure scenarios and is merely making the application aware of the existence of a Referenced Certificate. Once retrieved, the Referenced Certificate SHOULD be validated independently as if it had been provided as the Current. That said, applications MAY refuse to retrieve URIs from an untrusted, or, to a lesser extent, revoked certificate. In most cases, a `RelatedCertificateDescriptor` URI asserted by the CA at issuance time will remain valid for the lifetime of the certificate, unless of course an incorrect URI is the reason for revocation, or the certificate was forged by a malicious actor for the explicit purpose of getting a victim application to fetch the malicious URI.
+
+This specification does not provide a mechanism for identifying the purpose of the cross-reference between certificates. The implied purpose is fallback redundancy. If the purpose is security-related, for example a pair of certificates are only to be used together in a two-certificate protocol, or their revocation status is intertwined as is the case when a signing certificate signs a Certificate Signing Request (CSR) for an encryption certificate, then the CA SHOULD add an additional extension or policy OID to the certificates to further constrain verifier handling.
+
+To enhance security, the URI SHOULD be cryptographically random and is RECOMMENDED to contain the certificate serial number, although care needs to be taken when publishing the related certificates asynchronously since publication of a first certificate containing the serial number of a not-yet-issued certificate could expose the second certificate to forgery attacks.
 
 # IANA Considerations
 
@@ -287,6 +286,7 @@ IANA is requested to add the following entry in the "SMI Security for PKIX Acces
 | Decimal | Description          | References |
 | ------- | -------------------- | ---------- |
 | TBD2    | id-ad-certDiscovery  | [this-RFC] |
+| TBD4    | id-ad-certDiscoverySelfLocation | [this-RFC] |
 
 ## Other Name Form
 
@@ -295,28 +295,6 @@ IANA is requested to add the following entry in the "SMI Security for PKIX Acces
 | Decimal | Description                        | References |
 | ------- | ---------------------------------- | ---------- |
 | TBD3    | id-on-relatedCertificateDescriptor | [this-RFC] |
-
-## Certificate Discovery Intent Identifiers
-
-To allocate id-rcd, this document introduces a new PKIX OID arc for certificate discovery intent identifiers:
-
-IANA is requested to add the following entry to "SMI Security for PKIX" registry, defined by [RFC 7299]:
-
-| Decimal | Description | References |
-| ------- | ----------- | ---------- |
-| TBD4    | Certificate Discovery Intent Identifier | [this-RFC] |
-
-IANA is requested to create the "Certificate Discovery Intent Identifiers" registry with the following initial values:
-
-| Decimal | Description          | References |
-| ------- | -------------------- | ---------- |
-| 1       | id-rcd-agility       | [this-RFC] |
-| 2       | id-rcd-redundanc     | [this-RFC] |
-| 3       | id-rcd-dual          | [this-RFC] |
-| 3       | id-rcd-priv-key-stmt | [this-RFC] |
-| 5       | id-rcd-self          | [this-RFC] |
-
-Updates to this table are to be made according to the Specification Required policy as defined in [RFC8126].
 
 --- back
 
@@ -368,7 +346,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD3 }
 
    -- Always encode as a GeneralName uniform resource identifier (URI)
-   id-ad-relatedCertificateSelfLocation OBJECT IDENTIFIER ::= { id-ad TBD4 }
+   id-ad-certDiscoverySelfLocation OBJECT IDENTIFIER ::= { id-ad TBD4 }
 
    on-RelatedCertificateDescriptor OTHER-NAME ::= {
       RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
@@ -387,13 +365,11 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    -- RelatedCertificate is defined in RFC 9763
 
    CertDiscoveryMethod ::= CHOICE {
-     byUri CertLocation,
+     byUri IA5String,
      byInclusion Certificate,
      byLocalPolicy NULL,
      byOther [0] INSTANCE OF OTHER-DISCOVERY-METHOD
    }
-
-   CertLocation ::= IA5String
 
    OTHER-DISCOVERY-METHOD ::= TYPE-IDENTIFIER
 
