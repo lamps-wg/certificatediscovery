@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-09-13T03:33:24.848630+00:00",
+  "timestamp": "2026-09-27T04:02:33.888200+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -1662,10 +1662,10 @@
       "labels": [],
       "body": "Still need to do the end-entity generator.",
       "createdAt": "2026-03-17T01:53:18Z",
-      "updatedAt": "2026-03-17T01:53:18Z",
+      "updatedAt": "2026-09-26T02:09:26Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
-      "baseRefOid": "b0fc7b2e3499bb13f0911a54a9a5dab3c1f2ff98",
+      "baseRefOid": "20a4bf8b9b9fd77b821394b63bc21027ce431b15",
       "headRepository": "lamps-wg/certificatediscovery",
       "headRefName": "more-ref-impl",
       "headRefOid": "7308c79c50545ef4b402e44ed8da8073a8f9cffe",
@@ -1778,6 +1778,154 @@
           "comments": []
         }
       ]
+    },
+    {
+      "number": 50,
+      "id": "PR_kwDOKkGlhc8AAAABE9io-Q",
+      "title": "Jg asn1 update",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/50",
+      "state": "MERGED",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Updated ASN.1 based on authors meeting.\r\n- Removed intent ID\r\n- added byOther extensibility\r\n- added back certHash by references RFC 9763\r\n- added self-reference at access descriptor",
+      "createdAt": "2026-09-24T15:41:09Z",
+      "updatedAt": "2026-09-24T19:53:21Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "9470991aefe20d2faf2141c45a9bd7bc117fb8c0",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "jg_asn1_update",
+      "headRefOid": "d42bceb2504b658d8bf6a1e4ea135c87948a8dba",
+      "closedAt": "2026-09-24T19:53:21Z",
+      "mergedAt": "2026-09-24T19:53:21Z",
+      "mergedBy": "johngray-dev",
+      "mergeCommit": {
+        "oid": "90997a66e9624cfce61dfe7283e1b5120d8b30d6"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABPFxaWw",
+          "commit": {
+            "abbreviatedOid": "65beb44"
+          },
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-24T17:06:32Z",
+          "updatedAt": "2026-09-24T17:06:32Z",
+          "comments": [
+            {
+              "originalPosition": 63,
+              "body": "```suggestion\n     byUri CertLocation,\n```\n\nTagging isn't needed anymore, because no other variant in the CHOICE is IA5String.",
+              "createdAt": "2026-09-24T17:06:32Z",
+              "updatedAt": "2026-09-24T17:06:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABPFx7rg",
+          "commit": {
+            "abbreviatedOid": "65beb44"
+          },
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-24T17:07:16Z",
+          "updatedAt": "2026-09-24T17:07:17Z",
+          "comments": [
+            {
+              "originalPosition": 67,
+              "body": "```suggestion\n     byLocalPolicy NULL,\n```\n\nTagging isn't needed, because no other variant is NULL.",
+              "createdAt": "2026-09-24T17:07:16Z",
+              "updatedAt": "2026-09-24T17:07:17Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABPFyTeQ",
+          "commit": {
+            "abbreviatedOid": "65beb44"
+          },
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-24T17:07:54Z",
+          "updatedAt": "2026-09-24T17:07:54Z",
+          "comments": [
+            {
+              "originalPosition": 66,
+              "body": "```suggestion\n     byInclusion Certificate,\n```\n\nTagging isn't necessary, because the only other variant that is a SEQUENCE (other) is already tagged.",
+              "createdAt": "2026-09-24T17:07:54Z",
+              "updatedAt": "2026-09-24T17:07:54Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABPFy6CQ",
+          "commit": {
+            "abbreviatedOid": "65beb44"
+          },
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-24T17:08:52Z",
+          "updatedAt": "2026-09-24T17:08:52Z",
+          "comments": [
+            {
+              "originalPosition": 29,
+              "body": "```suggestion\n   id-ad-relatedCertificateSelfLocation OBJECT IDENTIFIER ::= { id-ad TBD4 }\n```",
+              "createdAt": "2026-09-24T17:08:52Z",
+              "updatedAt": "2026-09-24T17:08:52Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABPHcb6w",
+          "commit": {
+            "abbreviatedOid": "d42bceb"
+          },
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-09-24T19:49:12Z",
+          "updatedAt": "2026-09-24T19:49:12Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 51,
+      "id": "PR_kwDOKkGlhc8AAAABFNM3Zg",
+      "title": "Overhaul / simplification of draft",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/51",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "Candidate email to LAMPS about these changes:\r\n\r\n---\r\n\r\nHi LAMPS,\r\n\r\nThis draft has been sitting for a while, largely because it's been confused about exactly what it's trying to accomplish. We think we finally have it; what it took was simplifying it down to the core use cases and adding an extensibility point!\r\n\r\nThe core ASN.1 is below.\r\n\r\nIf this version sits well with the WG, then we might be asking for WGLC.\r\n\r\n   RelatedCertificateDescriptor ::= SEQUENCE {\r\n     method CertDiscoveryMethod,\r\n     signatureAlgorithm [0] AlgorithmIdentifier OPTIONAL,\r\n     publicKeyAlgorithm [1] AlgorithmIdentifier OPTIONAL,\r\n     certHash [2] RelatedCertificate OPTIONAL\r\n   }\r\n\r\n   -- RelatedCertificate is defined in RFC 9763\r\n\r\n   CertDiscoveryMethod ::= CHOICE {\r\n     byUri CertLocation,\r\n     byInclusion Certificate,\r\n     byLocalPolicy NULL,\r\n     byOther [0] INSTANCE OF OTHER-DISCOVERY-METHOD\r\n   }\r\n\r\n   CertLocation ::= IA5String\r\n\r\n   OTHER-DISCOVERY-METHOD ::= TYPE-IDENTIFIER",
+      "createdAt": "2026-09-26T02:08:26Z",
+      "updatedAt": "2026-09-27T01:41:18Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "20a4bf8b9b9fd77b821394b63bc21027ce431b15",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "mikeo/massive-overhaul",
+      "headRefOid": "4164c2ab94fdaa1c02cc9ba3ff553f9f79849d24",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": []
     }
   ]
 }
