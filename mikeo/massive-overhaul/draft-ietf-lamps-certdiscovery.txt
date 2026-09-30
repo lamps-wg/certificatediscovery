@@ -1,0 +1,623 @@
+
+
+
+
+Network Working Group                                           T. Okubo
+Internet-Draft                              Penguin Securities Pte. Ltd.
+Intended status: Standards Track                              C. Bonnell
+Expires: 3 April 2027                                     DigiCert, Inc.
+                                                                 J. Gray
+                                                            M. Ounsworth
+                                                                 Entrust
+                                                               J. Mandel
+                                                            AKAYLA, Inc.
+                                                       30 September 2026
+
+
+              A Mechanism for X.509 Certificate Discovery
+                 draft-ietf-lamps-certdiscovery-latest
+
+Abstract
+
+   This document specifies a method to discover a referenced X.509
+   certificate associated with the current X.509 certificate.  This
+   enables efficient multi-certificate or fallback certificate handling
+   in protocols.  The objective is threefold: to enhance cryptographic
+   agility, improve operational availability, and accommodate multi-key/
+   certificate usage.  The proposed method aims to maximize
+   compatibility with existing systems and is designed to be legacy-
+   friendly, making it suitable for environments with a mix of legacy
+   and new implementations.  It includes mechanisms to provide a URI
+   from which the referenced X.509 certificate can be retrieved as well
+   as information about the target certificate's signature and public
+   key algorithm, empowering relying parties to make informed decisions
+   on whether to retrieve the Referenced Certificate, and a certificate
+   hash to ensure that the correct certificate was retrieved.
+
+About This Document
+
+   This note is to be removed before publishing as an RFC.
+
+   The latest revision of this draft can be found at https://lamps-
+   wg.github.io/certificatediscovery/draft-ietf-lamps-
+   certdiscovery.html.  Status information for this document may be
+   found at https://datatracker.ietf.org/doc/draft-ietf-lamps-
+   certdiscovery/.
+
+   Source for this draft and an issue tracker can be found at
+   https://github.com/lamps-wg/certificatediscovery.
+
+Status of This Memo
+
+   This Internet-Draft is submitted in full conformance with the
+   provisions of BCP 78 and BCP 79.
+
+   Internet-Drafts are working documents of the Internet Engineering
+   Task Force (IETF).  Note that other groups may also distribute
+   working documents as Internet-Drafts.  The list of current Internet-
+   Drafts is at https://datatracker.ietf.org/drafts/current/.
+
+   Internet-Drafts are draft documents valid for a maximum of six months
+   and may be updated, replaced, or obsoleted by other documents at any
+   time.  It is inappropriate to use Internet-Drafts as reference
+   material or to cite them other than as "work in progress."
+
+   This Internet-Draft will expire on 3 April 2027.
+
+Copyright Notice
+
+   Copyright (c) 2026 IETF Trust and the persons identified as the
+   document authors.  All rights reserved.
+
+   This document is subject to BCP 78 and the IETF Trust's Legal
+   Provisions Relating to IETF Documents (https://trustee.ietf.org/
+   license-info) in effect on the date of publication of this document.
+   Please review these documents carefully, as they describe your rights
+   and restrictions with respect to this document.  Code Components
+   extracted from this document must include Revised BSD License text as
+   described in Section 4.e of the Trust Legal Provisions and are
+   provided without warranty as described in the Revised BSD License.
+
+Table of Contents
+
+   1.  Introduction
+   2.  Conventions and Definitions
+     2.1.  Definitions
+   3.  Certificate Discovery Access Method
+     3.1.  CertDiscoveryMethod
+       3.1.1.  byUri
+       3.1.2.  byInclusion
+       3.1.3.  byLocalPolicy
+       3.1.4.  byOther
+     3.2.  Signature Algorithm and Public Key Algorithm fields
+     3.3.  certHash
+   4.  Certificate Discovery Self Location Access Method
+   5.  Expired, Revoked, or Untrusted Current Certificate
+   6.  Security Considerations
+   7.  IANA Considerations
+     7.1.  Module Identifier
+     7.2.  Access Descriptor
+     7.3.  Other Name Form
+   8.  Normative References
+   Acknowledgments
+   Appendix A.  ASN.1 Module
+   Authors' Addresses
+
+1.  Introduction
+
+   Cryptographic agility and fallback often feature prominently in
+   cryptographic migrations, whether it's migrating algorithms,
+   infrastructures, keys, or some other aspect.  Discovery is a key
+   aspect of agility -- in this case meaning that an application holding
+   an X.509 certificate for a peer can easily learn about and retrieve
+   alternative versions of the certificate they are holding, a space
+   that is under-served by existing X.509 extensions.  To address these
+   limitations, this document proposes a novel approach to certificate
+   discovery utilizing the Subject Information Access extension within
+   X.509 certificates.
+
+   The primary objective of this approach is to enable efficient multi-
+   certificate handling in protocols, offering several key benefits.
+   First, it enhances cryptographic agility by facilitating smooth
+   transitions between different algorithms or X.509 certificate types.
+   This is particularly valuable in scenarios where subscribers need to
+   upgrade their cryptographic algorithms or adopt new certificate types
+   while maintaining backward compatibility with existing systems.
+
+   Second, the proposed method improves operational availability by
+   introducing redundancy in certificate usage.  It enables the
+   automatic discovery and use of Referenced Certificates that can serve
+   as fallbacks, ensuring seamless continuity of services even in the
+   event of expiration or revocation of the Current Certificate, or
+   disruptions in the Certification Authority (CA) infrastructure.
+
+   Finally, the approach accommodates multi-key/certificate usage,
+   allowing for a CA to indicate that two (or more) certificates are to
+   be used together.
+
+   relying party to obtain certificates to perform cryptographic
+   operations that are not certified by a single certificate.
+
+   The proposed method is designed to maximize compatibility with
+   existing systems, including legacy implementations.  It leverages the
+   subjectInfoAccess extension, which is already established in X.509
+   certificates, and does not require modifications to the referring
+   certificates.  This ensures ease of adoption and avoids disruptions
+   to current certificate management practices.
+
+2.  Conventions and Definitions
+
+   The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT",
+   "SHOULD", "SHOULD NOT", "RECOMMENDED", "NOT RECOMMENDED", "MAY", and
+   "OPTIONAL" in this document are to be interpreted as described in
+   BCP 14 [RFC2119] [RFC8174] when, and only when, they appear in all
+   capitals, as shown here.
+
+2.1.  Definitions
+
+   For conciseness, this section defines several terms that are
+   frequently used throughout this specification.
+
+   Current Certificate: the X.509 certificate currently being validated,
+   which contains an subjectInfoAccess extension with the certDiscovery
+   accessMethod pointing to a Referenced Certificate, and may also
+   contain a certDiscoverySelfLocation URI referencing itself.
+
+   Referenced Certificate: The X.509 certificate that is referenced by
+   the Current Certificate in the subjectInfoAccess extension
+   certDiscovery accessMethod.
+
+3.  Certificate Discovery Access Method
+
+   This document specifies the new certDiscovery access method for X.509
+   Subject Information Access (SIA) extension defined in [RFC5280].
+
+   The syntax of subject information access extension syntax is repeated
+   here for convenience:
+
+   SubjectInfoAccessSyntax  ::=
+            SEQUENCE SIZE (1..MAX) OF AccessDescription
+
+   AccessDescription  ::=  SEQUENCE {
+            accessMethod          OBJECT IDENTIFIER,
+            accessLocation        GeneralName  }
+
+   This document defines a new SubjectInfoAccessSyntax access method id-
+   ad-certDiscovery which is an OBJECT IDENTIFIER that indicates the
+   accessMethod is for carrying a certificate discovery description of a
+   Referenced Certificate.
+
+   id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
+
+   The 'accessLocation' is a GeneralName otherName type as defined in
+   [RFC5280].  Recall that the otherName type is defined as AnotherName:
+
+   AnotherName ::= SEQUENCE {
+        type-id    OBJECT IDENTIFIER,
+        value      [0] EXPLICIT ANY DEFINED BY type-id }
+
+   This document defines the RelatedCertificateDescriptor type and its
+   corresponding identifier as follows:
+
+-- Other Name OID Arc --
+id-on OBJECT IDENTIFIER ::= { id-pkix 8 }
+
+-- Certificate Discovery Access Descriptor --
+id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD }
+
+on-RelatedCertificateDescriptor OTHER-NAME ::= {
+      RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
+   }
+
+   When the accessMethod has a value of id-ad-certDiscovery, then the
+   accessLocation MUST contain an otherName whose type-id is id-on-
+   relatedCertificateDescriptor and the value is
+   RelatedCertificateDescriptor.
+
+   RelatedCertificateDescriptor is defined as follows:
+
+   RelatedCertificateDescriptor ::= SEQUENCE {
+      method CertDiscoveryMethod,
+      signatureAlgorithm [0] AlgorithmIdentifier OPTIONAL,
+      publicKeyAlgorithm [1] AlgorithmIdentifier OPTIONAL,
+      certHash [2] RelatedCertificate OPTIONAL
+   }
+
+   A certificate MAY have any number of RelatedCertificateDescriptor SIA
+   AccessDescriptions.
+
+   Each component of the RelatedCertificateDescriptor is defined below.
+
+3.1.  CertDiscoveryMethod
+
+   CertDiscoveryMethod describes the method by which the Referenced
+   Certificate can be retrieved.
+
+   CertDiscoveryMethod is defined by the following:
+
+   CertDiscoveryMethod ::= CHOICE {
+      byUri IA5String,
+      byInclusion Certificate,
+      byLocalPolicy NULL,
+      byOther [0] INSTANCE OF OTHER-DISCOVERY-METHOD
+   }
+
+   Depending on the method used, the other optional elements of
+   RelatedCertificateDescriptor can become either mandatory,
+   recommended, or forbidden.
+
+3.1.1.  byUri
+
+   The byUri method MUST provide a URI formatted according to [!RFC3986]
+   from which the Referenced Certificate can be retrieved.
+
+   When the CertDiscoveryMethod is byUri, the fields signatureAlgorithm,
+   publicKeyAlgorithm, and certHash SHOULD be populated as described
+   below so that an application can decide if the Referenced Certificate
+   is likely to be useful before performing the retrieval.  After
+   performing the retrieval, the application MUST check that the
+   populated signatureAlgorithm, publicKeyAlgorithm, and certHash match
+   the retrieved certificate; if any do not match then the retrieval
+   MUST be considered to have failed.
+
+   Note that two (or more) certificates can reference each other in
+   cases where the URIs are pre-allocated prior to certificate issuance,
+   and the certificates to be issued as a batch.
+
+   To enhance security, the URI SHOULD be cryptographically random and
+   is RECOMMENDED to contain the certificate serial number, although
+   care needs to be taken when publishing the related certificates
+   asynchronously since publication of a first certificate containing
+   the serial number of a not-yet-issued certificate could expose the
+   second certificate to forgery attacks.
+
+3.1.2.  byInclusion
+
+   The byInclusion method encodes the DER encoding of the Referenced
+   Certificate directly into the Current Certificate.  The Referenced
+   Certificate MAY be extract and used directly as a standalone
+   certificate.
+
+   When the CertDiscoveryMethod is byInclusion, the fields
+   signatureAlgorithm, publicKeyAlgorithm, and certHash MUST NOT be
+   populated since the content is already present and would be
+   redundant.
+
+3.1.3.  byLocalPolicy
+
+   The byLocalPolicy method signals that the related certificate is
+   available in a repository that is available to the application
+   according to its local policy.  The details of this method are
+   deliberately left out-of-scope.
+
+   When the CertDiscoveryMethod is byLocalPolicy, at least one of the
+   fields signatureAlgorithm, publicKeyAlgorithm, or certHash MUST be
+   populated.  The application MUST check that the populated
+   signatureAlgorithm, publicKeyAlgorithm, and certHash match the
+   retrieved certificate; if any do not match then the retrieval MUST be
+   considered to have failed.
+
+3.1.4.  byOther
+
+   The byOther method acts as an extensibility point for adding
+   additional methods in the future.  A new byOther method MUST by
+   accompanied by a specification of its wire format and interaction
+   with the signatureAlgorithm, publicKeyAlgorithm, and certHash fields
+   of RelatedCertificateDescriptor.
+
+3.2.  Signature Algorithm and Public Key Algorithm fields
+
+   The signatureAlgorithm and publicKeyAlgorithm is to allow an
+   application that has rejected the Current Certificate because either
+   the signature or public key algorithm is unrecognized or violates its
+   policy to instead retrieve an acceptable Referenced Certificate.
+
+   If present, the signatureAlgorithm MUST match the signatureAlgorithm
+   field in the Referenced Certificate.
+
+   If present, the publicKeyAlgorithm MUST match the
+   subjectPublicKeyInfo.algorithm field in the Referenced Certificate.
+
+3.3.  certHash
+
+   The certHash field is intended primarily as a lookup value for
+   finding the referenced certificate in a repository indexed by
+   certificate hash.  When present, it SHOULD also be used to confirm
+   that the correct certificate was retrieved by hashing the retrieved
+   certificate and comparing the hash value.  However, it SHOULD NOT be
+   considered a security mechanism because, by itself, it does not
+   convey any intention about why or for what purpose the two
+   certificates are related.
+
+   The certHash field uses the RelatedCertificate structure, which is
+   defined in [!RFC9763] and simply contains the hash of a certificate.
+   Recall its definition:
+
+   RelatedCertificate ::= SEQUENCE {
+     hashAlgorithm DigestAlgorithmIdentifier,
+     hashValue     OCTET STRING }
+
+   Its semantics mirror those specified in [!RFC9763], repeated here for
+   convenience.
+
+   The hashAlgorithm field identifies the hash algorithm used to compute
+   hashValue, which is the digest value obtained from hashing the entire
+   Referenced Certificate.  If there is a hash algorithm explicitly
+   indicated by the related certificate's signature OID (e.g., ecdsa-
+   with-SHA512), that hash algorithm SHOULD also be used here.
+
+   Note that, unlike the byUri method, it is not possible to bi-
+   directionally link two (or more) certificates via the certHash field.
+
+4.  Certificate Discovery Self Location Access Method
+
+   This document defines a new SubjectInfoAccessSyntax access method id-
+   ad-certDiscoverySelfLocation which is an OBJECT IDENTIFIER that
+   indicates the accessMethod is for carrying a certificate discovery
+   self-reference.  In other words, a certificate MAY carry its own URI
+   as a way to further enhance discoverability and validate that the
+   correct certificate was retrieved.
+
+   id-ad-certDiscoverySelfLocation OBJECT IDENTIFIER ::= { id-ad TBD4 }
+
+   The SubjectInfoAccessSyntax AccessDescription accessLocation MUST
+   carry a GeneralName uniformResourceIdentifier.
+
+   This access method indicates the URI [!RFC3986] where the Current
+   Certificate is located.  Applications which have retrieved this
+   certificate using a byUri method SHOULD extract this value from the
+   retrieved certificate confirm that the correct certificate was
+   retrieved.
+
+   A certificate MAY have any number of certDiscoverySelfLocation SIA
+   AccessDescriptions.
+
+5.  Expired, Revoked, or Untrusted Current Certificate
+
+   In the case that the Current Certificate is unusable, for example
+   because it is expired, revoked, does not chain to a trusted root, or
+   for any other reason, the application MAY still follow the
+   RelatedCertificateDescriptor to see if this yields a valid and usable
+   certificate.
+
+   This provides great flexibility in error-recovery scenarios.  In
+   addition, this will allow for more pro-active migration to new
+   infrastructures, knowing that applications will be able to follow
+   RelatedCertificateDescriptors to their preferred version of the
+   certificate.
+
+   Since this is merely a mechanism for discovering the existence of the
+   Referenced Certificate, doing so from an untrusted certificate does
+   not pose security issues.
+
+6.  Security Considerations
+
+   Retrieval of the Referenced Certificate is not sufficient to consider
+   the Referenced Certificate trustworthy.  The certification path
+   validation algorithm as defined in section 6 of [RFC5280] MUST be
+   performed for the Referenced Certificate.  A reference from a
+   RelatedCertificateDescriptor, even in the presence of a certHash does
+   not imply any form of endorsement or hierarchical relationship
+   between the two certificates unless the mechanism in this draft is
+   augmented with additional X.509v3 extensions or policies that specify
+   those semantics.
+
+   The use of the self-reference can be used to provide a subject
+   binding between the Current and Referenced Certificates even if their
+   other data such as subject name or public key do not match.  However,
+   the procedure for validating subject equivalence MUST be defined by
+   policy and be consistent with the policies of the issuing CA.  As a
+   result, validation of subject equivalence is out of scope of this
+   document.
+
+   The Referenced Certificate may also have a certDiscovery access
+   method.  In order to avoid cyclic loops or infinite chaining, leading
+   to denial-of-service scenarios, the validator SHOULD employ a maximum
+   depth or cycle-detection algorithm.
+
+   The same security considerations for caIssuers access method outlined
+   in [RFC5280] applies to the certDiscovery access method.  In order to
+   avoid recursive certificate validations which involve online
+   revocation checking, untrusted transport protocols (such as plaintext
+   HTTP) are commonly used for serving certificate files.  While the use
+   of such protocols avoids issues with recursive certification path
+   validations and associated online revocation checking, it also
+   enables an attacker to tamper with data and perform substitution
+   attacks.  Applications retrieving certificates using the mechanism
+   specified in this document MUST treat downloaded certificate data as
+   untrusted and perform requisite checks to ensure that the downloaded
+   data is not malicious.
+
+   Typically, it is unsafe to use any content from a certificate that is
+   expired, revoked, or whose signature cannot be validated.  The
+   RelatedCertificateDescriptor extension is an exception to this rule
+   since it is intended to bridge across these exact types of failure
+   scenarios and is merely making the application aware of the existence
+   of a Referenced Certificate.  Once retrieved, the Referenced
+   Certificate SHOULD be validated independently as if it had been
+   provided as the Current.  That said, applications MAY refuse to
+   retrieve URIs from an untrusted, or, to a lesser extent, revoked
+   certificate.  In most cases, a RelatedCertificateDescriptor URI
+   asserted by the CA at issuance time will remain valid for the
+   lifetime of the certificate, unless of course an incorrect URI is the
+   reason for revocation, or the certificate was forged by a malicious
+   actor for the explicit purpose of getting a victim application to
+   fetch the malicious URI.
+
+   This specification does not provide a mechanism for identifying the
+   purpose of the cross-reference between certificates.  The implied
+   purpose is fallback redundancy.  If the purpose is security-related,
+   for example a pair of certificates are only to be used together in a
+   two-certificate protocol, or their revocation status is intertwined
+   as is the case when a signing certificate signs a Certificate Signing
+   Request (CSR) for an encryption certificate, then the CA SHOULD add
+   an additional extension or policy OID to the certificates to further
+   constrain verifier handling.
+
+   To enhance security, the URI SHOULD be cryptographically random and
+   is RECOMMENDED to contain the certificate serial number, although
+   care needs to be taken when publishing the related certificates
+   asynchronously since publication of a first certificate containing
+   the serial number of a not-yet-issued certificate could expose the
+   second certificate to forgery attacks.
+
+7.  IANA Considerations
+
+7.1.  Module Identifier
+
+   IANA is requested to add the following entry in the "SMI Security for
+   PKIX Module Identifier" registry, defined by [RFC7299]:
+
+              +=========+======================+============+
+              | Decimal | Description          | References |
+              +=========+======================+============+
+              | TBD1    | id-mod-CertDiscovery | [this-RFC] |
+              +---------+----------------------+------------+
+
+                                  Table 1
+
+7.2.  Access Descriptor
+
+   IANA is requested to add the following entry in the "SMI Security for
+   PKIX Access Descriptor" registry, defined by [RFC7299]:
+
+        +=========+=================================+============+
+        | Decimal | Description                     | References |
+        +=========+=================================+============+
+        | TBD2    | id-ad-certDiscovery             | [this-RFC] |
+        +---------+---------------------------------+------------+
+        | TBD4    | id-ad-certDiscoverySelfLocation | [this-RFC] |
+        +---------+---------------------------------+------------+
+
+                                 Table 2
+
+7.3.  Other Name Form
+
+   IANA is requested to add the following entry in the "SMI Security for
+   PKIX Access Descriptor" registry, defined by [RFC7299]:
+
+       +=========+====================================+============+
+       | Decimal | Description                        | References |
+       +=========+====================================+============+
+       | TBD3    | id-on-relatedCertificateDescriptor | [this-RFC] |
+       +---------+------------------------------------+------------+
+
+                                  Table 3
+
+8.  Normative References
+
+   [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
+              Requirement Levels", BCP 14, RFC 2119,
+              DOI 10.17487/RFC2119, March 1997,
+              <https://www.rfc-editor.org/rfc/rfc2119>.
+
+   [RFC5280]  Cooper, D., Santesson, S., Farrell, S., Boeyen, S.,
+              Housley, R., and W. Polk, "Internet X.509 Public Key
+              Infrastructure Certificate and Certificate Revocation List
+              (CRL) Profile", RFC 5280, DOI 10.17487/RFC5280, May 2008,
+              <https://www.rfc-editor.org/rfc/rfc5280>.
+
+   [RFC8174]  Leiba, B., "Ambiguity of Uppercase vs Lowercase in RFC
+              2119 Key Words", BCP 14, RFC 8174, DOI 10.17487/RFC8174,
+              May 2017, <https://www.rfc-editor.org/rfc/rfc8174>.
+
+Acknowledgments
+
+   TODO acknowledge.
+
+Appendix A.  ASN.1 Module
+
+   The following ASN.1 module provides the complete definition of the
+   Certificate Discovery access descriptor.
+
+CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
+   security(5) mechanisms(5) pkix(7) id-mod(0) id-mod-CertDiscovery(TBD) }
+
+   DEFINITIONS EXPLICIT TAGS ::=
+
+   BEGIN
+
+   -- EXPORTS ALL --
+
+   IMPORTS
+    OTHER-NAME, AlgorithmIdentifier, Certificate
+    FROM PKIX1Implicit-2009
+      { iso(1) identified-organization(3) dod(6) internet(1) security(5)
+      mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-implicit-02(59) }
+
+    id-pkix, id-ad
+    FROM PKIX1Explicit-2009
+      { iso(1) identified-organization(3) dod(6) internet(1) security(5)
+      mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-explicit-02(51) }
+
+    RelatedCertificate
+    FROM RelatedCertificate
+      { iso(1) identified-organization(3) dod(6)
+       internet(1) security(5) mechanisms(5) pkix(7) id-mod(0)
+     id-mod-related-cert-2023(115)} ;
+
+   id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD2 }
+
+   -- Other Name OID Arc --
+
+   id-on OBJECT IDENTIFIER ::= { id-pkix 8 }
+
+   -- Certificate Discovery Access Descriptor --
+
+   id-on-relatedCertificateDescriptor OBJECT IDENTIFIER ::= { id-on TBD3 }
+
+   -- Always encode as a GeneralName uniform resource identifier (URI)
+   id-ad-certDiscoverySelfLocation OBJECT IDENTIFIER ::= { id-ad TBD4 }
+
+   on-RelatedCertificateDescriptor OTHER-NAME ::= {
+      RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
+   }
+
+   id-rcd OBJECT IDENTIFIER ::= { iso(1) identified-organization(3) dod(6) internet(1) security(5)
+      mechanisms(5) pkix(7) id-rcd(60) }
+
+   RelatedCertificateDescriptor ::= SEQUENCE {
+     method CertDiscoveryMethod,
+     signatureAlgorithm [0] AlgorithmIdentifier OPTIONAL,
+     publicKeyAlgorithm [1] AlgorithmIdentifier OPTIONAL,
+     certHash [2] RelatedCertificate OPTIONAL
+   }
+
+   -- RelatedCertificate is defined in RFC 9763
+
+   CertDiscoveryMethod ::= CHOICE {
+     byUri IA5String,
+     byInclusion Certificate,
+     byLocalPolicy NULL,
+     byOther [0] INSTANCE OF OTHER-DISCOVERY-METHOD
+   }
+
+   OTHER-DISCOVERY-METHOD ::= TYPE-IDENTIFIER
+
+   END
+
+Authors' Addresses
+
+   Tomofumi Okubo
+   Penguin Securities Pte. Ltd.
+   Email: tomofumi.okubo+ietf@gmail.com
+
+
+   Corey Bonnell
+   DigiCert, Inc.
+   Email: corey.bonnell@digicert.com
+
+
+   John Gray
+   Entrust
+   Email: john.gray@entrust.com
+
+
+   Mike Ounsworth
+   Entrust
+   Email: mike.ounsworth@entrust.com
+
+
+   Joe Mandel
+   AKAYLA, Inc.
+   Email: joe@akayla.com
