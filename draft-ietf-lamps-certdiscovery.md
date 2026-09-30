@@ -154,7 +154,7 @@ Each component of the `RelatedCertificateDescriptor` is defined below.
 ## CertDiscoveryMethod
 
 `CertDiscoveryMethod` describes the method by which the Referenced Certificate
-can be retrieved. 
+can be retrieved.
 
 `CertDiscoveryMethod` is defined by the following:
 
@@ -196,7 +196,7 @@ The application MUST check that the populated `signatureAlgorithm`, `publicKeyAl
 ### byOther
 
 The `byOther` method acts as an extensibility point for adding additional methods in the future.
-A new `byOther` method MUST by accompanied by a specification of its wire format and interaction 
+A new `byOther` method MUST by accompanied by a specification of its wire format and interaction
 with the `signatureAlgorithm`, `publicKeyAlgorithm`, and `certHash` fields of `RelatedCertificateDescriptor`.
 
 ## Signature Algorithm and Public Key Algorithm fields
