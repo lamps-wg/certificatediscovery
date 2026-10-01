@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-09-27T04:02:33.888200+00:00",
+  "timestamp": "2026-10-01T04:32:14.249489+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -1913,19 +1913,114 @@
       "labels": [],
       "body": "Candidate email to LAMPS about these changes:\r\n\r\n---\r\n\r\nHi LAMPS,\r\n\r\nThis draft has been sitting for a while, largely because it's been confused about exactly what it's trying to accomplish. We think we finally have it; what it took was simplifying it down to the core use cases and adding an extensibility point!\r\n\r\nThe core ASN.1 is below.\r\n\r\nIf this version sits well with the WG, then we might be asking for WGLC.\r\n\r\n   RelatedCertificateDescriptor ::= SEQUENCE {\r\n     method CertDiscoveryMethod,\r\n     signatureAlgorithm [0] AlgorithmIdentifier OPTIONAL,\r\n     publicKeyAlgorithm [1] AlgorithmIdentifier OPTIONAL,\r\n     certHash [2] RelatedCertificate OPTIONAL\r\n   }\r\n\r\n   -- RelatedCertificate is defined in RFC 9763\r\n\r\n   CertDiscoveryMethod ::= CHOICE {\r\n     byUri CertLocation,\r\n     byInclusion Certificate,\r\n     byLocalPolicy NULL,\r\n     byOther [0] INSTANCE OF OTHER-DISCOVERY-METHOD\r\n   }\r\n\r\n   CertLocation ::= IA5String\r\n\r\n   OTHER-DISCOVERY-METHOD ::= TYPE-IDENTIFIER",
       "createdAt": "2026-09-26T02:08:26Z",
-      "updatedAt": "2026-09-27T01:41:18Z",
+      "updatedAt": "2026-09-30T14:22:10Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "20a4bf8b9b9fd77b821394b63bc21027ce431b15",
       "headRepository": "lamps-wg/certificatediscovery",
       "headRefName": "mikeo/massive-overhaul",
-      "headRefOid": "4164c2ab94fdaa1c02cc9ba3ff553f9f79849d24",
+      "headRefOid": "0f3fbbbceeec1923917ab4bc8c9bc87426af0907",
       "closedAt": null,
       "mergedAt": null,
       "mergedBy": null,
       "mergeCommit": null,
       "comments": [],
-      "reviews": []
+      "reviews": [
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABP-i3kA",
+          "commit": {
+            "abbreviatedOid": "4164c2a"
+          },
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-30T13:56:50Z",
+          "updatedAt": "2026-09-30T13:57:15Z",
+          "comments": [
+            {
+              "originalPosition": 113,
+              "body": "```suggestion\ncan be retrieved.\n```",
+              "createdAt": "2026-09-30T13:56:50Z",
+              "updatedAt": "2026-09-30T13:57:15Z"
+            },
+            {
+              "originalPosition": 182,
+              "body": "```suggestion\nA new `byOther` method MUST by accompanied by a specification of its wire format and interaction\n```",
+              "createdAt": "2026-09-30T13:57:05Z",
+              "updatedAt": "2026-09-30T13:57:15Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABP-kkng",
+          "commit": {
+            "abbreviatedOid": "0f3fbbb"
+          },
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-09-30T13:59:08Z",
+          "updatedAt": "2026-09-30T14:22:09Z",
+          "comments": [
+            {
+              "originalPosition": 45,
+              "body": "I think this line is errant and can be removed.",
+              "createdAt": "2026-09-30T13:59:09Z",
+              "updatedAt": "2026-09-30T14:22:09Z"
+            },
+            {
+              "originalPosition": 142,
+              "body": "```suggestion\nWhen the `CertDiscoveryMethod` is `byUri`, the fields `signatureAlgorithm` and `publicKeyAlgorithm` SHOULD be populated as described below so that an application can decide if the Referenced Certificate is likely to be useful before performing the retrieval. `certHash` MAY be populated. After performing the retrieval, the application MUST check that the populated `signatureAlgorithm`, `publicKeyAlgorithm`, and `certHash` match the retrieved certificate; if any do not match then the retrieval MUST be considered to have failed.\n```\n\nIt seemed weird to say that the hash is useful in determining suitability of downloading the Referenced certificate, because it can't directly do that.",
+              "createdAt": "2026-09-30T14:12:33Z",
+              "updatedAt": "2026-09-30T14:22:09Z"
+            },
+            {
+              "originalPosition": 150,
+              "body": "```suggestion\nTo enhance security, the URI SHOULD be cryptographically random and is RECOMMENDED to contain the certificate serial number and an identifier for the issuing CA, although care needs to be taken when publishing the related certificates asynchronously since publication of a first certificate containing the serial number of a not-yet-issued certificate could expose the second certificate to forgery attacks.\n```",
+              "createdAt": "2026-09-30T14:13:46Z",
+              "updatedAt": "2026-09-30T14:22:09Z"
+            },
+            {
+              "originalPosition": 150,
+              "body": "Need an issuer ID to make globally unique (within a PKI).",
+              "createdAt": "2026-09-30T14:14:02Z",
+              "updatedAt": "2026-09-30T14:22:09Z"
+            },
+            {
+              "originalPosition": 156,
+              "body": "```suggestion\nThe `byInclusion` method encodes the DER encoding of the Referenced Certificate directly into the Current Certificate. The Referenced Certificate MAY be extracted and used directly as a standalone certificate.\n```",
+              "createdAt": "2026-09-30T14:14:24Z",
+              "updatedAt": "2026-09-30T14:22:09Z"
+            },
+            {
+              "originalPosition": 172,
+              "body": "I'm wondering if MUST is too strong. If I have a trusted repository that is keyed based on subject DN, all three of those fields are redundant.\n\nI'm thinking a SHOULD, but... would be more appropriate here.",
+              "createdAt": "2026-09-30T14:16:00Z",
+              "updatedAt": "2026-09-30T14:22:09Z"
+            },
+            {
+              "originalPosition": 271,
+              "body": "```suggestion\nTypically, it is unsafe to use any content from a certificate that is expired, revoked, or whose signature cannot be validated. The `RelatedCertificateDescriptor` extension is an exception to this rule since it is intended to bridge across these exact types of failure scenarios and is merely making the application aware of the existence of a Referenced Certificate. Once retrieved, the Referenced Certificate SHOULD be validated independently as if it had been provided as the Current Certificate. However, applications MAY refuse to retrieve URIs from an untrusted, or, to a lesser extent, revoked certificate. In most cases, a `RelatedCertificateDescriptor` URI asserted by the CA at issuance time will remain valid for the lifetime of the certificate, unless an incorrect URI is the reason for revocation, or the certificate was forged by a malicious actor for the explicit purpose of getting a victim application to fetch the malicious URI.\n```",
+              "createdAt": "2026-09-30T14:19:21Z",
+              "updatedAt": "2026-09-30T14:22:09Z"
+            },
+            {
+              "originalPosition": 276,
+              "body": "```suggestion\nTo enhance security, the URI SHOULD be cryptographically random and is RECOMMENDED to contain the certificate serial number and an identifier for the issuing CA, although care needs to be taken when publishing the related certificates asynchronously since publication of a first certificate containing the serial number of a not-yet-issued certificate could expose the second certificate to forgery attacks.\n```",
+              "createdAt": "2026-09-30T14:20:32Z",
+              "updatedAt": "2026-09-30T14:22:09Z"
+            },
+            {
+              "originalPosition": 150,
+              "body": "I'm not sure if this is security relevant, because discovery is not a security mechanism.",
+              "createdAt": "2026-09-30T14:21:25Z",
+              "updatedAt": "2026-09-30T14:22:09Z"
+            }
+          ]
+        }
+      ]
     }
   ]
 }
