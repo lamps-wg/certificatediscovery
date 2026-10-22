@@ -5,13 +5,13 @@
 Network Working Group                                           T. Okubo
 Internet-Draft                              Penguin Securities Pte. Ltd.
 Intended status: Standards Track                              C. Bonnell
-Expires: 3 April 2027                                     DigiCert, Inc.
+Expires: 25 April 2027                                    DigiCert, Inc.
                                                                  J. Gray
                                                             M. Ounsworth
                                                                  Entrust
                                                                J. Mandel
                                                             AKAYLA, Inc.
-                                                       30 September 2026
+                                                         22 October 2026
 
 
               A Mechanism for X.509 Certificate Discovery
@@ -62,7 +62,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 3 April 2027.
+   This Internet-Draft will expire on 25 April 2027.
 
 Copyright Notice
 
@@ -251,11 +251,11 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    The byUri method MUST provide a URI formatted according to [!RFC3986]
    from which the Referenced Certificate can be retrieved.
 
-   When the CertDiscoveryMethod is byUri, the fields signatureAlgorithm,
-   publicKeyAlgorithm, and certHash SHOULD be populated as described
-   below so that an application can decide if the Referenced Certificate
-   is likely to be useful before performing the retrieval.  After
-   performing the retrieval, the application MUST check that the
+   When the CertDiscoveryMethod is byUri, the fields signatureAlgorithm
+   and publicKeyAlgorithm SHOULD be populated as described below so that
+   an application can decide if the Referenced Certificate is likely to
+   be useful before performing the retrieval. certHash MAY be populated.
+   After performing the retrieval, the application MUST check that the
    populated signatureAlgorithm, publicKeyAlgorithm, and certHash match
    the retrieved certificate; if any do not match then the retrieval
    MUST be considered to have failed.
@@ -275,7 +275,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 
    The byInclusion method encodes the DER encoding of the Referenced
    Certificate directly into the Current Certificate.  The Referenced
-   Certificate MAY be extract and used directly as a standalone
+   Certificate MAY be extracted and used directly as a standalone
    certificate.
 
    When the CertDiscoveryMethod is byInclusion, the fields
@@ -435,14 +435,14 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    scenarios and is merely making the application aware of the existence
    of a Referenced Certificate.  Once retrieved, the Referenced
    Certificate SHOULD be validated independently as if it had been
-   provided as the Current.  That said, applications MAY refuse to
-   retrieve URIs from an untrusted, or, to a lesser extent, revoked
-   certificate.  In most cases, a RelatedCertificateDescriptor URI
-   asserted by the CA at issuance time will remain valid for the
-   lifetime of the certificate, unless of course an incorrect URI is the
-   reason for revocation, or the certificate was forged by a malicious
-   actor for the explicit purpose of getting a victim application to
-   fetch the malicious URI.
+   provided as the Current Certificate.  However, applications MAY
+   refuse to retrieve URIs from an untrusted, or, to a lesser extent,
+   revoked certificate.  In most cases, a RelatedCertificateDescriptor
+   URI asserted by the CA at issuance time will remain valid for the
+   lifetime of the certificate, unless an incorrect URI is the reason
+   for revocation, or the certificate was forged by a malicious actor
+   for the explicit purpose of getting a victim application to fetch the
+   malicious URI.
 
    This specification does not provide a mechanism for identifying the
    purpose of the cross-reference between certificates.  The implied

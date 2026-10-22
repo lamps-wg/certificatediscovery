@@ -20,18 +20,18 @@
 <meta content="draft-ietf-lamps-certdiscovery-latest" name="ietf.draft">
 <!-- Generator version information:
   xml2rfc 3.34.1
-    Python 3.14.7
-    ConfigArgParse 1.7.7
+    Python 3.14.8
+    ConfigArgParse 1.8.0
     google-i18n-address 3.1.1
     intervaltree 3.2.1
     Jinja2 3.1.6
     lxml 6.1.1
     natsort 8.4.0
-    platformdirs 4.11.10
+    platformdirs 4.13.4
     pycountry 24.6.1
     PyYAML 6.0.3
     requests 2.33.1
-    wcwidth 0.8.4
+    wcwidth 0.9.2
 -->
 <link href="draft-ietf-lamps-certdiscovery.xml" rel="alternate" type="application/rfc+xml">
 <link href="#copyright" rel="license">
@@ -1047,11 +1047,11 @@ svg {
 <thead><tr>
 <td class="left">Internet-Draft</td>
 <td class="center">TODO - Abbreviation</td>
-<td class="right">September 2026</td>
+<td class="right">October 2026</td>
 </tr></thead>
 <tfoot><tr>
 <td class="left">Okubo, et al.</td>
-<td class="center">Expires 3 April 2027</td>
+<td class="center">Expires 25 April 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1064,12 +1064,12 @@ svg {
 <dd class="internet-draft">draft-ietf-lamps-certdiscovery-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-09-30" class="published">30 September 2026</time>
+<time datetime="2026-10-22" class="published">22 October 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-04-03">3 April 2027</time></dd>
+<dd class="expires"><time datetime="2027-04-25">25 April 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1130,7 +1130,7 @@ svg {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 3 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 25 April 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1356,7 +1356,7 @@ can become either mandatory, recommended, or forbidden.<a href="#section-3.1-4" 
 <a href="#section-3.1.1" class="section-number selfRef">3.1.1. </a><a href="#name-byuri" class="section-name selfRef">byUri</a>
           </h4>
 <p id="section-3.1.1-1">The <code>byUri</code> method <span class="bcp14">MUST</span> provide a URI formatted according to [!RFC3986] from which the Referenced Certificate can be retrieved.<a href="#section-3.1.1-1" class="pilcrow">¶</a></p>
-<p id="section-3.1.1-2">When the <code>CertDiscoveryMethod</code> is <code>byUri</code>, the fields <code>signatureAlgorithm</code>, <code>publicKeyAlgorithm</code>, and <code>certHash</code> <span class="bcp14">SHOULD</span> be populated as described below so that an application can decide if the Referenced Certificate is likely to be useful before performing the retrieval. After performing the retrieval, the application <span class="bcp14">MUST</span> check that the populated <code>signatureAlgorithm</code>, <code>publicKeyAlgorithm</code>, and <code>certHash</code> match the retrieved certificate; if any do not match then the retrieval <span class="bcp14">MUST</span> be considered to have failed.<a href="#section-3.1.1-2" class="pilcrow">¶</a></p>
+<p id="section-3.1.1-2">When the <code>CertDiscoveryMethod</code> is <code>byUri</code>, the fields <code>signatureAlgorithm</code> and <code>publicKeyAlgorithm</code> <span class="bcp14">SHOULD</span> be populated as described below so that an application can decide if the Referenced Certificate is likely to be useful before performing the retrieval. <code>certHash</code> <span class="bcp14">MAY</span> be populated. After performing the retrieval, the application <span class="bcp14">MUST</span> check that the populated <code>signatureAlgorithm</code>, <code>publicKeyAlgorithm</code>, and <code>certHash</code> match the retrieved certificate; if any do not match then the retrieval <span class="bcp14">MUST</span> be considered to have failed.<a href="#section-3.1.1-2" class="pilcrow">¶</a></p>
 <p id="section-3.1.1-3">Note that two (or more) certificates can reference each other in cases where the URIs are pre-allocated prior to certificate issuance, and the certificates to be issued as a batch.<a href="#section-3.1.1-3" class="pilcrow">¶</a></p>
 <p id="section-3.1.1-4">To enhance security, the URI <span class="bcp14">SHOULD</span> be cryptographically random and is <span class="bcp14">RECOMMENDED</span> to contain the certificate serial number, although care needs to be taken when publishing the related certificates asynchronously since publication of a first certificate containing the serial number of a not-yet-issued certificate could expose the second certificate to forgery attacks.<a href="#section-3.1.1-4" class="pilcrow">¶</a></p>
 </section>
@@ -1366,7 +1366,7 @@ can become either mandatory, recommended, or forbidden.<a href="#section-3.1-4" 
           <h4 id="name-byinclusion">
 <a href="#section-3.1.2" class="section-number selfRef">3.1.2. </a><a href="#name-byinclusion" class="section-name selfRef">byInclusion</a>
           </h4>
-<p id="section-3.1.2-1">The <code>byInclusion</code> method encodes the DER encoding of the Referenced Certificate directly into the Current Certificate. The Referenced Certificate <span class="bcp14">MAY</span> be extract and used directly as a standalone certificate.<a href="#section-3.1.2-1" class="pilcrow">¶</a></p>
+<p id="section-3.1.2-1">The <code>byInclusion</code> method encodes the DER encoding of the Referenced Certificate directly into the Current Certificate. The Referenced Certificate <span class="bcp14">MAY</span> be extracted and used directly as a standalone certificate.<a href="#section-3.1.2-1" class="pilcrow">¶</a></p>
 <p id="section-3.1.2-2">When the <code>CertDiscoveryMethod</code> is <code>byInclusion</code>, the fields <code>signatureAlgorithm</code>, <code>publicKeyAlgorithm</code>, and <code>certHash</code> <span class="bcp14">MUST NOT</span> be populated since the content is already present and would be redundant.<a href="#section-3.1.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
@@ -1461,7 +1461,7 @@ id-ad-certDiscoverySelfLocation OBJECT IDENTIFIER ::= { id-ad TBD4 }
 <p id="section-6-2">The use of the self-reference can be used to provide a subject binding between the Current and Referenced Certificates even if their other data such as subject name or public key do not match. However, the procedure for validating subject equivalence <span class="bcp14">MUST</span> be defined by policy and be consistent with the policies of the issuing CA. As a result, validation of subject equivalence is out of scope of this document.<a href="#section-6-2" class="pilcrow">¶</a></p>
 <p id="section-6-3">The Referenced Certificate may also have a certDiscovery access method. In order to avoid cyclic loops or infinite chaining, leading to denial-of-service scenarios, the validator <span class="bcp14">SHOULD</span> employ a maximum depth or cycle-detection algorithm.<a href="#section-6-3" class="pilcrow">¶</a></p>
 <p id="section-6-4">The same security considerations for <code>caIssuers</code> access method outlined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span> applies to the certDiscovery access method. In order to avoid recursive certificate validations which involve online revocation checking, untrusted transport protocols (such as plaintext HTTP) are commonly used for serving certificate files. While the use of such protocols avoids issues with recursive certification path validations and associated online revocation checking, it also enables an attacker to tamper with data and perform substitution attacks. Applications retrieving certificates using the mechanism specified in this document <span class="bcp14">MUST</span> treat downloaded certificate data as untrusted and perform requisite checks to ensure that the downloaded data is not malicious.<a href="#section-6-4" class="pilcrow">¶</a></p>
-<p id="section-6-5">Typically, it is unsafe to use any content from a certificate that is expired, revoked, or whose signature cannot be validated. The <code>RelatedCertificateDescriptor</code> extension is an exception to this rule since it is intended to bridge across these exact types of failure scenarios and is merely making the application aware of the existence of a Referenced Certificate. Once retrieved, the Referenced Certificate <span class="bcp14">SHOULD</span> be validated independently as if it had been provided as the Current. That said, applications <span class="bcp14">MAY</span> refuse to retrieve URIs from an untrusted, or, to a lesser extent, revoked certificate. In most cases, a <code>RelatedCertificateDescriptor</code> URI asserted by the CA at issuance time will remain valid for the lifetime of the certificate, unless of course an incorrect URI is the reason for revocation, or the certificate was forged by a malicious actor for the explicit purpose of getting a victim application to fetch the malicious URI.<a href="#section-6-5" class="pilcrow">¶</a></p>
+<p id="section-6-5">Typically, it is unsafe to use any content from a certificate that is expired, revoked, or whose signature cannot be validated. The <code>RelatedCertificateDescriptor</code> extension is an exception to this rule since it is intended to bridge across these exact types of failure scenarios and is merely making the application aware of the existence of a Referenced Certificate. Once retrieved, the Referenced Certificate <span class="bcp14">SHOULD</span> be validated independently as if it had been provided as the Current Certificate. However, applications <span class="bcp14">MAY</span> refuse to retrieve URIs from an untrusted, or, to a lesser extent, revoked certificate. In most cases, a <code>RelatedCertificateDescriptor</code> URI asserted by the CA at issuance time will remain valid for the lifetime of the certificate, unless an incorrect URI is the reason for revocation, or the certificate was forged by a malicious actor for the explicit purpose of getting a victim application to fetch the malicious URI.<a href="#section-6-5" class="pilcrow">¶</a></p>
 <p id="section-6-6">This specification does not provide a mechanism for identifying the purpose of the cross-reference between certificates. The implied purpose is fallback redundancy. If the purpose is security-related, for example a pair of certificates are only to be used together in a two-certificate protocol, or their revocation status is intertwined as is the case when a signing certificate signs a Certificate Signing Request (CSR) for an encryption certificate, then the CA <span class="bcp14">SHOULD</span> add an additional extension or policy OID to the certificates to further constrain verifier handling.<a href="#section-6-6" class="pilcrow">¶</a></p>
 <p id="section-6-7">To enhance security, the URI <span class="bcp14">SHOULD</span> be cryptographically random and is <span class="bcp14">RECOMMENDED</span> to contain the certificate serial number, although care needs to be taken when publishing the related certificates asynchronously since publication of a first certificate containing the serial number of a not-yet-issued certificate could expose the second certificate to forgery attacks.<a href="#section-6-7" class="pilcrow">¶</a></p>
 </section>
