@@ -75,7 +75,6 @@ Second, the proposed method improves operational availability by introducing red
 
 Finally, the approach accommodates multi-key/certificate usage, allowing for a CA to indicate that two (or more) certificates are to be used together.
 
-relying party to obtain certificates to perform cryptographic operations that are not certified by a single certificate.
 
 The proposed method is designed to maximize compatibility with existing systems, including legacy implementations. It leverages the subjectInfoAccess extension, which is already established in X.509 certificates, and does not require modifications to the referring certificates. This ensures ease of adoption and avoids disruptions to current certificate management practices.
 
