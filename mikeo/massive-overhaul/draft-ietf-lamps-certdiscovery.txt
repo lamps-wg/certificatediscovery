@@ -135,9 +135,6 @@ Table of Contents
    allowing for a CA to indicate that two (or more) certificates are to
    be used together.
 
-   relying party to obtain certificates to perform cryptographic
-   operations that are not certified by a single certificate.
-
    The proposed method is designed to maximize compatibility with
    existing systems, including legacy implementations.  It leverages the
    subjectInfoAccess extension, which is already established in X.509
