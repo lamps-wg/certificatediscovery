@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-01T04:32:14.249489+00:00",
+  "timestamp": "2026-10-25T03:31:06.534116+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -1015,6 +1015,22 @@
       "updatedAt": "2026-09-10T14:01:04Z",
       "closedAt": null,
       "comments": []
+    },
+    {
+      "number": 52,
+      "id": "I_kwDOKkGlhc8AAAABZJrETQ",
+      "title": "Figure out Current/Referenced nomenclature",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/52",
+      "state": "OPEN",
+      "author": "CBonnell",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From Alex:\n\n@ounsworth et al., I agree that Current/Referenced is better than Primary/Secondary.\n\nMy only source of doubt is that \"current\" has a temporal connotation, and could be interpreted as \"the certificate that has not yet expired\". For example: \"in the event of expiration or revocation of the Current Certificate\" - how can it be current if it expired?\n\nHowever, I wouldn't stop the show because of it, especially if Current is consistently capitalized, to emphasize that it is a special term.\n\nHaving considered various pairs of alternative terminology, my most promising term is \"Point of origin\" or \"Origin\", because my mental model is that of a journey: I start at the point of origin, I follow the reference to discover another certificate. \"Origin\" stands on its own, though it is not immune to the problem of misinterpreting it as \"the original thing that came to be before everything else\". Spelling it out as \"point of origin\" can compensate that; having the \"imagine a journey starting at the point of origin\" hint somewhere in the intro could work too.\n\nIf you have a cascade of such certificates, i.e., the Referenced certificate has a reference to a yet another one, then you can reframe it as the new origin, so the metaphor stands. Collectively they are \"linked certificates\".\n\nMy other idea was to imagine it as a linked list, where you have a head and pointers to next. But \"head\" implies importance, a superior role, which is not what we want to convey.",
+      "createdAt": "2026-10-22T15:57:04Z",
+      "updatedAt": "2026-10-22T15:57:04Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -1906,25 +1922,42 @@
       "id": "PR_kwDOKkGlhc8AAAABFNM3Zg",
       "title": "Overhaul / simplification of draft",
       "url": "https://github.com/lamps-wg/certificatediscovery/pull/51",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "ounsworth",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "Candidate email to LAMPS about these changes:\r\n\r\n---\r\n\r\nHi LAMPS,\r\n\r\nThis draft has been sitting for a while, largely because it's been confused about exactly what it's trying to accomplish. We think we finally have it; what it took was simplifying it down to the core use cases and adding an extensibility point!\r\n\r\nThe core ASN.1 is below.\r\n\r\nIf this version sits well with the WG, then we might be asking for WGLC.\r\n\r\n   RelatedCertificateDescriptor ::= SEQUENCE {\r\n     method CertDiscoveryMethod,\r\n     signatureAlgorithm [0] AlgorithmIdentifier OPTIONAL,\r\n     publicKeyAlgorithm [1] AlgorithmIdentifier OPTIONAL,\r\n     certHash [2] RelatedCertificate OPTIONAL\r\n   }\r\n\r\n   -- RelatedCertificate is defined in RFC 9763\r\n\r\n   CertDiscoveryMethod ::= CHOICE {\r\n     byUri CertLocation,\r\n     byInclusion Certificate,\r\n     byLocalPolicy NULL,\r\n     byOther [0] INSTANCE OF OTHER-DISCOVERY-METHOD\r\n   }\r\n\r\n   CertLocation ::= IA5String\r\n\r\n   OTHER-DISCOVERY-METHOD ::= TYPE-IDENTIFIER",
       "createdAt": "2026-09-26T02:08:26Z",
-      "updatedAt": "2026-09-30T14:22:10Z",
+      "updatedAt": "2026-10-22T15:57:33Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "20a4bf8b9b9fd77b821394b63bc21027ce431b15",
       "headRepository": "lamps-wg/certificatediscovery",
       "headRefName": "mikeo/massive-overhaul",
-      "headRefOid": "0f3fbbbceeec1923917ab4bc8c9bc87426af0907",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
-      "comments": [],
+      "headRefOid": "97e7bdfcfe066d0501a6b707e96e9c155b2abc8e",
+      "closedAt": "2026-10-22T15:57:27Z",
+      "mergedAt": "2026-10-22T15:57:27Z",
+      "mergedBy": "CBonnell",
+      "mergeCommit": {
+        "oid": "ebb51754c7191bf934ad63faffe1ec022e49ea36"
+      },
+      "comments": [
+        {
+          "author": "ralienpp",
+          "authorAssociation": "NONE",
+          "body": "@ounsworth et al., I agree that Current/Referenced is better than Primary/Secondary. \r\n\r\nMy only source of doubt is that \"current\" has a temporal connotation, and could be interpreted as \"the certificate that has not yet expired\". For example: \"in the event of expiration or revocation of the Current Certificate\" - how can it be current if it expired? \r\n\r\nHowever, I wouldn't stop the show because of it, especially if `Current` is consistently capitalized, to emphasize that it is a special term. \r\n\r\nHaving considered various pairs of alternative terminology, my most promising term is \"Point of origin\" or \"Origin\", because my mental model is that of a journey: I start at the point of origin, I follow the reference to discover another certificate. \"Origin\" stands on its own, though it is not immune to the problem of misinterpreting it as \"the original thing that came to be before everything else\". Spelling it out as \"point of origin\" can compensate that; having the \"imagine a journey starting at the point of origin\" hint somewhere in the intro could work too.\r\n\r\nIf you have a cascade of such certificates, i.e., the Referenced certificate has a reference to a yet another one, then you can reframe it as the new origin, so the metaphor stands. Collectively they are \"linked certificates\".\r\n\r\n\r\nMy other idea was to imagine it as a linked list, where you have a `head` and pointers to `next`. But \"head\" implies importance, a superior role, which is not what we want to convey.\r\n\r\n",
+          "createdAt": "2026-10-22T11:14:26Z",
+          "updatedAt": "2026-10-22T11:14:26Z"
+        },
+        {
+          "author": "ounsworth",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Yeah, I also don't _love_ Current / Referenced.\r\n\r\n\"Origin, Referenced\" would be ok. Corey suggested \"Self / Other\" or \"Self / Referenced\" or something similar. I'm fine with any variation of this.",
+          "createdAt": "2026-10-22T14:29:55Z",
+          "updatedAt": "2026-10-22T14:30:14Z"
+        }
+      ],
       "reviews": [
         {
           "id": "PRR_kwDOKkGlhc8AAAABP-i3kA",
@@ -2019,6 +2052,166 @@
               "updatedAt": "2026-09-30T14:22:09Z"
             }
           ]
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABTrxQog",
+          "commit": {
+            "abbreviatedOid": "0f3fbbb"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-22T14:34:49Z",
+          "updatedAt": "2026-10-22T14:34:49Z",
+          "comments": [
+            {
+              "originalPosition": 172,
+              "body": "I'm not opposed, but a SHOULD here would need a pretty well-worded \"What goes wrong if you ignore this SHOULD\" sentence.",
+              "createdAt": "2026-10-22T14:34:49Z",
+              "updatedAt": "2026-10-22T14:34:49Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABTr2wVw",
+          "commit": {
+            "abbreviatedOid": "0f3fbbb"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-22T14:41:22Z",
+          "updatedAt": "2026-10-22T14:41:22Z",
+          "comments": [
+            {
+              "originalPosition": 150,
+              "body": "In the meeting, we decided that we can't really come up with a compelling reason why / how this enhances security, so maybe we should just delete the paragraph.",
+              "createdAt": "2026-10-22T14:41:22Z",
+              "updatedAt": "2026-10-22T14:41:23Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABTsA0Sg",
+          "commit": {
+            "abbreviatedOid": "0f3fbbb"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-22T14:53:07Z",
+          "updatedAt": "2026-10-22T14:53:08Z",
+          "comments": [
+            {
+              "originalPosition": 172,
+              "body": "I suggest:\r\n\r\n> \"... MUST be populated, unless a local policy or alternate specification provides the lookup semantics for handling a `byLocalPolicy` with no `signatureAlgorithm`, `publicKeyAlgorithm`, or `certHash`; for example a local policy stating that the referenced certificate will have the same DN.\"",
+              "createdAt": "2026-10-22T14:53:07Z",
+              "updatedAt": "2026-10-22T14:53:32Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABTsEEVg",
+          "commit": {
+            "abbreviatedOid": "0f3fbbb"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-22T14:57:02Z",
+          "updatedAt": "2026-10-22T14:57:02Z",
+          "comments": [
+            {
+              "originalPosition": 172,
+              "body": "On further discussion, we decided to just remove byLocalPolicy and instead encourage using the byOther mechanism to explicitly state an alternate policy.",
+              "createdAt": "2026-10-22T14:57:02Z",
+              "updatedAt": "2026-10-22T14:57:02Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABTsEhgA",
+          "commit": {
+            "abbreviatedOid": "0f3fbbb"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-22T14:57:35Z",
+          "updatedAt": "2026-10-22T14:57:36Z",
+          "comments": [
+            {
+              "originalPosition": 276,
+              "body": "We decided above to delete this paragraph.",
+              "createdAt": "2026-10-22T14:57:35Z",
+              "updatedAt": "2026-10-22T14:57:36Z"
+            }
+          ]
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABTs1unw",
+          "commit": {
+            "abbreviatedOid": "26dca62"
+          },
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "",
+          "createdAt": "2026-10-22T15:54:55Z",
+          "updatedAt": "2026-10-22T15:54:55Z",
+          "comments": [
+            {
+              "originalPosition": 45,
+              "body": "```suggestion\n```",
+              "createdAt": "2026-10-22T15:54:55Z",
+              "updatedAt": "2026-10-22T15:54:55Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "number": 53,
+      "id": "PR_kwDOKkGlhc8AAAABKEFraw",
+      "title": "Remove byLocalPolicy and non-defensible paragraphs",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/53",
+      "state": "OPEN",
+      "author": "CBonnell",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-10-22T16:01:42Z",
+      "updatedAt": "2026-10-24T16:38:29Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "ebb51754c7191bf934ad63faffe1ec022e49ea36",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "more-pruning",
+      "headRefOid": "1351b343cb9256ecb905ddb1c4b3e7319e28261f",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABUBwmxQ",
+          "commit": {
+            "abbreviatedOid": "1351b34"
+          },
+          "author": "tomofumiokubo",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-24T16:38:29Z",
+          "updatedAt": "2026-10-24T16:38:29Z",
+          "comments": []
         }
       ]
     }
