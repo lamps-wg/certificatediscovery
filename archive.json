@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-25T03:31:06.534116+00:00",
+  "timestamp": "2026-10-27T03:58:52.001235+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -2187,7 +2187,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-10-22T16:01:42Z",
-      "updatedAt": "2026-10-24T16:38:29Z",
+      "updatedAt": "2026-10-26T13:40:16Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "ebb51754c7191bf934ad63faffe1ec022e49ea36",
@@ -2211,6 +2211,19 @@
           "body": "",
           "createdAt": "2026-10-24T16:38:29Z",
           "updatedAt": "2026-10-24T16:38:29Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABUO_Kzw",
+          "commit": {
+            "abbreviatedOid": "1351b34"
+          },
+          "author": "mandelj7",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-26T13:40:15Z",
+          "updatedAt": "2026-10-26T13:40:15Z",
           "comments": []
         }
       ]
