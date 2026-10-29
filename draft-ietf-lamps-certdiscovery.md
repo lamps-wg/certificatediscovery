@@ -177,8 +177,6 @@ When the `CertDiscoveryMethod` is `byUri`, the fields `signatureAlgorithm` and `
 
 Note that two (or more) certificates can reference each other in cases where the URIs are pre-allocated prior to certificate issuance, and the certificates to be issued as a batch.
 
-To enhance security, the URI SHOULD be cryptographically random and is RECOMMENDED to contain the certificate serial number, although care needs to be taken when publishing the related certificates asynchronously since publication of a first certificate containing the serial number of a not-yet-issued certificate could expose the second certificate to forgery attacks.
-
 ### byInclusion
 
 The `byInclusion` method encodes the DER encoding of the Referenced Certificate directly into the Current Certificate. The Referenced Certificate MAY be extracted and used directly as a standalone certificate.
@@ -187,10 +185,7 @@ When the `CertDiscoveryMethod` is `byInclusion`, the fields `signatureAlgorithm`
 
 ### byLocalPolicy
 
-The `byLocalPolicy` method signals that the related certificate is available in a repository that is available to the application according to its local policy. The details of this method are deliberately left out-of-scope.
-
-When the `CertDiscoveryMethod` is `byLocalPolicy`, at least one of the fields `signatureAlgorithm`, `publicKeyAlgorithm`, or `certHash` MUST be populated.
-The application MUST check that the populated `signatureAlgorithm`, `publicKeyAlgorithm`, and `certHash` match the retrieved certificate; if any do not match then the retrieval MUST be considered to have failed.
+The `byLocalPolicy` method signals that the related certificate is available in a repository that is known and accessible to the relying party. The semantics of this method are left out of scope, but applications using this method MUST define the lookup semantics.
 
 ### byOther
 
@@ -265,8 +260,6 @@ The same security considerations for `caIssuers` access method outlined in {{RFC
 Typically, it is unsafe to use any content from a certificate that is expired, revoked, or whose signature cannot be validated. The `RelatedCertificateDescriptor` extension is an exception to this rule since it is intended to bridge across these exact types of failure scenarios and is merely making the application aware of the existence of a Referenced Certificate. Once retrieved, the Referenced Certificate SHOULD be validated independently as if it had been provided as the Current Certificate. However, applications MAY refuse to retrieve URIs from an untrusted, or, to a lesser extent, revoked certificate. In most cases, a `RelatedCertificateDescriptor` URI asserted by the CA at issuance time will remain valid for the lifetime of the certificate, unless an incorrect URI is the reason for revocation, or the certificate was forged by a malicious actor for the explicit purpose of getting a victim application to fetch the malicious URI.
 
 This specification does not provide a mechanism for identifying the purpose of the cross-reference between certificates. The implied purpose is fallback redundancy. If the purpose is security-related, for example a pair of certificates are only to be used together in a two-certificate protocol, or their revocation status is intertwined as is the case when a signing certificate signs a Certificate Signing Request (CSR) for an encryption certificate, then the CA SHOULD add an additional extension or policy OID to the certificates to further constrain verifier handling.
-
-To enhance security, the URI SHOULD be cryptographically random and is RECOMMENDED to contain the certificate serial number, although care needs to be taken when publishing the related certificates asynchronously since publication of a first certificate containing the serial number of a not-yet-issued certificate could expose the second certificate to forgery attacks.
 
 # IANA Considerations
 
@@ -350,9 +343,6 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    on-RelatedCertificateDescriptor OTHER-NAME ::= {
       RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
    }
-
-   id-rcd OBJECT IDENTIFIER ::= { iso(1) identified-organization(3) dod(6) internet(1) security(5)
-      mechanisms(5) pkix(7) id-rcd(60) }
 
    RelatedCertificateDescriptor ::= SEQUENCE {
      method CertDiscoveryMethod,
