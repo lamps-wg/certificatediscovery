@@ -339,9 +339,6 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
       RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
    }
 
-   id-rcd OBJECT IDENTIFIER ::= { iso(1) identified-organization(3) dod(6) internet(1) security(5)
-      mechanisms(5) pkix(7) id-rcd(60) }
-
    RelatedCertificateDescriptor ::= SEQUENCE {
      method CertDiscoveryMethod,
      signatureAlgorithm [0] AlgorithmIdentifier OPTIONAL,
