@@ -161,6 +161,7 @@ can be retrieved.
 CertDiscoveryMethod ::= CHOICE {
    byUri IA5String,
    byInclusion Certificate,
+   byLocalPolicy NULL,
    byOther [0] INSTANCE OF OTHER-DISCOVERY-METHOD
 }
 ~~~
