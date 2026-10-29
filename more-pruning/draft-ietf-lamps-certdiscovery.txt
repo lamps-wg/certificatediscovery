@@ -235,6 +235,7 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    CertDiscoveryMethod ::= CHOICE {
       byUri IA5String,
       byInclusion Certificate,
+      byLocalPolicy NULL,
       byOther [0] INSTANCE OF OTHER-DISCOVERY-METHOD
    }
 
