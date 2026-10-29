@@ -30,11 +30,10 @@ author:
     organization: Penguin Securities Pte. Ltd.
     email: tomofumi.okubo+ietf@gmail.com
 
- -
+ -  name: Corey Bonnell
     ins: C. Bonnell
-    fullname: Corey Bonnell
-    organization: DigiCert, Inc.
-    email: corey.bonnell@digicert.com
+    org: TurboLight Solutions, LLC
+    email: corey.bonnell@turbolightsolutions.com
 
  -
     ins: J. Gray
