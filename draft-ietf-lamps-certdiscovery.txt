@@ -5,7 +5,7 @@
 Network Working Group                                           T. Okubo
 Internet-Draft                              Penguin Securities Pte. Ltd.
 Intended status: Standards Track                              C. Bonnell
-Expires: 2 May 2027                                       DigiCert, Inc.
+Expires: 2 May 2027                            TurboLight Solutions, LLC
                                                                  J. Gray
                                                             M. Ounsworth
                                                                  Entrust
@@ -577,8 +577,8 @@ Authors' Addresses
 
 
    Corey Bonnell
-   DigiCert, Inc.
-   Email: corey.bonnell@digicert.com
+   TurboLight Solutions, LLC
+   Email: corey.bonnell@turbolightsolutions.com
 
 
    John Gray
