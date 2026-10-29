@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-27T03:58:52.001235+00:00",
+  "timestamp": "2026-10-29T04:41:50.202588+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -1029,6 +1029,22 @@
       "body": "From Alex:\n\n@ounsworth et al., I agree that Current/Referenced is better than Primary/Secondary.\n\nMy only source of doubt is that \"current\" has a temporal connotation, and could be interpreted as \"the certificate that has not yet expired\". For example: \"in the event of expiration or revocation of the Current Certificate\" - how can it be current if it expired?\n\nHowever, I wouldn't stop the show because of it, especially if Current is consistently capitalized, to emphasize that it is a special term.\n\nHaving considered various pairs of alternative terminology, my most promising term is \"Point of origin\" or \"Origin\", because my mental model is that of a journey: I start at the point of origin, I follow the reference to discover another certificate. \"Origin\" stands on its own, though it is not immune to the problem of misinterpreting it as \"the original thing that came to be before everything else\". Spelling it out as \"point of origin\" can compensate that; having the \"imagine a journey starting at the point of origin\" hint somewhere in the intro could work too.\n\nIf you have a cascade of such certificates, i.e., the Referenced certificate has a reference to a yet another one, then you can reframe it as the new origin, so the metaphor stands. Collectively they are \"linked certificates\".\n\nMy other idea was to imagine it as a linked list, where you have a head and pointers to next. But \"head\" implies importance, a superior role, which is not what we want to convey.",
       "createdAt": "2026-10-22T15:57:04Z",
       "updatedAt": "2026-10-22T15:57:04Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 54,
+      "id": "I_kwDOKkGlhc8AAAABatqBbA",
+      "title": "Bug in our ASN.1",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/54",
+      "state": "OPEN",
+      "author": "johngray-dev",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "This looks wrong to me:\n\nid-rcd OBJECT IDENTIFIER ::= { iso(1) identified-organization(3) dod(6) internet(1) security(5)\n      mechanisms(5) pkix(7) id-rcd(60) }\n\n\u00a0Is that a leftover from our intent ID stuff?\n\nI don't think we need this, and if we do, then the 60 should be a TBD and it would need to be added to the IANA section.",
+      "createdAt": "2026-10-28T21:18:55Z",
+      "updatedAt": "2026-10-28T21:18:55Z",
       "closedAt": null,
       "comments": []
     }
@@ -2187,7 +2203,7 @@
       "labels": [],
       "body": "",
       "createdAt": "2026-10-22T16:01:42Z",
-      "updatedAt": "2026-10-26T13:40:16Z",
+      "updatedAt": "2026-10-28T20:48:49Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "ebb51754c7191bf934ad63faffe1ec022e49ea36",
@@ -2224,6 +2240,19 @@
           "body": "",
           "createdAt": "2026-10-26T13:40:15Z",
           "updatedAt": "2026-10-26T13:40:15Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABUx7Pqg",
+          "commit": {
+            "abbreviatedOid": "1351b34"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "COMMENTED",
+          "body": "I was talking to our internal person who is looking at this for some specifications, and he mentioned they were planning to use the byLocal policy.   I wonder if we can give an example in the draft of how to enable something like byLocal by using the byOther reference?   In fact, we could even default byLocal as a byOther to showcase how the extensibility function can be useful, without removing the functionality that already exists.  Thoughts?",
+          "createdAt": "2026-10-28T20:48:49Z",
+          "updatedAt": "2026-10-28T20:48:49Z",
           "comments": []
         }
       ]
