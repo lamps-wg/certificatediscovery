@@ -182,6 +182,10 @@ The `byInclusion` method encodes the DER encoding of the Referenced Certificate 
 
 When the `CertDiscoveryMethod` is `byInclusion`, the fields `signatureAlgorithm`, `publicKeyAlgorithm`, and `certHash` MUST NOT be populated since the content is already present and would be redundant.
 
+### byLocalPolicy
+
+The `byLocalPolicy` method signals that the related certificate is available in a repository that is known and accessible to the relying party. The semantics of this method are left out of scope, but applications using this method MUST define the lookup semantics.
+
 ### byOther
 
 The `byOther` method acts as an extensibility point for adding additional methods in the future.
@@ -351,6 +355,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    CertDiscoveryMethod ::= CHOICE {
      byUri IA5String,
      byInclusion Certificate,
+     byLocalPolicy NULL,
      byOther [0] INSTANCE OF OTHER-DISCOVERY-METHOD
    }
 
