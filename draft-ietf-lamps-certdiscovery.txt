@@ -5,13 +5,13 @@
 Network Working Group                                           T. Okubo
 Internet-Draft                              Penguin Securities Pte. Ltd.
 Intended status: Standards Track                              C. Bonnell
-Expires: 25 April 2027                                    DigiCert, Inc.
+Expires: 2 May 2027                                       DigiCert, Inc.
                                                                  J. Gray
                                                             M. Ounsworth
                                                                  Entrust
                                                                J. Mandel
                                                             AKAYLA, Inc.
-                                                         22 October 2026
+                                                         29 October 2026
 
 
               A Mechanism for X.509 Certificate Discovery
@@ -62,7 +62,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 25 April 2027.
+   This Internet-Draft will expire on 2 May 2027.
 
 Copyright Notice
 
@@ -261,13 +261,6 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    cases where the URIs are pre-allocated prior to certificate issuance,
    and the certificates to be issued as a batch.
 
-   To enhance security, the URI SHOULD be cryptographically random and
-   is RECOMMENDED to contain the certificate serial number, although
-   care needs to be taken when publishing the related certificates
-   asynchronously since publication of a first certificate containing
-   the serial number of a not-yet-issued certificate could expose the
-   second certificate to forgery attacks.
-
 3.1.2.  byInclusion
 
    The byInclusion method encodes the DER encoding of the Referenced
@@ -283,16 +276,9 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 3.1.3.  byLocalPolicy
 
    The byLocalPolicy method signals that the related certificate is
-   available in a repository that is available to the application
-   according to its local policy.  The details of this method are
-   deliberately left out-of-scope.
-
-   When the CertDiscoveryMethod is byLocalPolicy, at least one of the
-   fields signatureAlgorithm, publicKeyAlgorithm, or certHash MUST be
-   populated.  The application MUST check that the populated
-   signatureAlgorithm, publicKeyAlgorithm, and certHash match the
-   retrieved certificate; if any do not match then the retrieval MUST be
-   considered to have failed.
+   available in a repository that is known and accessible to the relying
+   party.  The semantics of this method are left out of scope, but
+   applications using this method MUST define the lookup semantics.
 
 3.1.4.  byOther
 
@@ -451,13 +437,6 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
    an additional extension or policy OID to the certificates to further
    constrain verifier handling.
 
-   To enhance security, the URI SHOULD be cryptographically random and
-   is RECOMMENDED to contain the certificate serial number, although
-   care needs to be taken when publishing the related certificates
-   asynchronously since publication of a first certificate containing
-   the serial number of a not-yet-issued certificate could expose the
-   second certificate to forgery attacks.
-
 7.  IANA Considerations
 
 7.1.  Module Identifier
@@ -569,9 +548,6 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    on-RelatedCertificateDescriptor OTHER-NAME ::= {
       RelatedCertificateDescriptor IDENTIFIED BY id-on-relatedCertificateDescriptor
    }
-
-   id-rcd OBJECT IDENTIFIER ::= { iso(1) identified-organization(3) dod(6) internet(1) security(5)
-      mechanisms(5) pkix(7) id-rcd(60) }
 
    RelatedCertificateDescriptor ::= SEQUENCE {
      method CertDiscoveryMethod,
