@@ -1183,7 +1183,10 @@ svg {
                     <p id="section-toc.1-1.3.2.1.2.2.1"><a href="#section-3.1.2" class="auto internal xref">3.1.2</a>.  <a href="#name-byinclusion" class="internal xref">byInclusion</a></p>
 </li>
                   <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1.2.3">
-                    <p id="section-toc.1-1.3.2.1.2.3.1"><a href="#section-3.1.3" class="auto internal xref">3.1.3</a>.  <a href="#name-byother" class="internal xref">byOther</a></p>
+                    <p id="section-toc.1-1.3.2.1.2.3.1"><a href="#section-3.1.3" class="auto internal xref">3.1.3</a>.  <a href="#name-bylocalpolicy" class="internal xref">byLocalPolicy</a></p>
+</li>
+                  <li class="compact toc ulBare ulEmpty" id="section-toc.1-1.3.2.1.2.4">
+                    <p id="section-toc.1-1.3.2.1.2.4.1"><a href="#section-3.1.4" class="auto internal xref">3.1.4</a>.  <a href="#name-byother" class="internal xref">byOther</a></p>
 </li>
                 </ul>
 </li>
@@ -1364,14 +1367,22 @@ can become either mandatory, recommended, or forbidden.<a href="#section-3.1-4" 
 <p id="section-3.1.2-2">When the <code>CertDiscoveryMethod</code> is <code>byInclusion</code>, the fields <code>signatureAlgorithm</code>, <code>publicKeyAlgorithm</code>, and <code>certHash</code> <span class="bcp14">MUST NOT</span> be populated since the content is already present and would be redundant.<a href="#section-3.1.2-2" class="pilcrow">¶</a></p>
 </section>
 </div>
-<div id="byother">
+<div id="bylocalpolicy">
 <section id="section-3.1.3">
-          <h4 id="name-byother">
-<a href="#section-3.1.3" class="section-number selfRef">3.1.3. </a><a href="#name-byother" class="section-name selfRef">byOther</a>
+          <h4 id="name-bylocalpolicy">
+<a href="#section-3.1.3" class="section-number selfRef">3.1.3. </a><a href="#name-bylocalpolicy" class="section-name selfRef">byLocalPolicy</a>
           </h4>
-<p id="section-3.1.3-1">The <code>byOther</code> method acts as an extensibility point for adding additional methods in the future.
+<p id="section-3.1.3-1">The <code>byLocalPolicy</code> method signals that the related certificate is available in a repository that is known and accessible to the relying party. The semantics of this method are left out of scope, but applications using this method <span class="bcp14">MUST</span> define the lookup semantics.<a href="#section-3.1.3-1" class="pilcrow">¶</a></p>
+</section>
+</div>
+<div id="byother">
+<section id="section-3.1.4">
+          <h4 id="name-byother">
+<a href="#section-3.1.4" class="section-number selfRef">3.1.4. </a><a href="#name-byother" class="section-name selfRef">byOther</a>
+          </h4>
+<p id="section-3.1.4-1">The <code>byOther</code> method acts as an extensibility point for adding additional methods in the future.
 A new <code>byOther</code> method <span class="bcp14">MUST</span> by accompanied by a specification of its wire format and interaction
-with the <code>signatureAlgorithm</code>, <code>publicKeyAlgorithm</code>, and <code>certHash</code> fields of <code>RelatedCertificateDescriptor</code>.<a href="#section-3.1.3-1" class="pilcrow">¶</a></p>
+with the <code>signatureAlgorithm</code>, <code>publicKeyAlgorithm</code>, and <code>certHash</code> fields of <code>RelatedCertificateDescriptor</code>.<a href="#section-3.1.4-1" class="pilcrow">¶</a></p>
 </section>
 </div>
 </section>
@@ -1628,6 +1639,7 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    CertDiscoveryMethod ::= CHOICE {
      byUri IA5String,
      byInclusion Certificate,
+     byLocalPolicy NULL,
      byOther [0] INSTANCE OF OTHER-DISCOVERY-METHOD
    }
 
