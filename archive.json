@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-10-29T04:41:50.202588+00:00",
+  "timestamp": "2026-11-01T04:44:47.607843+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -502,7 +502,7 @@
       "id": "I_kwDOKkGlhc7nBM1w",
       "title": "what to do with unknown DiscoveryPurposeId?",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/30",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "danvangeest",
       "authorAssociation": "NONE",
       "assignees": [
@@ -511,8 +511,8 @@
       "labels": [],
       "body": "DiscoveryPurposeId is OPTIONAL, but I think you should still say what should be done if one comes across an unknown DiscoveryPurposeId.  Just behave as if there was no DiscoveryPurposeId?\n\nIf a DiscoveryPurposeId exists, does this mean that the secondary certificate can only be used in the way specified by the DiscoveryPurposeId?  If so, state that.  And then if the DiscoveryPurposeId is unknown, the secondary certificate MUST NOT be used?",
       "createdAt": "2026-01-30T14:01:34Z",
-      "updatedAt": "2026-07-02T13:43:09Z",
-      "closedAt": null,
+      "updatedAt": "2026-10-29T15:39:01Z",
+      "closedAt": "2026-10-29T15:39:01Z",
       "comments": [
         {
           "author": "johngray-dev",
@@ -569,6 +569,13 @@
           "body": "I liked PurposeID as well, but I think it was Russ that thought it might be confused with other IETF drafts around EKU.  See this issue:  https://github.com/lamps-wg/certificatediscovery/issues/24\n\nWe can always put it back to PurposeID if the working group likes it better.    ",
           "createdAt": "2026-03-17T02:32:11Z",
           "updatedAt": "2026-07-02T13:43:09Z"
+        },
+        {
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Intents have been removed from the latest version, closing.",
+          "createdAt": "2026-10-29T15:39:01Z",
+          "updatedAt": "2026-10-29T15:39:01Z"
         }
       ]
     },
@@ -807,7 +814,7 @@
       "labels": [],
       "body": "Sarat G is suggesting the following:\n\nAfter working through some high-assurance use cases in the\nembedded/hardware security space, I'd like to advocate for two\nadditions to Certificate Discovery:\n\n1. A delta encoding option for byInclusion (size efficiency)\n2. A mandatory binding attribute (SPKI hash) for high-assurance\n   profiles\n\nThese are independent \u2014 the draft could adopt either without the\nother.\n\n\nUSE CASE: IMMUTABLE HARDWARE ROOTS OF TRUST\n\nIn secure boot, a public key (or its hash) is burned into OTP fuses\nat manufacturing. These devices have 15-20 year deployed lifetimes\n(automotive ECUs, industrial controllers, HSMs). I've encountered a\ncritical need to graft modern cryptographic properties onto these\nlegacy anchors \u2014 specifically:\n\n- Post-quantum algorithm adoption (ML-DSA, LMS) on hardware whose\n  OTP root is ECDSA or RSA\n- Threshold/MPC signing (e.g., FROST over Ed25519) on hardware whose\n  OTP key type doesn't support efficient threshold protocols\n- Key compromise recovery without hardware replacement\n\nFor these devices:\n- byUri is not viable: no network stack during early-stage boot.\n- byInclusion with a full certificate is often too large: early\n  bootloaders operate under tight flash and MTU constraints. A delta\n  encoding (carrying only the fields that differ) is significantly\n  more compact.\n\n\nUSE CASE: ENDPOINT-DRIVEN POLICY ENFORCEMENT\n\nIn the scenarios above, the related certificate isn't just a\n\"discovery\" convenience \u2014 it's a security requirement. The boot\nchain must enforce that the paired descriptor is present and that its\nsecondary key satisfies the endpoint's policy (e.g., \"firmware must\nbe signed under the threshold key, not just the legacy OTP key\").\n\nIf the descriptor can be stripped or transplanted to a different\nbase certificate, an attacker can force a downgrade to the legacy\nkey alone. This is where binding matters.\n\nIn these high-assurance environments, the discovery mechanism must\nact as a mandatory constraint: if the verifier's policy requires a\nsecondary key and it is missing or the binding is invalid, the\nentire chain must be rejected.\n\n\nSPKI BINDING (SOLVING THE CIRCULAR DEPENDENCY)\n\nYour suggestion of considering SPKI binding in both directions is\nexactly what I've been exploring. Since both public keys are\navailable before the signing ceremony:\n\n- The related certificate (or descriptor) includes\n  H(base.subjectPublicKeyInfo)\n- The base certificate includes H(delta.subjectPublicKeyInfo)\n\nThis avoids the circular dependency (no certificate-level hash\nneeded) while cryptographically tying the two certificates together.\nA verifier that sees a base certificate without the expected\ndescriptor, or with a descriptor whose binding doesn't match,\nrejects the chain.\n\nFor standard PKI/TLS use, the binding could remain optional. For\nhigh-assurance profiles (secure boot, code signing, IoT device\nidentity), it would be mandatory.\n\n\nNEXT STEPS\n\nI can draft a short text contribution with the ASN.1 for the binding\nattribute if that would be useful. Happy to discuss further.\n",
       "createdAt": "2026-03-04T20:43:50Z",
-      "updatedAt": "2026-08-14T04:12:44Z",
+      "updatedAt": "2026-10-29T15:25:42Z",
       "closedAt": null,
       "comments": [
         {
@@ -851,6 +858,13 @@
           "body": "Quick status + a question on the SPKI binding proposal.\n\nPR #45 (the SPKI binding PR from this thread) got auto-closed on 2026-07-04 \u2014 that was a side effect of me deleting my fork, not a decision on the technical merits. I can re-open it as a fresh PR, but I noticed the base has moved: #47 removed `CertHash` from the draft, which is the type the original `SPKIBinding` was built on (`hostSPKIHash`/`relatedSPKIHash` were `CertHash`). So a straight re-apply no longer fits \u2014 a re-cut would need `SPKIBinding` to carry its own hash (e.g. `OCTET STRING` + an `AlgorithmIdentifier`), self-contained.\n\nBefore I do that work, I wanted to check where the authors group has landed, since a couple of things have shifted since we last discussed this:\n\n1. The draft has been deliberately simplified (`CertHash` removed in #47), and earlier the group raised RFC 8649 (Hash of Root Key) as possibly covering the SPKI-binding requirement. I gave my read on why 8649 is scoped differently (root-only/temporal/unidirectional vs. the end-entity firmware/IoT/TLS/code-signing cases, plus anti-transplantation and bidirectional binding), but I don't want to reintroduce a hash primitive against the grain of the simplification if the group's consensus is that it's out of scope.\n\n2. Separately, #48 asks for `byDelta` (Turducken / Chameleon-style delta encoding). That one is orthogonal to SPKI binding and I'm happy to take it regardless.\n\nSo the question is just: **do the authors still want SPKI binding in the draft?** If yes, I'll re-cut it as a self-contained `SPKIBinding` (no dependency on the removed `CertHash`) and open a fresh PR. If the group's direction is to lean on RFC 8649 / keep the draft lean, I'm fine leaving it and focusing on `byDelta`. Either way, happy to go with the group's call.\n",
           "createdAt": "2026-08-14T04:12:43Z",
           "updatedAt": "2026-08-14T04:12:43Z"
+        },
+        {
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "body": "In the interest of getting the draft completed without adding too much complexity, we added a 'byOther' extensibility mechanism into Certificate Discovery.  This will allow future certificate discovery methods to be defined.  I would suggest we consider writing a separate draft formalizing the 'byDelta' encoding as a type of byOther extension.  That will all us the time to fully flesh out the details without encumbering the process for the current draft.  Would you be interested working on such a draft Sarat?",
+          "createdAt": "2026-10-29T15:25:41Z",
+          "updatedAt": "2026-10-29T15:25:41Z"
         }
       ]
     },
@@ -859,7 +873,7 @@
       "id": "I_kwDOKkGlhc7zTyUs",
       "title": "Clarify the Redundancy intent",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/40",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "danvangeest",
       "authorAssociation": "NONE",
       "assignees": [
@@ -868,8 +882,8 @@
       "labels": [],
       "body": "> This intent indicates the referenced certificate's intent is to provide operational redundancy; i.e. the Secondary Certificate could be issued by a different CA or has a different validity period which can be used as a backup if the Primary set of certificates is about to expire.\n\nWhat is the Primary **set** of certificates?  Should this instead say \"... if the Primary Certificate is about to expire\"",
       "createdAt": "2026-03-16T12:00:46Z",
-      "updatedAt": "2026-03-17T01:46:15Z",
-      "closedAt": null,
+      "updatedAt": "2026-10-29T15:38:37Z",
+      "closedAt": "2026-10-29T15:38:37Z",
       "comments": [
         {
           "author": "mandelj7",
@@ -877,6 +891,13 @@
           "body": "@danvangeest yes, you are correct. Need to take out \"set of\". Thanks.",
           "createdAt": "2026-03-17T01:46:15Z",
           "updatedAt": "2026-03-17T01:46:15Z"
+        },
+        {
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Intents have been removed from the latest version, closing.",
+          "createdAt": "2026-10-29T15:38:37Z",
+          "updatedAt": "2026-10-29T15:38:37Z"
         }
       ]
     },
@@ -885,16 +906,24 @@
       "id": "I_kwDOKkGlhc7zUIYX",
       "title": "Statement of Posession intent and revocation",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/41",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "danvangeest",
       "authorAssociation": "NONE",
       "assignees": [],
       "labels": [],
       "body": "The *Statement of Possession of a Private Key* section says:\n\n> The reason for carrying a RelatedCertificateDescriptor of this type is to track that the Primary Certificate had a trust dependency on the Secondary Certificate at the time of issuance and that presumably the two private keys are co-located on the same key storage. Therefore if one certificate is revoked, they SHOULD both be revoked.\n\nI don't know if I agree with the \"SHOULD be revoked\".  All the statement of possession is doing is indicating that the subject had access to the signing key of the Secondary Certificate at the time of the Primary certificate's issuance. If the secondary certificate's key is compromised and revoked at a later time, the only potential thing linking them is that the private keys may have been co-located on storage.  But also they might not be co-located. Really it should be a policy of the CA, if one private key is compromised then all co-located private keys should be revoked, but this has nothing to do with the certificate discovery extensions.",
       "createdAt": "2026-03-16T12:19:04Z",
-      "updatedAt": "2026-03-16T12:19:04Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2026-10-29T15:38:49Z",
+      "closedAt": "2026-10-29T15:38:49Z",
+      "comments": [
+        {
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Intents have been removed from the latest version, closing.",
+          "createdAt": "2026-10-29T15:38:49Z",
+          "updatedAt": "2026-10-29T15:38:49Z"
+        }
+      ]
     },
     {
       "number": 42,
@@ -1037,16 +1066,24 @@
       "id": "I_kwDOKkGlhc8AAAABatqBbA",
       "title": "Bug in our ASN.1",
       "url": "https://github.com/lamps-wg/certificatediscovery/issues/54",
-      "state": "OPEN",
+      "state": "CLOSED",
       "author": "johngray-dev",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "This looks wrong to me:\n\nid-rcd OBJECT IDENTIFIER ::= { iso(1) identified-organization(3) dod(6) internet(1) security(5)\n      mechanisms(5) pkix(7) id-rcd(60) }\n\n\u00a0Is that a leftover from our intent ID stuff?\n\nI don't think we need this, and if we do, then the 60 should be a TBD and it would need to be added to the IANA section.",
       "createdAt": "2026-10-28T21:18:55Z",
-      "updatedAt": "2026-10-28T21:18:55Z",
-      "closedAt": null,
-      "comments": []
+      "updatedAt": "2026-10-29T15:38:15Z",
+      "closedAt": "2026-10-29T15:38:14Z",
+      "comments": [
+        {
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "body": "Fixed in #53.",
+          "createdAt": "2026-10-29T15:38:14Z",
+          "updatedAt": "2026-10-29T15:38:14Z"
+        }
+      ]
     }
   ],
   "pulls": [
@@ -1694,7 +1731,7 @@
       "labels": [],
       "body": "Still need to do the end-entity generator.",
       "createdAt": "2026-03-17T01:53:18Z",
-      "updatedAt": "2026-09-26T02:09:26Z",
+      "updatedAt": "2026-10-29T14:36:13Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "20a4bf8b9b9fd77b821394b63bc21027ce431b15",
@@ -2194,26 +2231,28 @@
     {
       "number": 53,
       "id": "PR_kwDOKkGlhc8AAAABKEFraw",
-      "title": "Remove byLocalPolicy and non-defensible paragraphs",
+      "title": "Tweak byLocalPolicy and remove non-defensible paragraphs",
       "url": "https://github.com/lamps-wg/certificatediscovery/pull/53",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "CBonnell",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-10-22T16:01:42Z",
-      "updatedAt": "2026-10-28T20:48:49Z",
+      "updatedAt": "2026-10-29T14:39:10Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "ebb51754c7191bf934ad63faffe1ec022e49ea36",
       "headRepository": "lamps-wg/certificatediscovery",
       "headRefName": "more-pruning",
-      "headRefOid": "1351b343cb9256ecb905ddb1c4b3e7319e28261f",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "headRefOid": "8d491f3c9b1c3f5d5a586ecdae4f34b69fe97768",
+      "closedAt": "2026-10-29T14:39:05Z",
+      "mergedAt": "2026-10-29T14:39:05Z",
+      "mergedBy": "CBonnell",
+      "mergeCommit": {
+        "oid": "5a3b027b1ee3adb95903b9bcdd7c385e440c54df"
+      },
       "comments": [],
       "reviews": [
         {
@@ -2253,6 +2292,72 @@
           "body": "I was talking to our internal person who is looking at this for some specifications, and he mentioned they were planning to use the byLocal policy.   I wonder if we can give an example in the draft of how to enable something like byLocal by using the byOther reference?   In fact, we could even default byLocal as a byOther to showcase how the extensibility function can be useful, without removing the functionality that already exists.  Thoughts?",
           "createdAt": "2026-10-28T20:48:49Z",
           "updatedAt": "2026-10-28T20:48:49Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABU7etmw",
+          "commit": {
+            "abbreviatedOid": "8d491f3"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-10-29T14:35:46Z",
+          "updatedAt": "2026-10-29T14:35:46Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 55,
+      "id": "PR_kwDOKkGlhc8AAAABL2s-NA",
+      "title": "Russ ASN.1 fix",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/55",
+      "state": "OPEN",
+      "author": "CBonnell",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-10-30T20:19:50Z",
+      "updatedAt": "2026-11-01T01:16:51Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "7b590e2579e093dfe388490f60418ade62923967",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "russ-asn-1fix",
+      "headRefOid": "7860d6c6d37861ad219a714cfb6a808ceb5cc12d",
+      "closedAt": null,
+      "mergedAt": null,
+      "mergedBy": null,
+      "mergeCommit": null,
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABVNdHNA",
+          "commit": {
+            "abbreviatedOid": "7860d6c"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "I checked it with ASN.1 playground (probably same tool as Russ).  It compiles.  It had compiled before, but I guess our syntax was older and didn't comply with RFC 5911",
+          "createdAt": "2026-10-30T20:36:59Z",
+          "updatedAt": "2026-10-30T20:36:59Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABVUmMgQ",
+          "commit": {
+            "abbreviatedOid": "7860d6c"
+          },
+          "author": "ounsworth",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "LGTM\n\nThe more I learn about ASN.1, the less I understand it.",
+          "createdAt": "2026-11-01T01:16:51Z",
+          "updatedAt": "2026-11-01T01:16:51Z",
           "comments": []
         }
       ]
