@@ -5,13 +5,13 @@
 Network Working Group                                           T. Okubo
 Internet-Draft                              Penguin Securities Pte. Ltd.
 Intended status: Standards Track                              C. Bonnell
-Expires: 2 May 2027                            TurboLight Solutions, LLC
+Expires: 5 May 2027                            TurboLight Solutions, LLC
                                                                  J. Gray
                                                             M. Ounsworth
                                                                  Entrust
                                                                J. Mandel
                                                             AKAYLA, Inc.
-                                                         29 October 2026
+                                                         1 November 2026
 
 
               A Mechanism for X.509 Certificate Discovery
@@ -62,7 +62,7 @@ Status of This Memo
    time.  It is inappropriate to use Internet-Drafts as reference
    material or to cite them other than as "work in progress."
 
-   This Internet-Draft will expire on 2 May 2027.
+   This Internet-Draft will expire on 5 May 2027.
 
 Copyright Notice
 
@@ -213,12 +213,13 @@ on-RelatedCertificateDescriptor OTHER-NAME ::= {
 
    RelatedCertificateDescriptor is defined as follows:
 
-   RelatedCertificateDescriptor ::= SEQUENCE {
-      method CertDiscoveryMethod,
-      signatureAlgorithm [0] AlgorithmIdentifier OPTIONAL,
-      publicKeyAlgorithm [1] AlgorithmIdentifier OPTIONAL,
-      certHash [2] RelatedCertificate OPTIONAL
-   }
+RelatedCertificateDescriptor ::= SEQUENCE {
+   method CertDiscoveryMethod,
+   signatureAlgorithm [0] AlgorithmIdentifier{SIGNATURE-ALGORITHM, {...}}
+                          OPTIONAL,
+   publicKeyAlgorithm [1] AlgorithmIdentifier{PUBLIC-KEY, {...}} OPTIONAL,
+   certHash [2] RelatedCertificate OPTIONAL
+}
 
    A certificate MAY have any number of RelatedCertificateDescriptor SIA
    AccessDescriptions.
@@ -516,15 +517,21 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    -- EXPORTS ALL --
 
    IMPORTS
-    OTHER-NAME, AlgorithmIdentifier, Certificate
+    OTHER-NAME
     FROM PKIX1Implicit-2009
       { iso(1) identified-organization(3) dod(6) internet(1) security(5)
       mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-implicit-02(59) }
 
-    id-pkix, id-ad
+    id-pkix, id-ad, Certificate
     FROM PKIX1Explicit-2009
       { iso(1) identified-organization(3) dod(6) internet(1) security(5)
       mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-explicit-02(51) }
+
+    AlgorithmIdentifier{}, SIGNATURE-ALGORITHM, PUBLIC-KEY
+    FROM AlgorithmInformation-2009
+      { iso(1) identified-organization(3) dod(6) internet(1) security(5)
+      mechanisms(5) pkix(7) id-mod(0)
+      id-mod-algorithmInformation-02(58) }
 
     RelatedCertificate
     FROM RelatedCertificate
@@ -551,8 +558,9 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
 
    RelatedCertificateDescriptor ::= SEQUENCE {
      method CertDiscoveryMethod,
-     signatureAlgorithm [0] AlgorithmIdentifier OPTIONAL,
-     publicKeyAlgorithm [1] AlgorithmIdentifier OPTIONAL,
+     signatureAlgorithm [0] AlgorithmIdentifier{SIGNATURE-ALGORITHM, {...}}
+                            OPTIONAL,
+     publicKeyAlgorithm [1] AlgorithmIdentifier{PUBLIC-KEY, {...}} OPTIONAL,
      certHash [2] RelatedCertificate OPTIONAL
    }
 
