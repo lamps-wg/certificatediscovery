@@ -139,8 +139,9 @@ When the `accessMethod` has a value of `id-ad-certDiscovery`, then the `accessLo
 ~~~
 RelatedCertificateDescriptor ::= SEQUENCE {
    method CertDiscoveryMethod,
-   signatureAlgorithm [0] AlgorithmIdentifier OPTIONAL,
-   publicKeyAlgorithm [1] AlgorithmIdentifier OPTIONAL,
+   signatureAlgorithm [0] AlgorithmIdentifier{SIGNATURE-ALGORITHM, {...}}
+                          OPTIONAL,
+   publicKeyAlgorithm [1] AlgorithmIdentifier{PUBLIC-KEY, {...}} OPTIONAL,
    certHash [2] RelatedCertificate OPTIONAL
 }
 ~~~
@@ -310,15 +311,21 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
    -- EXPORTS ALL --
 
    IMPORTS
-    OTHER-NAME, AlgorithmIdentifier, Certificate
+    OTHER-NAME
     FROM PKIX1Implicit-2009
       { iso(1) identified-organization(3) dod(6) internet(1) security(5)
       mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-implicit-02(59) }
 
-    id-pkix, id-ad
+    id-pkix, id-ad, Certificate
     FROM PKIX1Explicit-2009
       { iso(1) identified-organization(3) dod(6) internet(1) security(5)
       mechanisms(5) pkix(7) id-mod(0) id-mod-pkix1-explicit-02(51) }
+
+    AlgorithmIdentifier{}, SIGNATURE-ALGORITHM, PUBLIC-KEY
+    FROM AlgorithmInformation-2009
+      { iso(1) identified-organization(3) dod(6) internet(1) security(5)
+      mechanisms(5) pkix(7) id-mod(0)
+      id-mod-algorithmInformation-02(58) }
 
     RelatedCertificate
     FROM RelatedCertificate
@@ -345,8 +352,9 @@ CertDiscovery { iso(1) identified-organization(3) dod(6) internet(1)
 
    RelatedCertificateDescriptor ::= SEQUENCE {
      method CertDiscoveryMethod,
-     signatureAlgorithm [0] AlgorithmIdentifier OPTIONAL,
-     publicKeyAlgorithm [1] AlgorithmIdentifier OPTIONAL,
+     signatureAlgorithm [0] AlgorithmIdentifier{SIGNATURE-ALGORITHM, {...}}
+                            OPTIONAL,
+     publicKeyAlgorithm [1] AlgorithmIdentifier{PUBLIC-KEY, {...}} OPTIONAL,
      certHash [2] RelatedCertificate OPTIONAL
    }
 
