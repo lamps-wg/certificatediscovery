@@ -110,7 +110,7 @@ This document defines a new `SubjectInfoAccessSyntax` access method `id-ad-certD
 id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
 ~~~
 
-The 'accessLocation' is a GeneralName otherName type as defined in [RFC5280]. Recall that the otherName type is defined as `AnotherName`:
+The 'accessLocation' is a GeneralName otherName type as defined in {{!RFC5280}}. Recall that the otherName type is defined as `AnotherName`:
 
 ~~~
 AnotherName ::= SEQUENCE {
@@ -171,7 +171,7 @@ can become either mandatory, recommended, or forbidden.
 
 ### byUri
 
-The `byUri` method MUST provide a URI formatted according to [!RFC3986] from which the Referenced Certificate can be retrieved.
+The `byUri` method MUST provide a URI formatted according to {{!RFC3986}} from which the Referenced Certificate can be retrieved.
 
 When the `CertDiscoveryMethod` is `byUri`, the fields `signatureAlgorithm` and `publicKeyAlgorithm` SHOULD be populated as described below so that an application can decide if the Referenced Certificate is likely to be useful before performing the retrieval. `certHash` MAY be populated. After performing the retrieval, the application MUST check that the populated `signatureAlgorithm`, `publicKeyAlgorithm`, and `certHash` match the retrieved certificate; if any do not match then the retrieval MUST be considered to have failed.
 
@@ -206,7 +206,7 @@ If present, the `publicKeyAlgorithm` MUST match the `subjectPublicKeyInfo.algori
 
 The `certHash` field is intended primarily as a lookup value for finding the referenced certificate in a repository indexed by certificate hash. When present, it SHOULD also be used to confirm that the correct certificate was retrieved by hashing the retrieved certificate and comparing the hash value. However, it SHOULD NOT be considered a security mechanism because, by itself, it does not convey any intention about why or for what purpose the two certificates are related.
 
-The `certHash` field uses the `RelatedCertificate` structure, which is defined in [!RFC9763] and simply contains the hash of a certificate.
+The `certHash` field uses the `RelatedCertificate` structure, which is defined in {{!RFC9763}} and simply contains the hash of a certificate.
 Recall its definition:
 
 ~~~
@@ -215,7 +215,7 @@ RelatedCertificate ::= SEQUENCE {
   hashValue     OCTET STRING }
 ~~~
 
-Its semantics mirror those specified in [!RFC9763], repeated here for convenience.
+Its semantics mirror those specified in {{!RFC9763}}, repeated here for convenience.
 
 The `hashAlgorithm` field identifies the hash algorithm used to compute hashValue, which is the digest value obtained from hashing the entire Referenced Certificate.
 If there is a hash algorithm explicitly indicated by the related certificate's signature OID (e.g., ecdsa-with-SHA512), that hash algorithm SHOULD also be used here.
@@ -234,7 +234,7 @@ id-ad-certDiscoverySelfLocation OBJECT IDENTIFIER ::= { id-ad TBD4 }
 
 The SubjectInfoAccessSyntax AccessDescription accessLocation MUST carry a GeneralName uniformResourceIdentifier.
 
-This access method indicates the URI [!RFC3986] where the Current Certificate is located. Applications which have retrieved this certificate using a `byUri` method SHOULD extract this value from the retrieved certificate confirm that the correct certificate was retrieved.
+This access method indicates the URI {{!RFC3986}} where the Current Certificate is located. Applications which have retrieved this certificate using a `byUri` method SHOULD extract this value from the retrieved certificate confirm that the correct certificate was retrieved.
 
 A certificate MAY have any number of `certDiscoverySelfLocation` SIA `AccessDescriptions`.
 
@@ -265,7 +265,7 @@ This specification does not provide a mechanism for identifying the purpose of t
 
 ## Module Identifier
 
-IANA is requested to add the following entry in the "SMI Security for PKIX Module Identifier" registry, defined by [RFC7299]:
+IANA is requested to add the following entry in the "SMI Security for PKIX Module Identifier" registry, defined by {{RFC7299}}:
 
 | Decimal | Description          | References |
 | ------- | -------------------- | ---------- |
@@ -273,7 +273,7 @@ IANA is requested to add the following entry in the "SMI Security for PKIX Modul
 
 ## Access Descriptor
 
-IANA is requested to add the following entry in the "SMI Security for PKIX Access Descriptor" registry, defined by [RFC7299]:
+IANA is requested to add the following entry in the "SMI Security for PKIX Access Descriptor" registry, defined by {{RFC7299}}:
 
 | Decimal | Description          | References |
 | ------- | -------------------- | ---------- |
@@ -282,7 +282,7 @@ IANA is requested to add the following entry in the "SMI Security for PKIX Acces
 
 ## Other Name Form
 
-IANA is requested to add the following entry in the "SMI Security for PKIX Access Descriptor" registry, defined by [RFC7299]:
+IANA is requested to add the following entry in the "SMI Security for PKIX Access Descriptor" registry, defined by {{RFC7299}}:
 
 | Decimal | Description                        | References |
 | ------- | ---------------------------------- | ---------- |
