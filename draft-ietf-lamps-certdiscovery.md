@@ -110,12 +110,10 @@ This document defines a new `SubjectInfoAccessSyntax` access method `id-ad-certD
 id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
 ~~~
 
-The 'accessLocation' is a GeneralName otherName type as defined in {{!RFC5280}}. Recall that the otherName type is defined as `AnotherName`:
+The 'accessLocation' is a GeneralName otherName as defined in {{!RFC5280}}. Recall that, in the ASN.1 of Section 14 of {{!RFC5912}}, the type of otherName is defined as:
 
 ~~~
-AnotherName ::= SEQUENCE {
-     type-id    OBJECT IDENTIFIER,
-     value      [0] EXPLICIT ANY DEFINED BY type-id }
+OTHER-NAME ::= TYPE-IDENTIFIER
 ~~~
 
 This document defines the `RelatedCertificateDescriptor` type and its corresponding identifier as follows:
