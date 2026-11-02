@@ -1,6 +1,6 @@
 ---
 title: "A Mechanism for X.509 Certificate Discovery"
-abbrev: "TODO - Abbreviation"
+abbrev: "Certificate Discovery"
 category: std
 
 docname: draft-ietf-lamps-certdiscovery-latest
@@ -265,7 +265,7 @@ This specification does not provide a mechanism for identifying the purpose of t
 
 ## Module Identifier
 
-IANA is requested to add the following entry in the "SMI Security for PKIX Module Identifier" registry, defined by {{?RFC7299}}:
+IANA is requested to add the following entry in the "SMI Security for PKIX Module Identifier" (1.3.6.1.5.5.7.0) registry:
 
 | Decimal | Description          | References |
 | ------- | -------------------- | ---------- |
@@ -273,7 +273,7 @@ IANA is requested to add the following entry in the "SMI Security for PKIX Modul
 
 ## Access Descriptor
 
-IANA is requested to add the following entry in the "SMI Security for PKIX Access Descriptor" registry, defined by {{?RFC7299}}:
+IANA is requested to add the following entry in the "SMI Security for PKIX Access Descriptor" (1.3.6.1.5.5.7.48) registry:
 
 | Decimal | Description          | References |
 | ------- | -------------------- | ---------- |
@@ -282,7 +282,7 @@ IANA is requested to add the following entry in the "SMI Security for PKIX Acces
 
 ## Other Name Form
 
-IANA is requested to add the following entry in the "SMI Security for PKIX Access Descriptor" registry, defined by {{?RFC7299}}:
+IANA is requested to add the following entry in the "SMI Security for PKIX Other Name Forms" (1.3.6.1.5.5.7.8) registry:
 
 | Decimal | Description                        | References |
 | ------- | ---------------------------------- | ---------- |
@@ -293,7 +293,7 @@ IANA is requested to add the following entry in the "SMI Security for PKIX Acces
 # Acknowledgments
 {:numbered="false"}
 
-TODO acknowledge.
+Thank you to Russ Housley, Michael StJohns, Daniel Van Geest, Alex Railean, Sarat Ginjupalli, and Suzanne Wibada for reviewing the document and providing comments.
 
 # Appendix A. ASN.1 Module
 {:numbered="false"}
