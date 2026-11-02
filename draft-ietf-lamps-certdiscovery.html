@@ -1051,7 +1051,7 @@ svg {
 </tr></thead>
 <tfoot><tr>
 <td class="left">Okubo, et al.</td>
-<td class="center">Expires 5 May 2027</td>
+<td class="center">Expires 6 May 2027</td>
 <td class="right">[Page]</td>
 </tr></tfoot>
 </table>
@@ -1064,12 +1064,12 @@ svg {
 <dd class="internet-draft">draft-ietf-lamps-certdiscovery-latest</dd>
 <dt class="label-published">Published:</dt>
 <dd class="published">
-<time datetime="2026-11-01" class="published">1 November 2026</time>
+<time datetime="2026-11-02" class="published">2 November 2026</time>
     </dd>
 <dt class="label-intended-status">Intended Status:</dt>
 <dd class="intended-status">Standards Track</dd>
 <dt class="label-expires">Expires:</dt>
-<dd class="expires"><time datetime="2027-05-05">5 May 2027</time></dd>
+<dd class="expires"><time datetime="2027-05-06">6 May 2027</time></dd>
 <dt class="label-authors">Authors:</dt>
 <dd class="authors">
 <div class="author">
@@ -1130,7 +1130,7 @@ svg {
         time. It is inappropriate to use Internet-Drafts as reference
         material or to cite them other than as "work in progress."<a href="#section-boilerplate.1-3" class="pilcrow">¶</a></p>
 <p id="section-boilerplate.1-4">
-        This Internet-Draft will expire on 5 May 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
+        This Internet-Draft will expire on 6 May 2027.<a href="#section-boilerplate.1-4" class="pilcrow">¶</a></p>
 </section>
 </div>
 <div id="copyright">
@@ -1293,12 +1293,10 @@ AccessDescription  ::=  SEQUENCE {
 id-ad-certDiscovery OBJECT IDENTIFIER ::= { id-ad TBD }
 </pre><a href="#section-3-5" class="pilcrow">¶</a>
 </div>
-<p id="section-3-6">The 'accessLocation' is a GeneralName otherName type as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>. Recall that the otherName type is defined as <code>AnotherName</code>:<a href="#section-3-6" class="pilcrow">¶</a></p>
+<p id="section-3-6">The 'accessLocation' is a GeneralName otherName as defined in <span>[<a href="#RFC5280" class="cite xref">RFC5280</a>]</span>. Recall that, in the ASN.1 of Section 14 of <span>[<a href="#RFC5912" class="cite xref">RFC5912</a>]</span>, the type of otherName is defined as:<a href="#section-3-6" class="pilcrow">¶</a></p>
 <div class="alignLeft art-text artwork" id="section-3-7">
 <pre>
-AnotherName ::= SEQUENCE {
-     type-id    OBJECT IDENTIFIER,
-     value      [0] EXPLICIT ANY DEFINED BY type-id }
+OTHER-NAME ::= TYPE-IDENTIFIER
 </pre><a href="#section-3-7" class="pilcrow">¶</a>
 </div>
 <p id="section-3-8">This document defines the <code>RelatedCertificateDescriptor</code> type and its corresponding identifier as follows:<a href="#section-3-8" class="pilcrow">¶</a></p>
@@ -1562,6 +1560,10 @@ id-ad-certDiscoverySelfLocation OBJECT IDENTIFIER ::= { id-ad TBD4 }
 <dt id="RFC5280">[RFC5280]</dt>
       <dd>
 <span class="refAuthor">Cooper, D.</span>, <span class="refAuthor">Santesson, S.</span>, <span class="refAuthor">Farrell, S.</span>, <span class="refAuthor">Boeyen, S.</span>, <span class="refAuthor">Housley, R.</span>, and <span class="refAuthor">W. Polk</span>, <span class="refTitle">"Internet X.509 Public Key Infrastructure Certificate and Certificate Revocation List (CRL) Profile"</span>, <span class="seriesInfo">RFC 5280</span>, <span class="seriesInfo">DOI 10.17487/RFC5280</span>, <time datetime="2008-05" class="refDate">May 2008</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5280">https://www.rfc-editor.org/rfc/rfc5280</a>&gt;</span>. </dd>
+<dd class="break"></dd>
+<dt id="RFC5912">[RFC5912]</dt>
+      <dd>
+<span class="refAuthor">Hoffman, P.</span> and <span class="refAuthor">J. Schaad</span>, <span class="refTitle">"New ASN.1 Modules for the Public Key Infrastructure Using X.509 (PKIX)"</span>, <span class="seriesInfo">RFC 5912</span>, <span class="seriesInfo">DOI 10.17487/RFC5912</span>, <time datetime="2010-06" class="refDate">June 2010</time>, <span>&lt;<a href="https://www.rfc-editor.org/rfc/rfc5912">https://www.rfc-editor.org/rfc/rfc5912</a>&gt;</span>. </dd>
 <dd class="break"></dd>
 <dt id="RFC8174">[RFC8174]</dt>
     <dd>
