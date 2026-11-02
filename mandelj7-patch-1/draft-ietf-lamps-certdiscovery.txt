@@ -98,9 +98,7 @@ Table of Contents
      7.1.  Module Identifier
      7.2.  Access Descriptor
      7.3.  Other Name Form
-   8.  References
-     8.1.  Normative References
-     8.2.  Informative References
+   8.  Normative References
    Acknowledgments
    Appendix A.  ASN.1 Module
    Authors' Addresses
@@ -445,7 +443,7 @@ RelatedCertificateDescriptor ::= SEQUENCE {
 7.1.  Module Identifier
 
    IANA is requested to add the following entry in the "SMI Security for
-   PKIX Module Identifier" registry, defined by [RFC7299]:
+   PKIX Module Identifier" (1.3.6.1.5.5.7.0) registry:
 
               +=========+======================+============+
               | Decimal | Description          | References |
@@ -458,7 +456,7 @@ RelatedCertificateDescriptor ::= SEQUENCE {
 7.2.  Access Descriptor
 
    IANA is requested to add the following entry in the "SMI Security for
-   PKIX Access Descriptor" registry, defined by [RFC7299]:
+   PKIX Access Descriptor" (1.3.6.1.5.5.7.48) registry:
 
         +=========+=================================+============+
         | Decimal | Description                     | References |
@@ -473,7 +471,7 @@ RelatedCertificateDescriptor ::= SEQUENCE {
 7.3.  Other Name Form
 
    IANA is requested to add the following entry in the "SMI Security for
-   PKIX Access Descriptor" registry, defined by [RFC7299]:
+   PKIX Other Name Forms" (1.3.6.1.5.5.7.8) registry:
 
        +=========+====================================+============+
        | Decimal | Description                        | References |
@@ -483,9 +481,7 @@ RelatedCertificateDescriptor ::= SEQUENCE {
 
                                   Table 3
 
-8.  References
-
-8.1.  Normative References
+8.  Normative References
 
    [RFC2119]  Bradner, S., "Key words for use in RFCs to Indicate
               Requirement Levels", BCP 14, RFC 2119,
@@ -512,15 +508,11 @@ RelatedCertificateDescriptor ::= SEQUENCE {
               Protocol", RFC 9763, DOI 10.17487/RFC9763, June 2025,
               <https://www.rfc-editor.org/rfc/rfc9763>.
 
-8.2.  Informative References
-
-   [RFC7299]  Housley, R., "Object Identifier Registry for the PKIX
-              Working Group", RFC 7299, DOI 10.17487/RFC7299, July 2014,
-              <https://www.rfc-editor.org/rfc/rfc7299>.
-
 Acknowledgments
 
-   TODO acknowledge.
+   Thank you to Russ Housley, Michael StJohns, Daniel Van Geest, Alex
+   Railean, Sarat Ginjupalli, and Suzanne Wibada for reviewing the
+   document and providing comments.
 
 Appendix A.  ASN.1 Module
 
