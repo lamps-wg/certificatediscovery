@@ -265,7 +265,7 @@ This specification does not provide a mechanism for identifying the purpose of t
 
 ## Module Identifier
 
-IANA is requested to add the following entry in the "SMI Security for PKIX Module Identifier" registry, defined by {{RFC7299}}:
+IANA is requested to add the following entry in the "SMI Security for PKIX Module Identifier" registry, defined by {{?RFC7299}}:
 
 | Decimal | Description          | References |
 | ------- | -------------------- | ---------- |
@@ -273,7 +273,7 @@ IANA is requested to add the following entry in the "SMI Security for PKIX Modul
 
 ## Access Descriptor
 
-IANA is requested to add the following entry in the "SMI Security for PKIX Access Descriptor" registry, defined by {{RFC7299}}:
+IANA is requested to add the following entry in the "SMI Security for PKIX Access Descriptor" registry, defined by {{?RFC7299}}:
 
 | Decimal | Description          | References |
 | ------- | -------------------- | ---------- |
@@ -282,7 +282,7 @@ IANA is requested to add the following entry in the "SMI Security for PKIX Acces
 
 ## Other Name Form
 
-IANA is requested to add the following entry in the "SMI Security for PKIX Access Descriptor" registry, defined by {{RFC7299}}:
+IANA is requested to add the following entry in the "SMI Security for PKIX Access Descriptor" registry, defined by {{?RFC7299}}:
 
 | Decimal | Description                        | References |
 | ------- | ---------------------------------- | ---------- |
