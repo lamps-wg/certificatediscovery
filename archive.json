@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-11-01T04:44:47.607843+00:00",
+  "timestamp": "2026-11-03T05:37:40.339909+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -1084,6 +1084,22 @@
           "updatedAt": "2026-10-29T15:38:14Z"
         }
       ]
+    },
+    {
+      "number": 58,
+      "id": "I_kwDOKkGlhc8AAAABb89P6Q",
+      "title": "WITH COMPONENTS syntax",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/58",
+      "state": "OPEN",
+      "author": "CBonnell",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "From Mike StJohns:\n\n```\n\nRelatedCertificateDescriptor ::= SEQUENCE {\n     method CertDiscoveryMethod,\n     signatureAlgorithm [0] AlgorithmIdentifier{SIGNATURE-ALGORITHM, {...}}\n                            OPTIONAL,\n     publicKeyAlgorithm [1] AlgorithmIdentifier{PUBLIC-KEY, {...}} OPTIONAL,\n     certHash [2] RelatedCertificate OPTIONAL\n   } (WITH COMPONENTS {method (WITH COMPONENTS {byInclusion PRESENT}), \n                       signatureAlgorithm ABSENT, \n                       publicKeyAlgorithm ABSENT,\n                       certHash ABSENT } |\n      WITH COMPONENTS {...,\n                       method (WITH COMPONENTS {byInclusion ABSENT }) }\n      \n     )`\n```\n\nWe need to find a way to test this syntax, then add it to the draft.",
+      "createdAt": "2026-11-02T20:56:48Z",
+      "updatedAt": "2026-11-02T20:57:05Z",
+      "closedAt": null,
+      "comments": []
     }
   ],
   "pulls": [
@@ -2314,24 +2330,26 @@
       "id": "PR_kwDOKkGlhc8AAAABL2s-NA",
       "title": "Russ ASN.1 fix",
       "url": "https://github.com/lamps-wg/certificatediscovery/pull/55",
-      "state": "OPEN",
+      "state": "MERGED",
       "author": "CBonnell",
       "authorAssociation": "COLLABORATOR",
       "assignees": [],
       "labels": [],
       "body": "",
       "createdAt": "2026-10-30T20:19:50Z",
-      "updatedAt": "2026-11-01T01:16:51Z",
+      "updatedAt": "2026-11-01T12:08:26Z",
       "baseRepository": "lamps-wg/certificatediscovery",
       "baseRefName": "main",
       "baseRefOid": "7b590e2579e093dfe388490f60418ade62923967",
       "headRepository": "lamps-wg/certificatediscovery",
       "headRefName": "russ-asn-1fix",
       "headRefOid": "7860d6c6d37861ad219a714cfb6a808ceb5cc12d",
-      "closedAt": null,
-      "mergedAt": null,
-      "mergedBy": null,
-      "mergeCommit": null,
+      "closedAt": "2026-11-01T12:08:23Z",
+      "mergedAt": "2026-11-01T12:08:23Z",
+      "mergedBy": "CBonnell",
+      "mergeCommit": {
+        "oid": "4bde8e5336060f344699cc95d3f90782defd200f"
+      },
       "comments": [],
       "reviews": [
         {
@@ -2358,6 +2376,116 @@
           "body": "LGTM\n\nThe more I learn about ASN.1, the less I understand it.",
           "createdAt": "2026-11-01T01:16:51Z",
           "updatedAt": "2026-11-01T01:16:51Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 56,
+      "id": "PR_kwDOKkGlhc8AAAABMOI6cA",
+      "title": "fix refs",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/56",
+      "state": "MERGED",
+      "author": "mandelj7",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-11-02T04:45:35Z",
+      "updatedAt": "2026-11-02T23:47:28Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "8a45fe8ba057da5deca660cbf6519033ec84c784",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "mandelj7-patch-1",
+      "headRefOid": "51b25c41dafcbe2dc5e0094f96f7834c3ce782cf",
+      "closedAt": "2026-11-02T23:47:23Z",
+      "mergedAt": "2026-11-02T23:47:23Z",
+      "mergedBy": "CBonnell",
+      "mergeCommit": {
+        "oid": "02a229b7a6ca71f185d927a53ea32e2162c1380a"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABVhwldw",
+          "commit": {
+            "abbreviatedOid": "399bf59"
+          },
+          "author": "CBonnell",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-11-02T16:18:26Z",
+          "updatedAt": "2026-11-02T16:18:26Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABVh57Eg",
+          "commit": {
+            "abbreviatedOid": "399bf59"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Looks good.",
+          "createdAt": "2026-11-02T16:29:54Z",
+          "updatedAt": "2026-11-02T16:29:54Z",
+          "comments": []
+        }
+      ]
+    },
+    {
+      "number": 57,
+      "id": "PR_kwDOKkGlhc8AAAABMZeAWQ",
+      "title": "Use TYPE-IDENTIFIER",
+      "url": "https://github.com/lamps-wg/certificatediscovery/pull/57",
+      "state": "MERGED",
+      "author": "CBonnell",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "",
+      "createdAt": "2026-11-02T20:31:44Z",
+      "updatedAt": "2026-11-02T23:43:35Z",
+      "baseRepository": "lamps-wg/certificatediscovery",
+      "baseRefName": "main",
+      "baseRefOid": "4bde8e5336060f344699cc95d3f90782defd200f",
+      "headRepository": "lamps-wg/certificatediscovery",
+      "headRefName": "Use-TYPE-IDENTIFIER",
+      "headRefOid": "c934c0b83d172f332008585a76123a6a8e2fcd9e",
+      "closedAt": "2026-11-02T23:43:31Z",
+      "mergedAt": "2026-11-02T23:43:31Z",
+      "mergedBy": "CBonnell",
+      "mergeCommit": {
+        "oid": "8a45fe8ba057da5deca660cbf6519033ec84c784"
+      },
+      "comments": [],
+      "reviews": [
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABVllybw",
+          "commit": {
+            "abbreviatedOid": "c934c0b"
+          },
+          "author": "johngray-dev",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "Change seems fine",
+          "createdAt": "2026-11-02T21:33:46Z",
+          "updatedAt": "2026-11-02T21:33:46Z",
+          "comments": []
+        },
+        {
+          "id": "PRR_kwDOKkGlhc8AAAABVm33qg",
+          "commit": {
+            "abbreviatedOid": "c934c0b"
+          },
+          "author": "mandelj7",
+          "authorAssociation": "COLLABORATOR",
+          "state": "APPROVED",
+          "body": "",
+          "createdAt": "2026-11-02T23:42:41Z",
+          "updatedAt": "2026-11-02T23:42:41Z",
           "comments": []
         }
       ]
