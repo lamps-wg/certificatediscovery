@@ -1,6 +1,6 @@
 {
   "magic": "E!vIA5L86J2I",
-  "timestamp": "2026-11-03T05:37:40.339909+00:00",
+  "timestamp": "2026-11-15T05:09:07.245280+00:00",
   "repo": "lamps-wg/certificatediscovery",
   "labels": [
     {
@@ -1098,6 +1098,22 @@
       "body": "From Mike StJohns:\n\n```\n\nRelatedCertificateDescriptor ::= SEQUENCE {\n     method CertDiscoveryMethod,\n     signatureAlgorithm [0] AlgorithmIdentifier{SIGNATURE-ALGORITHM, {...}}\n                            OPTIONAL,\n     publicKeyAlgorithm [1] AlgorithmIdentifier{PUBLIC-KEY, {...}} OPTIONAL,\n     certHash [2] RelatedCertificate OPTIONAL\n   } (WITH COMPONENTS {method (WITH COMPONENTS {byInclusion PRESENT}), \n                       signatureAlgorithm ABSENT, \n                       publicKeyAlgorithm ABSENT,\n                       certHash ABSENT } |\n      WITH COMPONENTS {...,\n                       method (WITH COMPONENTS {byInclusion ABSENT }) }\n      \n     )`\n```\n\nWe need to find a way to test this syntax, then add it to the draft.",
       "createdAt": "2026-11-02T20:56:48Z",
       "updatedAt": "2026-11-02T20:57:05Z",
+      "closedAt": null,
+      "comments": []
+    },
+    {
+      "number": 59,
+      "id": "I_kwDOKkGlhc8AAAABfQ4-PQ",
+      "title": "Forbid a CA cert with a RelatedCertificateDescriptor",
+      "url": "https://github.com/lamps-wg/certificatediscovery/issues/59",
+      "state": "OPEN",
+      "author": "ounsworth",
+      "authorAssociation": "COLLABORATOR",
+      "assignees": [],
+      "labels": [],
+      "body": "I believe the draft is currently silent on whether the RelatedCertificateDescriptor mechanism is only for EEs, or if you can also create a CA this way. I haven't thought about it very long, but I feel like a RCD in a CA cert opens up a whole can of interop worms, and should probably be forbidden?",
+      "createdAt": "2026-11-14T16:45:54Z",
+      "updatedAt": "2026-11-14T16:45:54Z",
       "closedAt": null,
       "comments": []
     }
